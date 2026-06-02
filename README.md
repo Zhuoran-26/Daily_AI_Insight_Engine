@@ -172,6 +172,34 @@ The LLM can suggest category, event type, entities, impact areas, importance, co
 
 This design reduces batch-level JSON failures, makes retry scope smaller, and makes errors easier to locate because failures include item index and title.
 
+## Evaluation Harness
+
+Run extractor evaluation against the real-world sample and expected category fixture:
+
+```bash
+python3 -m daily_ai_insight.cli evaluate \
+  --input data/raw/real_ai_news_sample.json \
+  --expected data/eval/expected_real_sample_categories.json \
+  --extractor rule
+```
+
+You can compare extractors:
+
+```bash
+python3 -m daily_ai_insight.cli evaluate --input data/raw/real_ai_news_sample.json --expected data/eval/expected_real_sample_categories.json --extractor rule
+python3 -m daily_ai_insight.cli evaluate --input data/raw/real_ai_news_sample.json --expected data/eval/expected_real_sample_categories.json --extractor mock-llm
+python3 -m daily_ai_insight.cli evaluate --input data/raw/real_ai_news_sample.json --expected data/eval/expected_real_sample_categories.json --extractor openai-compatible
+```
+
+The `rule` and `mock-llm` evaluations do not need an API key. The `openai-compatible` evaluation needs `.env` configuration.
+
+Evaluation outputs:
+
+- `outputs/evaluation_summary.json`
+- `outputs/evaluation_report.md`
+
+The evaluation harness measures category accuracy, valid output count, failed items, grounding pass rate, and confidence distribution. It is separate from the production pipeline: evaluation records item-level failures for analysis, while the pipeline remains fail-fast to avoid misleading reports.
+
 ## Why Rule Baseline Is Not the Final Intelligence Layer
 
 The rule extractor is valuable because it is deterministic, cheap, testable, and useful as a fallback. It is not expected to solve complex semantic classification. For example, application or agent news that mentions `GPT`, `Claude`, or `Gemini` may be over-classified as `model`.

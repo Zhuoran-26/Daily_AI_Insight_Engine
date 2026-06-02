@@ -94,6 +94,17 @@ The OpenAI-compatible extractor uses item-level extraction instead of sending th
 
 This lowers token and JSON failure risk, keeps retry scope small, makes failed news items easy to identify by index and title, and prevents one malformed model response from corrupting an entire batch. It also makes harness verification stricter because `title`, `source`, `url`, `published_at`, and `language` are forced from the raw item rather than trusted from the LLM.
 
+## Evaluation Harness
+
+The project does not rely on subjective impressions to judge AI output quality. The evaluation harness compares extractor predictions against an expected category fixture and reports category accuracy, valid output rate, grounding pass rate, failed item count, and confidence statistics.
+
+This separates two concerns:
+
+- hallucination prevention: harness checks block unsafe output before reports
+- quality evaluation: expected fixtures quantify how well an extractor classifies real samples
+
+For interview review, `outputs/evaluation_report.md` can be shown directly to explain where the rule baseline works, where it misclassifies complex semantics, and how LLM extractors can be compared under the same validation rules.
+
 ## Human-in-the-loop Design
 
 The MVP should keep human review possible at multiple points:

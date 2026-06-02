@@ -105,6 +105,12 @@ OpenAI-compatible LLM extraction is item-level rather than batch-level. For each
 
 This design reduces token pressure and whole-batch JSON failure risk. It also makes errors easier to locate because failures include item index, title, and reason. Source grounding is easier to enforce because each event is checked against exactly one raw item. This matches the project's Agentic Engineering goal: bounded, inspectable, and recoverable execution steps.
 
+### Evaluation Harness
+
+The project includes a separate evaluation harness for extractor comparison. It runs an extractor against raw input, compares predicted categories against an expected fixture, and reports category accuracy, valid output rate, grounding pass rate, confidence distribution, and failed item count.
+
+Evaluation is intentionally distinct from production pipeline behavior. The pipeline remains fail-fast to avoid generating misleading reports. Evaluation records item-level failures so the team can inspect extractor weaknesses, compare `rule`, `mock-llm`, and `openai-compatible`, and demonstrate quality measurement during an interview.
+
 ### Analyzer
 
 Turns validated events into daily insights.

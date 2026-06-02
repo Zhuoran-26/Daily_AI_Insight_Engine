@@ -81,3 +81,28 @@ class DailyInsightReport(BaseModel):
         if not value or not value.strip():
             raise ValueError("date must not be empty")
         return value.strip()
+
+
+class EvaluationItemResult(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    title: str
+    expected_category: str
+    predicted_category: str | None
+    category_match: bool
+    confidence: float | None = Field(default=None, ge=0, le=1)
+    grounded: bool
+    error: str | None
+
+
+class EvaluationSummary(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    extractor: str
+    total_items: int = Field(ge=0)
+    successful_items: int = Field(ge=0)
+    failed_items: int = Field(ge=0)
+    category_accuracy: float = Field(ge=0, le=1)
+    grounding_pass_rate: float = Field(ge=0, le=1)
+    average_confidence: float = Field(ge=0, le=1)
+    item_results: list[EvaluationItemResult]
