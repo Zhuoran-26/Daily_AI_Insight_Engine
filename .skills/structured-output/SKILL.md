@@ -31,10 +31,18 @@ Use this skill when:
    - fallback behavior when data is missing
 4. Separate extracted facts from model interpretation.
 5. Include provenance fields that connect structured records to raw input items.
-6. Define confidence or evidence fields for model-derived claims.
-7. Validate required fields before passing data downstream.
-8. Reject, repair, or quarantine records that fail validation.
-9. Record validation failures in a reviewable format.
+6. Preserve source grounding fields for every event:
+   - source name
+   - source URL when available
+   - raw item IDs
+   - evidence references
+7. Define confidence or evidence fields for model-derived claims.
+8. Run schema validation before passing any structured output downstream.
+9. Reject model-generated source names or URLs that do not exist in the raw source data.
+10. Compare confidence against the configured threshold.
+11. Send low-confidence records to review, deterministic fallback, or fail-fast handling.
+12. Reject, repair, or quarantine records that fail validation.
+13. Record validation failures in a reviewable format.
 
 ## Deliverables
 
@@ -43,3 +51,4 @@ Use this skill when:
 - Example valid record and example invalid record when useful.
 - Notes on provenance, confidence, and repair behavior.
 - Validation result summary for generated structured data.
+- Harness check summary for schema validation, source grounding, hallucinated source or URL detection, and confidence threshold handling.

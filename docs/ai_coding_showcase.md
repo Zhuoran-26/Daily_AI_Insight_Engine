@@ -11,6 +11,8 @@ The important engineering choices are:
 - invalid or low-confidence records are blocked before analysis
 - report claims must reference supporting event IDs or source evidence
 - AI-generated outputs are reviewed as data, not accepted as final truth
+- agent loops must have budgets, stop conditions, and deterministic fallback behavior
+- completed implementation tasks must be backed by automated tests, not only manual review
 
 This makes the project inspectable. A reviewer can trace a final trend judgment back to structured events and then back to raw news sources.
 
@@ -52,6 +54,24 @@ Planned validation surfaces include:
 - quarantine behavior for malformed or uncertain records
 
 The project should prefer explicit validation failures over silently producing a confident but unsupported report.
+
+## Harness Engineering: Guardrails Against Hallucination
+
+Ordinary vibe coding often works like this:
+
+- let AI directly generate the report
+- accept the output if it looks reasonable to a human reviewer
+
+This project uses harness constraints instead:
+
+- original information must preserve `source_name` and `url` when available
+- structured results must trace back to `RawNewsItem` records
+- future LLM outputs must pass Pydantic schema validation or equivalent schema checks
+- low-confidence results must enter review, deterministic fallback, or fail-fast handling
+- agent loops must have a step budget and explicit stop condition
+- every completed implementation task must add or update automated tests
+
+The harness is a control layer around AI behavior. It prevents hallucinated sources, unsupported claims, unbounded loops, and outputs that cannot be checked by code.
 
 ## Human-in-the-loop Design
 

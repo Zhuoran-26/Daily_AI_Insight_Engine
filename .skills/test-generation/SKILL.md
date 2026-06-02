@@ -24,18 +24,30 @@ Use this skill when:
 1. Read the feature spec and relevant schema.
 2. Identify the highest-risk assumptions:
    - missing source fields
+   - missing source URLs when URLs are expected
    - malformed dates
    - duplicate news items
    - unsupported languages
    - invalid enum values
-   - hallucinated entities or claims
+   - hallucinated source names, URLs, entities, or claims
+   - low-confidence AI outputs
+   - loop or step budget exhaustion
+   - empty input
 3. Map each acceptance criterion to at least one validation case.
 4. Define positive cases that should pass.
 5. Define negative cases that should fail or be quarantined.
 6. Define edge cases that should not crash the pipeline.
-7. Define snapshot or golden-output checks for stable report sections when appropriate.
-8. Specify how test data should remain small, inspectable, and tied to source examples.
-9. Document skipped tests and why they are lower priority.
+7. Include test coverage for:
+   - normal path
+   - malformed input
+   - missing source or URL
+   - hallucinated source or URL
+   - low confidence
+   - loop or step budget exceeded
+   - empty input
+8. Define snapshot or golden-output checks for stable report sections when appropriate.
+9. Specify how test data should remain small, inspectable, and tied to source examples.
+10. Document skipped tests and why they are lower priority.
 
 ## Deliverables
 
@@ -43,4 +55,5 @@ Use this skill when:
 - Validation matrix mapping requirements to cases.
 - Minimal fixture design for raw news and structured events.
 - Expected pass/fail behavior for each case.
+- Harness coverage checklist for source integrity, schema validation, grounding, confidence threshold, loop budget, and empty input.
 - Notes on manual checks that remain necessary.

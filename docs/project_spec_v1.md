@@ -103,6 +103,42 @@ Responsibilities:
 - include visualization-ready summaries
 - document validation notes and limitations
 
+## Harness Engineering Requirements
+
+Harness Engineering constrains the pipeline so AI outputs remain verifiable, grounded, and bounded. The goal is not to enhance functionality. The goal is to prevent hallucinated sources, ungrounded events, infinite loops, unverifiable AI output, and low-confidence results from directly entering the final report.
+
+### Source Integrity Check
+
+Each `RawNewsItem` must preserve source identity and URL when available. The system must reject or quarantine records that lack enough source metadata for downstream claims.
+
+### Structured Output Validation
+
+Each `StructuredAIEvent` and `DailyInsightReport` must pass schema validation before use. Required fields, enum values, date formats, provenance links, evidence fields, and validation statuses must be checked.
+
+### Grounding Check
+
+Every extracted event must reference one or more source `RawNewsItem` records. Every report claim must reference supporting event IDs or source evidence. The system must not allow model-created sources, URLs, or unsupported claims.
+
+### Confidence Threshold
+
+Model-derived extraction and analysis outputs must include confidence information. Outputs below the configured threshold must enter human review, deterministic fallback, or fail-fast handling instead of the final report.
+
+### Loop Guard / Step Budget
+
+Any agent loop must have a documented step budget, stop condition, and maximum retry count. This applies to source collection, extraction repair, validation repair, analysis refinement, and reviewer loops.
+
+### Deterministic Baseline
+
+Each AI-assisted stage should define a deterministic baseline or fallback, such as returning a validation error, using rule-based filtering, skipping an invalid record, or producing a minimal report section from validated inputs only.
+
+### Fail-fast Error Handling
+
+The pipeline should fail fast when required inputs, schema validation, source grounding, or confidence thresholds are not satisfied. Silent repair is not allowed for failures that affect report correctness.
+
+### Test-backed Verification
+
+Core pipeline behavior must be backed by automated tests once implementation begins. Tests should cover normal inputs, malformed inputs, missing sources or URLs, hallucinated sources or URLs, low-confidence records, loop budget exhaustion, and empty inputs.
+
 ## Data Schema Draft
 
 This section defines fields only. It does not implement code.

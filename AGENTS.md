@@ -11,6 +11,7 @@ The final project should demonstrate that the system is not a one-shot AI summar
 - Structured outputs are validated before downstream use.
 - Validated events are analyzed for hotspots, trends, risks, and opportunities.
 - Final reports are generated from traceable inputs and reviewable intermediate artifacts.
+- No information may enter the final report unless it is grounded in a documented source.
 
 ## Development Workflow
 
@@ -33,6 +34,8 @@ Agents must not skip the Spec step. Before implementing any feature, define:
 
 Implementation should only begin after the spec is clear enough to review.
 
+Every pipeline stage must be verifiable. A stage is not considered usable until its inputs, outputs, validation checks, failure behavior, and test expectations are defined.
+
 ## AI Coding Methodology
 
 This project uses the following AI engineering methodology.
@@ -53,6 +56,25 @@ Features must be driven by explicit specs rather than informal prompts. A featur
 ### Structured Output
 
 AI-generated content must be treated as structured data whenever possible. Extracted events, analysis inputs, and report sections should have explicit schemas, required fields, and validation rules.
+
+### Harness Engineering
+
+The project must use Harness Engineering to constrain every AI-assisted pipeline stage. Harnesses are required to prevent unverifiable or uncontrolled AI behavior, not to add extra features.
+
+Any future LLM or Agent integration must be constrained by:
+
+- schema validation
+- source grounding
+- confidence threshold
+- loop/step budget
+- deterministic fallback
+- automated tests
+
+Agents must not create uncontrolled agent loops. Any loop over tools, sources, extraction attempts, repair attempts, or review passes must have a documented step budget, stop condition, and deterministic fallback.
+
+### Source Grounding
+
+No unsourced information may enter the final report. Report claims must be traceable to validated structured events, and structured events must be traceable to `RawNewsItem` source metadata, including source name and URL when available.
 
 ### Self Verification
 
@@ -84,6 +106,10 @@ A task is done only when all of the following are true:
 - The requested scope is completed without adding unrelated changes.
 - The spec, implementation, review, test, and documentation expectations have been addressed for that task.
 - Structured outputs and schemas are validated where relevant.
+- Every pipeline stage touched by the task has a defined harness or validation check.
+- Any generative output has validation or a harness check before downstream use.
+- No task is accepted as complete based only on manual visual inspection.
+- Automated tests are added or updated after each implementation task, or the task is explicitly documented as documentation-only.
 - Generated reports or artifacts are inspectable and traceable to inputs.
 - Tests or validation checks have been run when applicable, or skipped with a clear reason.
 - Documentation reflects the current behavior and known limitations.
