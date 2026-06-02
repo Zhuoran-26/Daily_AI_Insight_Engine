@@ -88,6 +88,12 @@ If a real LLM extractor is added, its output does not become trusted because "th
 
 The `openai-compatible` extractor is a real OpenAI-compatible adapter path. Without `OPENAI_API_KEY`, it fails clearly. With a key, it must still return `StructuredAIEvent` records and remain behind the same JSON parsing, schema validation, grounding, confidence, retry, and harness verification path.
 
+## Item-Level LLM Extraction
+
+The OpenAI-compatible extractor uses item-level extraction instead of sending the full batch to the model. Each `RawNewsItem` is processed independently: one LLM call, one JSON object, one Pydantic validation pass, one source/evidence grounding check, one confidence check, and item-scoped retries.
+
+This lowers token and JSON failure risk, keeps retry scope small, makes failed news items easy to identify by index and title, and prevents one malformed model response from corrupting an entire batch. It also makes harness verification stricter because `title`, `source`, `url`, `published_at`, and `language` are forced from the raw item rather than trusted from the LLM.
+
 ## Human-in-the-loop Design
 
 The MVP should keep human review possible at multiple points:

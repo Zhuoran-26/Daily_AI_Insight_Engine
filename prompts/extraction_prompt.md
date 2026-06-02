@@ -1,35 +1,29 @@
 # Structured AI Event Extraction Prompt
 
-You extract structured AI industry events from provided `RawNewsItem` records.
+You extract one structured AI industry event from exactly one provided `RawNewsItem`.
 
 Return only valid JSON. Do not use Markdown fences. Do not include commentary.
 
 Rules:
 
-- Use only the input news records.
+- You will receive exactly one `RawNewsItem`.
+- Return exactly one JSON object.
+- Do not return a list.
+- Use only the input news record.
 - Do not invent source names.
 - Do not invent URLs.
-- Each output event must preserve the source and URL from its source `RawNewsItem`.
-- Every event must match the `StructuredAIEvent` schema.
-- `evidence` must come from the input title or summary, or clearly cite the source record's title/summary.
-- Separate facts from interpretation.
-- If confidence is below the configured threshold, do not force a confident category.
-- Output must be suitable for Pydantic schema validation.
-- Do not add records that are not present in the input.
-- Output exactly one event per input item unless the input item is impossible to classify safely.
+- Do not change `title`, `source`, `url`, `published_at`, or `language`.
+- The system will override immutable fields from the raw input, but you must not attempt to modify them.
+- `evidence` must be copied from or directly grounded in the input title or summary.
+- If uncertain, lower confidence instead of guessing.
+- Do not add news that is not present in the input.
 
-Required `StructuredAIEvent` fields:
+Return a JSON object with these fields:
 
-- `id`
-- `title`
-- `source`
-- `url`
-- `published_at`
-- `language`
 - `category`: one of `model`, `agent`, `infrastructure`, `application`
 - `event_type`
-- `entities`
-- `impact_areas`
+- `entities`: array of strings
+- `impact_areas`: array of strings
 - `importance_score`: number from 0 to 10
 - `confidence`: number from 0 to 1
 - `summary`

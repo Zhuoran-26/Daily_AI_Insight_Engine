@@ -14,41 +14,50 @@ REAL_SAMPLE_PATH = Path("data/raw/real_ai_news_sample.json").resolve()
 
 
 class FakeOpenAIClient:
-    def __init__(self, responses):
-        self.responses = list(responses)
+    def __init__(self, responses=None, default_response=None):
+        self.responses = list(responses or [])
+        self.default_response = default_response
         self.calls = []
 
     def complete_extraction(self, prompt, raw_items, feedback=None):
-        self.calls.append({"prompt": prompt, "feedback": feedback, "count": len(raw_items)})
-        if len(self.calls) <= len(self.responses):
-            return self.responses[len(self.calls) - 1]
-        return self.responses[-1]
-
-
-def llm_json_for(raw_items, *, source=None, url=None, confidence=0.82):
-    import json
-
-    events = []
-    for index, item in enumerate(raw_items, start=1):
-        events.append(
+        self.calls.append(
             {
-                "id": f"llm-evt-{index:03d}",
-                "title": item.title,
-                "source": source or item.source,
-                "url": url or item.url,
-                "published_at": item.published_at,
-                "language": item.language,
-                "category": "application",
-                "event_type": "application_update",
-                "entities": [item.source],
-                "impact_areas": ["productivity"],
-                "importance_score": 5.0,
-                "confidence": confidence,
-                "summary": item.summary,
-                "evidence": f"{item.source}: {item.summary}",
+                "prompt": prompt,
+                "feedback": feedback,
+                "count": len(raw_items),
+                "title": raw_items[0].title,
             }
         )
-    return json.dumps(events)
+        if self.responses:
+            response = self.responses.pop(0)
+        else:
+            response = self.default_response
+        if callable(response):
+            return response(raw_items[0])
+        return response
+
+
+def llm_json_for_item(raw_item, *, title=None, source=None, url=None, confidence=0.82):
+    import json
+
+    return json.dumps(
+        {
+            "id": "llm-suggested-id",
+            "title": title or raw_item.title,
+            "source": source or raw_item.source,
+            "url": url or raw_item.url,
+            "published_at": raw_item.published_at,
+            "language": raw_item.language,
+            "category": "application",
+            "event_type": "application_update",
+            "entities": [raw_item.source],
+            "impact_areas": ["productivity"],
+            "importance_score": 5.0,
+            "confidence": confidence,
+            "summary": raw_item.summary,
+            "evidence": f"{raw_item.source}: {raw_item.summary}",
+        }
+    )
 
 
 def test_rule_based_extractor_generates_one_event_per_input():
@@ -113,7 +122,7 @@ def test_mock_llm_invalid_output_is_blocked_by_schema_harness(tmp_path):
 
 
 def test_openai_compatible_without_api_key_fails_clearly(monkeypatch, tmp_path):
-    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.setenv("OPENAI_API_KEY", "")
     events_output_path = tmp_path / "events.json"
     report_output_path = tmp_path / "report.md"
 
@@ -129,9 +138,26 @@ def test_openai_compatible_without_api_key_fails_clearly(monkeypatch, tmp_path):
     assert not report_output_path.exists()
 
 
+def test_openai_compatible_calls_llm_once_per_raw_item(tmp_path):
+    raw_items = load_raw_news(SAMPLE_PATH)
+    client = FakeOpenAIClient(default_response=llm_json_for_item)
+
+    report = run_pipeline(
+        SAMPLE_PATH,
+        extractor=OpenAICompatibleExtractor(client=client, max_retries=0),
+        events_output_path=tmp_path / "events.json",
+        report_output_path=tmp_path / "report.md",
+    )
+
+    assert report.total_events == len(raw_items)
+    assert len(client.calls) == len(raw_items)
+    assert all(call["count"] == 1 for call in client.calls)
+    assert [call["title"] for call in client.calls] == [item.title for item in raw_items]
+
+
 def test_openai_compatible_retries_after_json_parse_failure(tmp_path):
     raw_items = load_raw_news(SAMPLE_PATH)
-    client = FakeOpenAIClient(["not json", llm_json_for(raw_items)])
+    client = FakeOpenAIClient(["not json"], default_response=llm_json_for_item)
 
     report = run_pipeline(
         SAMPLE_PATH,
@@ -141,34 +167,40 @@ def test_openai_compatible_retries_after_json_parse_failure(tmp_path):
     )
 
     assert report.total_events == len(raw_items)
-    assert len(client.calls) == 2
+    assert len(client.calls) == len(raw_items) + 1
     assert "not valid JSON" in client.calls[1]["feedback"]
+    assert client.calls[0]["title"] == raw_items[0].title
+    assert client.calls[1]["title"] == raw_items[0].title
+    assert client.calls[2]["title"] == raw_items[1].title
 
 
-def test_openai_compatible_hallucinated_source_url_is_blocked(tmp_path):
+def test_openai_compatible_overrides_hallucinated_immutable_fields(tmp_path):
     raw_items = load_raw_news(SAMPLE_PATH)
     client = FakeOpenAIClient(
-        [
-            llm_json_for(
-                raw_items,
-                source="Invented AI Wire",
-                url="hallucinated://invented",
-            )
-        ]
+        default_response=lambda item: llm_json_for_item(
+            item,
+            title="Invented title",
+            source="Invented AI Wire",
+            url="hallucinated://invented",
+        )
     )
 
-    with pytest.raises(PipelineError, match="not grounded"):
-        run_pipeline(
-            SAMPLE_PATH,
-            extractor=OpenAICompatibleExtractor(client=client, max_retries=0),
-            events_output_path=tmp_path / "events.json",
-            report_output_path=tmp_path / "report.md",
-        )
+    report = run_pipeline(
+        SAMPLE_PATH,
+        extractor=OpenAICompatibleExtractor(client=client, max_retries=0),
+        events_output_path=tmp_path / "events.json",
+        report_output_path=tmp_path / "report.md",
+    )
+
+    assert report.top_events
+    assert all(event.source in {item.source for item in raw_items} for event in report.top_events)
+    assert all(event.url in {item.url for item in raw_items} for event in report.top_events)
+    assert all(event.title in {item.title for item in raw_items} for event in report.top_events)
 
 
 def test_openai_compatible_low_confidence_is_blocked(tmp_path):
     raw_items = load_raw_news(SAMPLE_PATH)
-    client = FakeOpenAIClient([llm_json_for(raw_items, confidence=0.2)])
+    client = FakeOpenAIClient(default_response=lambda item: llm_json_for_item(item, confidence=0.2))
 
     with pytest.raises(PipelineError, match="below threshold"):
         run_pipeline(
@@ -177,6 +209,30 @@ def test_openai_compatible_low_confidence_is_blocked(tmp_path):
             events_output_path=tmp_path / "events.json",
             report_output_path=tmp_path / "report.md",
         )
+
+
+def test_openai_compatible_failed_item_error_includes_index_and_title(tmp_path):
+    raw_items = load_raw_news(SAMPLE_PATH)
+    client = FakeOpenAIClient(
+        [
+            llm_json_for_item(raw_items[0]),
+            "not json",
+            "still not json",
+        ],
+        default_response=llm_json_for_item,
+    )
+
+    with pytest.raises(PipelineError) as exc_info:
+        run_pipeline(
+            SAMPLE_PATH,
+            extractor=OpenAICompatibleExtractor(client=client, max_retries=1),
+            events_output_path=tmp_path / "events.json",
+            report_output_path=tmp_path / "report.md",
+        )
+
+    message = str(exc_info.value)
+    assert "item 2" in message
+    assert raw_items[1].title in message
 
 
 def test_cli_default_extractor_is_rule(tmp_path, monkeypatch):

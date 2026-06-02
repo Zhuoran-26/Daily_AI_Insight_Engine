@@ -69,7 +69,8 @@ Responsibilities:
 - preserve provenance back to raw news records
 - support `rule`, `mock-llm`, and OpenAI-compatible LLM modes
 - fail clearly when the OpenAI-compatible extractor is selected without required configuration
-- retry invalid LLM output up to two times without silently falling back to rules
+- process OpenAI-compatible LLM extraction one raw item at a time
+- retry invalid LLM output for the failed item up to two times without silently falling back to rules
 
 ### Schema Validation
 
@@ -97,6 +98,12 @@ Responsibilities:
 - enforce confidence threshold
 - enforce loop or step budget
 - fail fast instead of silently repairing unsafe output
+
+### Item-Level LLM Extraction
+
+OpenAI-compatible LLM extraction is item-level rather than batch-level. For each `RawNewsItem`, the extractor builds a single-item prompt, calls the LLM, parses one JSON object, validates one structured event, forces immutable source fields from the raw item, applies grounding and confidence checks, and retries only that item when needed.
+
+This design reduces token pressure and whole-batch JSON failure risk. It also makes errors easier to locate because failures include item index, title, and reason. Source grounding is easier to enforce because each event is checked against exactly one raw item. This matches the project's Agentic Engineering goal: bounded, inspectable, and recoverable execution steps.
 
 ### Analyzer
 

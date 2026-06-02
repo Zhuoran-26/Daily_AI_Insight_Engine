@@ -132,7 +132,11 @@ Default suggested values:
 OPENAI_API_KEY=your_api_key_here
 OPENAI_BASE_URL=https://api.deepseek.com
 OPENAI_MODEL=deepseek-v4-flash
+# For stronger reasoning, you can use:
+# OPENAI_MODEL=deepseek-v4-pro
 ```
+
+`deepseek-v4-flash` is the default recommended model for this project. If you need stronger reasoning, change `OPENAI_MODEL` to `deepseek-v4-pro`. Keep the API key only in `.env`; `.env` is ignored by git.
 
 Run with the real LLM extractor:
 
@@ -152,6 +156,22 @@ RUN_LLM_INTEGRATION=1 python3 -m pytest tests/test_llm_integration.py
 
 Without `RUN_LLM_INTEGRATION=1` and `OPENAI_API_KEY`, the integration test is skipped and the rest of the project remains fully testable.
 
+Recommended LLM verification order:
+
+```bash
+python3 scripts/smoke_test_llm.py
+RUN_LLM_INTEGRATION=1 python3 -m pytest tests/test_llm_integration.py
+python3 -m daily_ai_insight.cli run --input data/raw/real_ai_news_sample.json --extractor openai-compatible
+```
+
+## Item-Level LLM Extraction
+
+The OpenAI-compatible extractor processes one `RawNewsItem` at a time. For each item it calls the LLM, parses one JSON object, validates one `StructuredAIEvent`, applies single-item source/evidence grounding, checks confidence, and retries only that item up to two times.
+
+The LLM can suggest category, event type, entities, impact areas, importance, confidence, summary, and evidence. The system forces `title`, `source`, `url`, `published_at`, `language`, and `id` from the raw input, so the model cannot rewrite source metadata.
+
+This design reduces batch-level JSON failures, makes retry scope smaller, and makes errors easier to locate because failures include item index and title.
+
 ## Why Rule Baseline Is Not the Final Intelligence Layer
 
 The rule extractor is valuable because it is deterministic, cheap, testable, and useful as a fallback. It is not expected to solve complex semantic classification. For example, application or agent news that mentions `GPT`, `Claude`, or `Gemini` may be over-classified as `model`.
@@ -162,7 +182,7 @@ Complex semantic extraction should move to an LLM extractor, but only behind man
 - source grounding against `RawNewsItem`
 - evidence grounding against title or summary
 - confidence threshold checks
-- loop and retry budgets
+- item-level retry budgets
 - deterministic fallback behavior
 - automated tests for hallucinated sources and low confidence
 

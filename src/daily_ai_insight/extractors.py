@@ -124,11 +124,7 @@ class MockLLMExtractor(BaseExtractor):
 
 
 class OpenAICompatibleExtractor(BaseExtractor):
-    """Optional OpenAI-compatible interface position.
-
-    This class intentionally avoids adding an SDK dependency in Phase 4. It reads
-    environment configuration and fails clearly if a real adapter is not ready.
-    """
+    """OpenAI-compatible extractor with item-level retry and harness checks."""
 
     name = "openai-compatible"
 
@@ -145,6 +141,19 @@ class OpenAICompatibleExtractor(BaseExtractor):
     def extract(self, raw_items: list[RawNewsItem]) -> list[StructuredAIEvent]:
         client = self.client or OpenAICompatibleClient.from_environment()
         prompt = self._load_prompt()
+        events: list[StructuredAIEvent] = []
+
+        for index, raw_item in enumerate(raw_items, start=1):
+            events.append(self._extract_one_item(client, prompt, raw_item, index))
+        return events
+
+    def _extract_one_item(
+        self,
+        client: OpenAICompatibleClient,
+        prompt: str,
+        raw_item: RawNewsItem,
+        index: int,
+    ) -> StructuredAIEvent:
         feedback: str | None = None
         last_error: Exception | None = None
 
@@ -152,19 +161,19 @@ class OpenAICompatibleExtractor(BaseExtractor):
             try:
                 response_text = client.complete_extraction(
                     prompt=prompt,
-                    raw_items=raw_items,
+                    raw_items=[raw_item],
                     feedback=feedback,
                 )
-                events = self._parse_and_validate_response(response_text)
-                self._run_llm_harness(events, raw_items)
-                return events
+                event = self._parse_and_validate_single_response(response_text, raw_item, index)
+                self._run_single_llm_harness(event, raw_item)
+                return event
             except (PipelineError, HarnessError, ValidationError) as exc:
                 last_error = exc
-                feedback = f"Attempt {attempt + 1} failed: {exc}"
+                feedback = f"Attempt {attempt + 1} failed for item {index}: {exc}"
 
         raise PipelineError(
-            "openai-compatible extractor failed after "
-            f"{self.max_retries + 1} attempts: {last_error}"
+            "openai-compatible extractor failed for item "
+            f"{index} '{raw_item.title}' after {self.max_retries + 1} attempts: {last_error}"
         ) from last_error
 
     def _load_prompt(self) -> str:
@@ -172,33 +181,54 @@ class OpenAICompatibleExtractor(BaseExtractor):
             raise PipelineError(f"Extraction prompt not found: {self.prompt_path}")
         return self.prompt_path.read_text(encoding="utf-8")
 
-    def _parse_and_validate_response(self, response_text: str) -> list[StructuredAIEvent]:
+    def _parse_and_validate_single_response(
+        self,
+        response_text: str,
+        raw_item: RawNewsItem,
+        index: int,
+    ) -> StructuredAIEvent:
         try:
             response = json.loads(self._strip_json_fence(response_text))
         except json.JSONDecodeError as exc:
             raise PipelineError(f"LLM output was not valid JSON: {exc}") from exc
 
-        if not isinstance(response, list):
-            raise PipelineError("OpenAI-compatible extractor response must be a list")
+        if isinstance(response, list):
+            raise PipelineError("OpenAI-compatible item-level response must be one JSON object, not a list")
+        if not isinstance(response, dict):
+            raise PipelineError("OpenAI-compatible item-level response must be a JSON object")
 
-        events: list[StructuredAIEvent] = []
-        for index, item in enumerate(response):
-            try:
-                events.append(StructuredAIEvent.model_validate(item))
-            except PydanticValidationError as exc:
-                raise PipelineError(
-                    f"OpenAI-compatible extractor response item {index} failed schema validation: {exc}"
-                ) from exc
-        return events
+        event_payload = {
+            "id": f"llm-evt-{index:03d}",
+            "title": raw_item.title,
+            "source": raw_item.source,
+            "url": raw_item.url,
+            "published_at": raw_item.published_at,
+            "language": raw_item.language,
+            "category": response.get("category"),
+            "event_type": response.get("event_type"),
+            "entities": response.get("entities"),
+            "impact_areas": response.get("impact_areas"),
+            "importance_score": response.get("importance_score"),
+            "confidence": response.get("confidence"),
+            "summary": response.get("summary"),
+            "evidence": response.get("evidence"),
+        }
+
+        try:
+            return StructuredAIEvent.model_validate(event_payload)
+        except PydanticValidationError as exc:
+            raise PipelineError(
+                f"OpenAI-compatible extractor response for item {index} failed schema validation: {exc}"
+            ) from exc
 
     @staticmethod
-    def _run_llm_harness(events: list[StructuredAIEvent], raw_items: list[RawNewsItem]) -> None:
-        validate_structured_events(events)
+    def _run_single_llm_harness(event: StructuredAIEvent, raw_item: RawNewsItem) -> None:
+        validate_structured_events([event])
         harness = PipelineHarness()
-        harness.check_schema_compliance(events)
-        harness.check_event_grounding(events, raw_items)
-        harness.check_evidence_grounding(events, raw_items)
-        harness.check_confidence(events)
+        harness.check_schema_compliance([event])
+        harness.check_single_event_grounding(event, raw_item)
+        harness.check_single_evidence_grounding(event, raw_item)
+        harness.check_confidence([event])
 
     @staticmethod
     def _strip_json_fence(response_text: str) -> str:

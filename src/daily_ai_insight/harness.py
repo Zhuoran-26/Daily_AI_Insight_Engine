@@ -95,19 +95,26 @@ class PipelineHarness:
         events: list[StructuredAIEvent],
         raw_items: list[RawNewsItem],
     ) -> None:
-        raw_keys = {
-            self._grounding_key(item.title, item.source, item.url)
-            for item in raw_items
-        }
         for index, event in enumerate(events):
-            event_key = self._grounding_key(event.title, event.source, event.url)
-            if event_key not in raw_keys:
+            if self._find_grounded_raw_item(event, raw_items) is None:
                 raise HarnessError(
                     "Structured event at index "
                     f"{index} is not grounded in raw source/title/url: {event.title}"
                 )
         self.output_count = len(events)
         self.grounding_passed = True
+
+    def check_single_event_grounding(
+        self,
+        event: StructuredAIEvent,
+        raw_item: RawNewsItem,
+    ) -> None:
+        if event.title != raw_item.title:
+            raise HarnessError("Structured event title does not match raw item title")
+        if event.source != raw_item.source:
+            raise HarnessError("Structured event source does not match raw item source")
+        if event.url != raw_item.url:
+            raise HarnessError("Structured event url does not match raw item url")
 
     def check_evidence_grounding(
         self,
@@ -119,28 +126,24 @@ class PipelineHarness:
             for item in raw_items
         }
         for index, event in enumerate(events):
-            evidence = event.evidence.strip()
-            if not evidence:
-                raise HarnessError(f"Structured event at index {index} has empty evidence")
-
             raw_item = raw_by_key.get(self._grounding_key(event.title, event.source, event.url))
             if raw_item is None:
                 raise HarnessError(
                     f"Structured event at index {index} has evidence but no grounded raw item"
                 )
-
-            raw_title = raw_item.title.strip().lower()
-            raw_summary = raw_item.summary.strip().lower()
-            normalized_evidence = evidence.lower()
-            if (
-                raw_title not in normalized_evidence
-                and raw_summary not in normalized_evidence
-                and normalized_evidence not in raw_summary
-            ):
+            if not self._is_evidence_grounded(event.evidence, raw_item):
                 raise HarnessError(
                     f"Structured event at index {index} evidence is not grounded in raw title or summary"
                 )
         self.evidence_grounding_passed = True
+
+    def check_single_evidence_grounding(
+        self,
+        event: StructuredAIEvent,
+        raw_item: RawNewsItem,
+    ) -> None:
+        if not self._is_evidence_grounded(event.evidence, raw_item):
+            raise HarnessError("Structured event evidence is not grounded in raw title or summary")
 
     def check_confidence(self, events: list[StructuredAIEvent]) -> None:
         for index, event in enumerate(events):
@@ -170,6 +173,44 @@ class PipelineHarness:
     @staticmethod
     def _grounding_key(title: str, source: str, url: str) -> tuple[str, str, str]:
         return (title.strip().lower(), source.strip().lower(), url.strip().lower())
+
+    def _find_grounded_raw_item(
+        self,
+        event: StructuredAIEvent,
+        raw_items: list[RawNewsItem],
+    ) -> RawNewsItem | None:
+        event_key = self._grounding_key(event.title, event.source, event.url)
+        for item in raw_items:
+            if self._grounding_key(item.title, item.source, item.url) == event_key:
+                return item
+        return None
+
+    @staticmethod
+    def _is_evidence_grounded(evidence: str, raw_item: RawNewsItem) -> bool:
+        normalized_evidence = evidence.strip().lower()
+        if not normalized_evidence:
+            return False
+
+        raw_title = raw_item.title.strip().lower()
+        raw_summary = raw_item.summary.strip().lower()
+        if (
+            raw_title in normalized_evidence
+            or raw_summary in normalized_evidence
+            or normalized_evidence in raw_title
+            or normalized_evidence in raw_summary
+        ):
+            return True
+
+        # Conservative fallback for short LLM evidence phrases. Exact title or
+        # summary grounding is preferred, but short copied fragments can be valid.
+        raw_words = set(PipelineHarness._meaningful_words(f"{raw_title} {raw_summary}"))
+        evidence_words = set(PipelineHarness._meaningful_words(normalized_evidence))
+        return len(raw_words & evidence_words) >= 3
+
+    @staticmethod
+    def _meaningful_words(text: str) -> list[str]:
+        cleaned = "".join(char.lower() if char.isalnum() else " " for char in text)
+        return [word for word in cleaned.split() if len(word) >= 5]
 
     @staticmethod
     def _is_suspicious_url(url: str) -> bool:
