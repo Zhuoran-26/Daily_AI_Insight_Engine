@@ -99,7 +99,7 @@ The pipeline supports three extractor modes:
 
 - `rule`: default deterministic baseline. It is fully local, reproducible, and does not call an LLM.
 - `mock-llm`: local test double for LLM workflow. It simulates semantic extraction and unsafe LLM behavior in tests without calling an API.
-- `openai-compatible`: optional interface position for a future OpenAI-compatible extractor. It reads `OPENAI_API_KEY`, optional `OPENAI_BASE_URL`, and optional `OPENAI_MODEL`.
+- `openai-compatible`: real OpenAI-compatible LLM extractor. It reads `OPENAI_API_KEY`, optional `OPENAI_BASE_URL`, and optional `OPENAI_MODEL`.
 
 Run the real-world sample with mock LLM workflow:
 
@@ -113,7 +113,44 @@ Run the optional OpenAI-compatible interface:
 python3 -m daily_ai_insight.cli run --input data/raw/real_ai_news_sample.json --extractor openai-compatible
 ```
 
-If `OPENAI_API_KEY` is missing, `openai-compatible` fails clearly and does not generate a misleading report. Phase 4 intentionally does not add an OpenAI SDK or require paid API access.
+If `OPENAI_API_KEY` is missing, `openai-compatible` fails clearly and does not generate a misleading report. The OpenAI SDK is installed for this mode, but `rule` and `mock-llm` do not require API access.
+
+## Using DeepSeek / OpenAI-compatible LLM
+
+The default reproducible mode is still `rule`. The `openai-compatible` mode is an optional real LLM enhancement path and requires a local API key.
+
+Create a local environment file:
+
+```bash
+cp .env.example .env
+# then edit .env and replace OPENAI_API_KEY with your local key
+```
+
+Default suggested values:
+
+```env
+OPENAI_API_KEY=your_api_key_here
+OPENAI_BASE_URL=https://api.deepseek.com
+OPENAI_MODEL=deepseek-v4-flash
+```
+
+Run with the real LLM extractor:
+
+```bash
+python3 -m daily_ai_insight.cli run --input data/raw/real_ai_news_sample.json --extractor openai-compatible
+```
+
+The `.env` file is ignored by git. Do not commit real API keys.
+
+LLM output is not trusted directly. The extractor retries invalid output up to two times, then fails without falling back to `rule`. Every LLM result must pass JSON parsing, Pydantic schema validation, `validate_structured_events`, source grounding, evidence grounding, and confidence checks before a report is written.
+
+To manually run the real integration test:
+
+```bash
+RUN_LLM_INTEGRATION=1 python3 -m pytest tests/test_llm_integration.py
+```
+
+Without `RUN_LLM_INTEGRATION=1` and `OPENAI_API_KEY`, the integration test is skipped and the rest of the project remains fully testable.
 
 ## Why Rule Baseline Is Not the Final Intelligence Layer
 
@@ -131,7 +168,7 @@ Complex semantic extraction should move to an LLM extractor, but only behind man
 
 ## Future LLM/Agent Extension Points
 
-The deterministic extractor can later be supplemented by a real LLM extractor, but only behind these controls:
+The deterministic extractor can be supplemented by the real OpenAI-compatible extractor, but only behind these controls:
 
 - Pydantic schema validation
 - source grounding against `RawNewsItem`

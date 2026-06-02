@@ -2,15 +2,18 @@
 
 from __future__ import annotations
 
+import json
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any
 
 from pydantic import ValidationError as PydanticValidationError
 
-from daily_ai_insight.errors import PipelineError
+from daily_ai_insight.errors import HarnessError, PipelineError, ValidationError
+from daily_ai_insight.harness import PipelineHarness
 from daily_ai_insight.llm_client import OpenAICompatibleClient
 from daily_ai_insight.models import RawNewsItem, StructuredAIEvent
+from daily_ai_insight.validate import validate_structured_events
 
 MAJOR_ENTITIES = (
     "OpenAI",
@@ -133,23 +136,48 @@ class OpenAICompatibleExtractor(BaseExtractor):
         self,
         prompt_path: str | Path = "prompts/extraction_prompt.md",
         client: OpenAICompatibleClient | None = None,
+        max_retries: int = 2,
     ) -> None:
         self.prompt_path = Path(prompt_path)
         self.client = client
+        self.max_retries = max_retries
 
     def extract(self, raw_items: list[RawNewsItem]) -> list[StructuredAIEvent]:
         client = self.client or OpenAICompatibleClient.from_environment()
         prompt = self._load_prompt()
-        response = client.extract_events(prompt=prompt, raw_items=raw_items)
-        return self._validate_response(response)
+        feedback: str | None = None
+        last_error: Exception | None = None
+
+        for attempt in range(self.max_retries + 1):
+            try:
+                response_text = client.complete_extraction(
+                    prompt=prompt,
+                    raw_items=raw_items,
+                    feedback=feedback,
+                )
+                events = self._parse_and_validate_response(response_text)
+                self._run_llm_harness(events, raw_items)
+                return events
+            except (PipelineError, HarnessError, ValidationError) as exc:
+                last_error = exc
+                feedback = f"Attempt {attempt + 1} failed: {exc}"
+
+        raise PipelineError(
+            "openai-compatible extractor failed after "
+            f"{self.max_retries + 1} attempts: {last_error}"
+        ) from last_error
 
     def _load_prompt(self) -> str:
         if not self.prompt_path.exists():
             raise PipelineError(f"Extraction prompt not found: {self.prompt_path}")
         return self.prompt_path.read_text(encoding="utf-8")
 
-    @staticmethod
-    def _validate_response(response: Any) -> list[StructuredAIEvent]:
+    def _parse_and_validate_response(self, response_text: str) -> list[StructuredAIEvent]:
+        try:
+            response = json.loads(self._strip_json_fence(response_text))
+        except json.JSONDecodeError as exc:
+            raise PipelineError(f"LLM output was not valid JSON: {exc}") from exc
+
         if not isinstance(response, list):
             raise PipelineError("OpenAI-compatible extractor response must be a list")
 
@@ -162,6 +190,27 @@ class OpenAICompatibleExtractor(BaseExtractor):
                     f"OpenAI-compatible extractor response item {index} failed schema validation: {exc}"
                 ) from exc
         return events
+
+    @staticmethod
+    def _run_llm_harness(events: list[StructuredAIEvent], raw_items: list[RawNewsItem]) -> None:
+        validate_structured_events(events)
+        harness = PipelineHarness()
+        harness.check_schema_compliance(events)
+        harness.check_event_grounding(events, raw_items)
+        harness.check_evidence_grounding(events, raw_items)
+        harness.check_confidence(events)
+
+    @staticmethod
+    def _strip_json_fence(response_text: str) -> str:
+        text = response_text.strip()
+        if text.startswith("```"):
+            lines = text.splitlines()
+            if lines and lines[0].startswith("```"):
+                lines = lines[1:]
+            if lines and lines[-1].startswith("```"):
+                lines = lines[:-1]
+            return "\n".join(lines).strip()
+        return text
 
 
 def create_extractor(extractor_name: str) -> BaseExtractor:

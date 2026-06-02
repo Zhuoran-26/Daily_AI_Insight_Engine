@@ -67,8 +67,9 @@ Responsibilities:
 - separate facts from model interpretation
 - include confidence and evidence fields
 - preserve provenance back to raw news records
-- support `rule`, `mock-llm`, and optional `openai-compatible` modes
-- fail clearly when an optional LLM extractor is selected without required configuration
+- support `rule`, `mock-llm`, and OpenAI-compatible LLM modes
+- fail clearly when the OpenAI-compatible extractor is selected without required configuration
+- retry invalid LLM output up to two times without silently falling back to rules
 
 ### Schema Validation
 

@@ -2,6 +2,8 @@
 
 You extract structured AI industry events from provided `RawNewsItem` records.
 
+Return only valid JSON. Do not use Markdown fences. Do not include commentary.
+
 Rules:
 
 - Use only the input news records.
@@ -13,6 +15,8 @@ Rules:
 - Separate facts from interpretation.
 - If confidence is below the configured threshold, do not force a confident category.
 - Output must be suitable for Pydantic schema validation.
+- Do not add records that are not present in the input.
+- Output exactly one event per input item unless the input item is impossible to classify safely.
 
 Required `StructuredAIEvent` fields:
 

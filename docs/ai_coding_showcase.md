@@ -86,7 +86,7 @@ If a real LLM extractor is added, its output does not become trusted because "th
 - loop and step budget controls
 - automated tests for hallucinated source URLs and low confidence
 
-The `openai-compatible` extractor is currently an interface position. Without `OPENAI_API_KEY`, it fails clearly. With a future adapter, it must still return `StructuredAIEvent` records and remain behind the same harness verification.
+The `openai-compatible` extractor is a real OpenAI-compatible adapter path. Without `OPENAI_API_KEY`, it fails clearly. With a key, it must still return `StructuredAIEvent` records and remain behind the same JSON parsing, schema validation, grounding, confidence, retry, and harness verification path.
 
 ## Human-in-the-loop Design
 
