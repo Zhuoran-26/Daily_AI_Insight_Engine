@@ -165,11 +165,11 @@ python3 -m daily_ai_insight.cli review --evaluation outputs/llm_evaluation_summa
 
 - `data/raw/sample_ai_news.json`：synthetic fixture，用于稳定测试和回归验证。
 - `data/raw/real_ai_news_sample.json`：real-world sample，用于展示真实来源、真实 URL 和实际 pipeline 效果。
-- `data/raw/mixed_channel_ai_news_sample.json`：Phase 8.1 中英混合、多渠道展示样例，覆盖官方渠道、科技媒体、聚合平台和社交媒体/社区平台。
+- `data/raw/mixed_channel_ai_news_sample.json`：Phase 8.1 中英混合、多渠道展示样例，直接对应笔试题“三、数据获取”的官方渠道、科技媒体、聚合平台和社交媒体/社区平台四类参考方向。
 
 所有真实样例都必须保留 `source`、`url` 和 `published_at`。mixed sample 进一步保留 `source_channel`、`source_language`、`selection_reason` 和 `collected_at`，用于说明来源渠道、来源语言、事件选择理由和样本整理时间。
 
-mixed sample 是最终展示用的静态样例数据，目标是贴合 AI 行业趋势分析、舆情监测与风险预警、信息快速理解与决策辅助。它不代表完整实时舆情采集系统，也不会在测试中访问网络。
+mixed sample 是最终展示用的静态样例数据，目标是贴合 AI 行业趋势分析、舆情监测与风险预警、信息快速理解与决策辅助。它采用中英混合来源：官方渠道用于确认技术发布信息，科技媒体用于行业动态报道，聚合平台用于综合信息流和跨来源热度观察，社交媒体/社区用于捕捉舆论讨论热点。它不代表完整实时舆情采集系统，也不会在测试中访问网络。
 
 数据约束：
 

@@ -1,7 +1,7 @@
 {
   "metadata": {
     "note": "Phase 8.1 mixed English/Chinese multi-channel AI news sample. Records were manually curated from public, traceable pages and are intended for deterministic local demonstration, not live crawling.",
-    "curated_at": "2026-06-02",
+    "curated_at": "2026-06-03",
     "source_policy": "Only include public pages with a traceable URL and an explicit or clearly inferable publication date. Do not invent news, URLs, provenance fields, or source metadata.",
     "channel_policy": "Each source_channel covers both en and zh sources: official, tech_media, aggregator, and social_media."
   },
@@ -15,7 +15,7 @@
       "language": "en",
       "source_channel": "official",
       "source_language": "en",
-      "selection_reason": "该事件直接反映 frontier model 进入主流云基础设施，对企业 AI 部署、治理与采购决策有参考价值。",
+      "selection_reason": "官方渠道提供技术发布信息，可确认 OpenAI 模型与 Codex 进入 AWS 的事实和发布时间，服务 AI 行业趋势分析与企业部署决策辅助。",
       "collected_at": "2026-06-02"
     },
     {
@@ -27,7 +27,7 @@
       "language": "en",
       "source_channel": "official",
       "source_language": "en",
-      "selection_reason": "新旗舰 model 及 agent 工作流能力会影响开发者工具、企业自动化和模型选型判断，适合 AI 行业趋势分析与决策辅助。",
+      "selection_reason": "官方渠道提供技术发布信息，可确认 Claude Opus 4.8 的模型能力、agent 工作流和可靠性变化，适合 AI 行业趋势分析与模型选型决策辅助。",
       "collected_at": "2026-06-02"
     },
     {
@@ -39,7 +39,7 @@
       "language": "zh",
       "source_channel": "official",
       "source_language": "zh",
-      "selection_reason": "该事件体现中国厂商将 AI agent、创意工具和 MaaS 平台推向全球市场，适合观察应用出海与企业采用趋势。",
+      "selection_reason": "官方渠道提供技术发布信息，可确认腾讯 AI 工具与企业解决方案的发布时间和产品范围，适合观察应用出海趋势和企业决策辅助。",
       "collected_at": "2026-06-02"
     },
     {
@@ -51,7 +51,7 @@
       "language": "zh",
       "source_channel": "official",
       "source_language": "zh",
-      "selection_reason": "该事件代表中文基础模型的性能、成本和 Agent 能力进展，可用于 AI 行业趋势分析和国产模型竞争力判断。",
+      "selection_reason": "官方渠道提供技术发布信息，可确认文心 5.1 的模型能力、训练成本和 Agent 进展，用于 AI 行业趋势分析和国产模型竞争力判断。",
       "collected_at": "2026-06-02"
     },
     {
@@ -63,7 +63,7 @@
       "language": "en",
       "source_channel": "tech_media",
       "source_language": "en",
-      "selection_reason": "该报道是 AI 资本市场与商业化信号，有助于判断 AI 行业资金热度、泡沫风险和上市窗口。",
+      "selection_reason": "科技媒体的行业动态报道提供资本市场视角，有助于判断 AI 公司商业化热度、IPO 风险和投资决策辅助。",
       "collected_at": "2026-06-02"
     },
     {
@@ -75,7 +75,7 @@
       "language": "en",
       "source_channel": "tech_media",
       "source_language": "en",
-      "selection_reason": "媒体报道补充了官方发布以外的竞争压力、产品节奏和安全讨论，适合风险预警与行业解读。",
+      "selection_reason": "科技媒体的行业动态报道补充官方发布以外的竞争压力、产品节奏和安全讨论，适合 AI 行业趋势分析与风险预警。",
       "collected_at": "2026-06-02"
     },
     {
@@ -87,7 +87,7 @@
       "language": "zh",
       "source_channel": "tech_media",
       "source_language": "zh",
-      "selection_reason": "中文科技媒体视角可帮助观察国内开发者如何理解海外模型的编程可靠性与 agent 能力，支持 AI 行业趋势分析和决策辅助。",
+      "selection_reason": "中文科技媒体的行业动态报道可观察国内开发者如何理解海外模型的编程可靠性与 agent 能力，支持 AI 行业趋势分析和决策辅助。",
       "collected_at": "2026-06-02"
     },
     {
@@ -99,80 +99,80 @@
       "language": "zh",
       "source_channel": "tech_media",
       "source_language": "zh",
-      "selection_reason": "该报道提供中文媒体对国产基础模型效率与能力提升的归纳，便于与官方口径交叉对照并服务 AI 行业趋势分析。",
+      "selection_reason": "中文科技媒体的行业动态报道归纳国产基础模型效率与能力提升，便于与官方口径交叉对照并服务 AI 行业趋势分析。",
       "collected_at": "2026-06-02"
     },
     {
-      "title": "OpenAI Models Land on Amazon Bedrock",
-      "summary": "Blockchain.News 的 AI News Detail 汇总 OpenAI models 与 Codex 登陆 Amazon Bedrock，强调企业通过 AWS 安全与治理体系采用 AI 的路径。",
-      "source": "Blockchain.News AI News",
-      "url": "https://blockchain.news/ainews/openai-models-land-on-amazon-bedrock",
+      "title": "GPT-5.5 and Codex are now GA on Amazon Bedrock",
+      "summary": "Hacker News 聚合 AWS 关于 OpenAI models 与 Codex 在 Amazon Bedrock GA 的发布链接，评论区关注云平台定价、企业采购和 GovCloud 使用场景。",
+      "source": "Hacker News",
+      "url": "https://news.ycombinator.com/item?id=48363881",
       "published_at": "2026-06-01",
       "language": "en",
       "source_channel": "aggregator",
       "source_language": "en",
-      "selection_reason": "聚合平台把官方发布转化为面向决策者的要点摘要，可用于验证同一事件在不同信息渠道中的传播重点。",
+      "selection_reason": "聚合平台提供综合信息源和跨来源讨论热度，可帮助快速理解 OpenAI/AWS 合作在开发者与企业采购中的关注点，服务信息快速理解与决策辅助。",
       "collected_at": "2026-06-02"
     },
     {
       "title": "New Claude, New Realities",
-      "summary": "Tech Brew Ride Home 汇总 Anthropic Opus 4.8、融资估值、Amazon AI 使用榜单和数据采集创业公司等 AI 行业动态。",
+      "summary": "Techmeme Ride Home 汇总 Anthropic Opus 4.8、融资估值、Amazon AI 使用榜单和数据采集创业公司等 AI 行业动态。",
       "source": "Techmeme Ride Home",
       "url": "https://www.podpage.com/network/ride-home/show/techmeme-ride-home/new-claude-new-realities/",
       "published_at": "2026-05-29",
       "language": "en",
       "source_channel": "aggregator",
       "source_language": "en",
-      "selection_reason": "日更型科技摘要能体现多事件组合后的行业热点，适合快速理解和决策辅助。",
+      "selection_reason": "聚合平台提供综合信息源，日更摘要能体现多事件组合后的行业热点，适合信息快速理解、AI 行业趋势分析和决策辅助。",
       "collected_at": "2026-06-02"
     },
     {
-      "title": "Claude Opus 4.8 发布：Agent 能力再升级，引入动态工作流",
-      "summary": "OpenAI Hub 聚合 Claude Opus 4.8 发布信息，强调 dynamic workflows、agent 能力、Fast Mode 和国内开发者调用路径。",
-      "source": "OpenAI Hub",
-      "url": "https://www.openai-hub.com/news/532/",
-      "published_at": "2026-05-28",
+      "title": "重磅联手！OpenAI 尖端模型与 Codex 正式登陆 AWS，企业级 AI 落地再提速",
+      "summary": "AIbase 聚合 OpenAI 与 AWS 合作信息，概括 OpenAI 前沿模型、Codex、Amazon Bedrock、GovCloud 和企业级 AI 落地路径。",
+      "source": "AIbase",
+      "url": "https://news.aibase.com/zh/news/28553",
+      "published_at": "2026-06-02",
       "language": "zh",
       "source_channel": "aggregator",
       "source_language": "zh",
-      "selection_reason": "中文聚合平台展示了海外模型发布在国内开发者生态中的传播和使用关注点，适合舆情监测与决策辅助。",
+      "selection_reason": "聚合平台提供中文综合信息源，可观察海外官方发布在中文信息流中的摘要方式和传播重点，服务信息快速理解与企业决策辅助。",
       "collected_at": "2026-06-02"
     },
     {
-      "title": "阿里 Qoder 推出 Cloud Agents：企业 Agent 上线从一个月压缩到一天",
-      "summary": "OpenAI Hub 聚合阿里 Qoder Cloud Agents 信息，称其将 agent 底座、model 服务和运行环境打包为可 API 调用的云服务。",
-      "source": "OpenAI Hub",
-      "url": "https://www.openai-hub.com/news/524/",
-      "published_at": "2026-05-28",
+      "title": "吊打GPT-5.5！Claude Opus 4.8 上线 价格暴降三分之二",
+      "summary": "AIbase 聚合 Anthropic Claude Opus 4.8 发布信息，强调智能体编程、复杂逻辑推理、知识工作、响应速度和成本变化。",
+      "source": "AIbase",
+      "url": "https://news.aibase.com/zh/news/28444",
+      "published_at": "2026-05-29",
       "language": "zh",
       "source_channel": "aggregator",
       "source_language": "zh",
-      "selection_reason": "该聚合信息反映国内云厂商把云服务 Agent 化的趋势，适合跟踪企业 AI 工作流基础设施。",
+      "selection_reason": "聚合平台提供中文综合信息源，可快速捕捉模型能力、价格和开发者生产力变化，服务 AI 行业趋势分析与信息快速理解。",
       "collected_at": "2026-06-02"
     },
     {
-      "title": "Claude Opus 4.8",
-      "summary": "Hacker News 社区围绕 Anthropic 发布 Claude Opus 4.8 展开讨论，关注新模型能力、开发者体验和企业使用价值。",
-      "source": "Hacker News",
-      "url": "https://news.ycombinator.com/item?id=48311647",
-      "published_at": "2026-05-28",
+      "title": "Anthropic releases Claude Opus 4.8 with improved agentic reasoning, honesty, and a new \"dynamic workflows\" feature in Claude Code",
+      "summary": "Reddit r/ClaudeCode 用户围绕 Claude Opus 4.8 的 agentic reasoning、honesty、dynamic workflows 和 Claude Code 使用体验展开讨论。",
+      "source": "Reddit r/ClaudeCode",
+      "url": "https://www.reddit.com/r/ClaudeCode/comments/1tq9pcg/anthropic_releases_claude_opus_48_with_improved/",
+      "published_at": "2026-06-03",
       "language": "en",
       "source_channel": "social_media",
       "source_language": "en",
-      "selection_reason": "社区讨论可作为开发者舆情信号，帮助识别新模型发布后的采用意愿、疑虑和决策辅助价值。",
-      "collected_at": "2026-06-02"
+      "selection_reason": "社交/社区渠道提供英文舆论讨论热点，可捕捉 Claude Code 用户对新模型能力、工作流功能和可靠性的直接反馈，服务舆情监测、风险预警与决策辅助。",
+      "collected_at": "2026-06-03"
     },
     {
-      "title": "Ask HN: Is Claude Opus 4.8 broken?",
-      "summary": "Hacker News 用户以 Ask HN 形式讨论 Claude Opus 4.8 的体验异常、可靠性和使用反馈，反映模型升级后的社区风险感知。",
-      "source": "Hacker News",
-      "url": "https://news.ycombinator.com/item?id=48316636",
-      "published_at": "2026-05-28",
+      "title": "Opus 4.8 testing: big step up on agentic/multi-step work, but it regressed on some one-shot generation vs 4.7",
+      "summary": "Reddit r/ArtificialInteligence 用户分享 Claude Opus 4.8 与 4.7 的对比测试，认为其多步骤 agentic coding 提升明显，但部分一次性生成任务可能退步。",
+      "source": "Reddit r/ArtificialInteligence",
+      "url": "https://www.reddit.com/r/ArtificialInteligence/comments/1tqd1fl/opus_48_testing_big_step_up_on_agenticmultistep/",
+      "published_at": "2026-06-03",
       "language": "en",
       "source_channel": "social_media",
       "source_language": "en",
-      "selection_reason": "该讨论体现模型更新后的用户舆情与可靠性风险，可用于舆情监测与风险预警。",
-      "collected_at": "2026-06-02"
+      "selection_reason": "社交/社区渠道提供实测反馈型舆论讨论热点，可观察模型升级在长任务和一次性生成任务中的体验分化，服务舆情监测、风险预警与模型选型决策辅助。",
+      "collected_at": "2026-06-03"
     },
     {
       "title": "antigravity 变成了 codex 的模样， 3.5 更新",
@@ -183,7 +183,7 @@
       "language": "zh",
       "source_channel": "social_media",
       "source_language": "zh",
-      "selection_reason": "社区反馈能补充官方与媒体报道，揭示 AI 编程工具在真实用户环境中的体验问题和舆情风险。",
+      "selection_reason": "社交/社区渠道提供中文舆论讨论热点，可补充官方与媒体报道，揭示 AI 编程工具在真实用户环境中的体验问题和舆情风险。",
       "collected_at": "2026-06-02"
     },
     {
@@ -195,7 +195,7 @@
       "language": "zh",
       "source_channel": "social_media",
       "source_language": "zh",
-      "selection_reason": "该社区信息可用于观察 AI coding 工具的付费压力、采购合规和个人用户成本敏感度，适合舆情监测与风险预警。",
+      "selection_reason": "社交/社区渠道提供中文舆论讨论热点，可观察 AI coding 工具付费压力、采购合规和个人用户成本敏感度，适合舆情监测、风险预警与决策辅助。",
       "collected_at": "2026-06-02"
     }
   ]

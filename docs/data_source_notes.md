@@ -31,14 +31,14 @@ Phase 8.1 adds `data/raw/mixed_channel_ai_news_sample.json` as the final showcas
 - 舆情监测与风险预警
 - 信息快速理解与决策辅助
 
-The mixed sample includes English and Chinese sources across four channels:
+The mixed sample directly follows the assignment's "Data Acquisition" guidance and maps records to the four suggested source types. It includes English and Chinese sources across all four channels:
 
-| source_channel | Purpose |
-|---|---|
-| `official` | Company or product announcements used as primary source evidence. |
-| `tech_media` | News coverage that adds reporting context and external framing. |
-| `aggregator` | News aggregation or digest pages that show how events are summarized for fast scanning. |
-| `social_media` | Public community discussions that expose user sentiment, cost concerns, adoption friction, or risk signals. |
+| Assignment source type | source_channel | Example sources in the mixed sample | Purpose |
+|---|---|---|---|
+| 官方渠道 | `official` | OpenAI, Anthropic, Tencent, ERNIE Blog | Company or product announcements used to confirm technical release facts and publication timing. |
+| 科技媒体 | `tech_media` | AP News, TechCrunch, IT之家 | Industry coverage that adds reporting context and external framing. |
+| 聚合平台 | `aggregator` | Hacker News, Techmeme Ride Home, AIbase | Aggregation or digest pages that show cross-source visibility and help fast scanning. |
+| 社交媒体/社区 | `social_media` | Reddit, V2EX | Public community discussions that expose user sentiment, cost concerns, adoption friction, or risk signals. |
 
 Every mixed sample record keeps:
 
@@ -50,11 +50,11 @@ Every mixed sample record keeps:
 - `selection_reason`
 - `collected_at`
 
-`selection_reason` explains why the event matters for trend analysis, public-opinion monitoring, risk warning, or decision support. These provenance fields are raw input metadata. They are not generated or overwritten by the LLM.
+`selection_reason` explains why the source type matters for AI industry trend analysis, public-opinion monitoring and risk warning, or fast decision support. Official sources are used for technical release facts, tech media for industry reporting, aggregators for comprehensive information flow, and social/community sources for discussion hotspots. These provenance fields are raw input metadata. They are not generated or overwritten by the LLM.
 
 The mixed sample is still a static product demo fixture. It does not claim to be a full real-time public-opinion collection system, and tests do not fetch live websites.
 
-During Phase 8.1 source review, most mixed sample URLs were checked with `curl -L --head` or GET fallback. Some public community or official sites may reject automated curl requests even when the URL is a real public page. For example, OpenAI can return a Cloudflare challenge response, Hacker News rejects HEAD but serves GET/API checks, and V2EX reset curl connections from the local environment. These cases are treated as verification limitations and are not used as proof of source content beyond the recorded public URL and title/path review.
+During Phase 8.1 source review, most mixed sample URLs were checked with `curl -L --head` or GET fallback. Some public community or official sites may reject automated curl requests even when the URL is a real public page. For example, OpenAI can return a Cloudflare challenge response, Hacker News rejects HEAD but serves GET/API checks, and Reddit or V2EX can block or reset curl connections from the local environment. These cases are treated as verification limitations and are not used as proof of source content beyond the recorded public URL and title/path review.
 
 ## Avoiding Hallucinated Sources
 

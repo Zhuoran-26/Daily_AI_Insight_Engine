@@ -5,7 +5,7 @@
 | GitHub 提交 | 项目已整理为可提交仓库，包含代码、数据、文档、输出样例和演示入口。 | `git log --oneline` / GitHub 仓库 | 是 |
 | 10-20 条 AI 信息输入 | 真实样例包含 13 条近期 AI 行业信息；mixed showcase 样例包含 16 条近期中英混合 AI 信息。 | `data/raw/real_ai_news_sample.json` / `data/raw/mixed_channel_ai_news_sample.json` | 是 |
 | 原始数据字段 | 每条 raw item 保留 `title`、`summary`、`source`、`url`、`published_at`、`language`；mixed sample 额外保留 `source_channel`、`source_language`、`selection_reason`、`collected_at`。 | `data/raw/mixed_channel_ai_news_sample.json` | 是 |
-| 多渠道数据设计 | mixed sample 覆盖官方渠道、科技媒体、聚合平台、社交媒体/社区平台，每种渠道都包含英文和中文来源。 | `data/raw/mixed_channel_ai_news_sample.json` / `tests/test_mixed_sample_data.py` | 是 |
+| 多渠道数据设计 | mixed sample 直接对应笔试题“三、数据获取”的官方渠道、科技媒体、聚合平台、社交媒体/社区平台四类参考方向，每种渠道都包含英文和中文来源。 | `data/raw/mixed_channel_ai_news_sample.json` / `tests/test_mixed_sample_data.py` | 是 |
 | 数据事件选择理由 | mixed sample 每条记录都有 `selection_reason`，说明其对趋势分析、舆情监测、风险预警或决策辅助的价值。 | `data/raw/mixed_channel_ai_news_sample.json` | 是 |
 | 发布日期追溯 | mixed sample 每条记录都有 `published_at`，结构化事件也保留发布日期用于追溯。 | `data/raw/mixed_channel_ai_news_sample.json` / `src/daily_ai_insight/models.py` | 是 |
 | 数据来源说明 | 说明 synthetic fixture 与 real-world sample 的用途、来源类型和防幻觉策略。 | `docs/data_source_notes.md` | 是 |
@@ -35,6 +35,8 @@
 Schema 层保持英文 key、英文 category enum 和固定 extractor name，是为了保证工程稳定、自动化测试和 Evaluation Harness 可复现。
 
 mixed sample 中的 provenance 字段来自 raw input，不允许 LLM 编造或覆盖。行业风险/机会应服务 AI 行业趋势、舆情监测与业务决策，不应把系统置信度或测试风险误写成行业风险。
+
+mixed sample 的来源设计与题目数据获取参考方向保持一致：官方渠道用于确认技术发布信息，科技媒体用于行业动态报道，聚合平台用于综合信息流和跨来源热度观察，社交媒体/社区用于舆论讨论热点。样本采用中英混合来源，例如 OpenAI、Anthropic、Tencent、ERNIE Blog、TechCrunch、IT之家、Hacker News、AIbase、Reddit 和 V2EX。
 
 ## 无 API Key 验收命令
 

@@ -40,9 +40,9 @@
     "reason": "该报道聚焦文心大模型 5.1 的模型能力、训练成本和榜单表现。"
   },
   {
-    "title": "OpenAI Models Land on Amazon Bedrock",
+    "title": "GPT-5.5 and Codex are now GA on Amazon Bedrock",
     "expected_category": "infrastructure",
-    "reason": "该聚合信息强调 OpenAI models 在 Amazon Bedrock 上可用，重点是云平台与企业部署基础设施。"
+    "reason": "该聚合信息强调 OpenAI models 和 Codex 在 Amazon Bedrock GA，重点是云平台与企业部署基础设施。"
   },
   {
     "title": "New Claude, New Realities",
@@ -50,24 +50,24 @@
     "reason": "该日更摘要围绕 Claude Opus 4.8 和相关模型生态变化展开，核心信号仍是模型能力更新。"
   },
   {
-    "title": "Claude Opus 4.8 发布：Agent 能力再升级，引入动态工作流",
-    "expected_category": "agent",
-    "reason": "该中文聚合信息重点强调 Agent 能力、动态工作流和开发者调用方式。"
+    "title": "重磅联手！OpenAI 尖端模型与 Codex 正式登陆 AWS，企业级 AI 落地再提速",
+    "expected_category": "infrastructure",
+    "reason": "该中文聚合信息强调 OpenAI 模型和 Codex 进入 AWS 云平台，主要体现云基础设施和企业级 AI 部署。"
   },
   {
-    "title": "阿里 Qoder 推出 Cloud Agents：企业 Agent 上线从一个月压缩到一天",
-    "expected_category": "agent",
-    "reason": "该信息直接围绕 Cloud Agents、企业 Agent 上线流程和 Agent 云服务展开。"
-  },
-  {
-    "title": "Claude Opus 4.8",
+    "title": "吊打GPT-5.5！Claude Opus 4.8 上线 价格暴降三分之二",
     "expected_category": "model",
-    "reason": "该社区讨论围绕 Anthropic 发布 Claude Opus 4.8 及其模型能力、体验和采用价值展开。"
+    "reason": "该中文聚合信息聚焦 Claude Opus 4.8 模型能力、速度和成本变化。"
   },
   {
-    "title": "Ask HN: Is Claude Opus 4.8 broken?",
+    "title": "Anthropic releases Claude Opus 4.8 with improved agentic reasoning, honesty, and a new \"dynamic workflows\" feature in Claude Code",
     "expected_category": "model",
-    "reason": "该社区讨论关注 Claude Opus 4.8 模型升级后的可靠性和用户体验反馈。"
+    "reason": "该社区讨论围绕 Claude Opus 4.8 的 agentic reasoning、honesty、dynamic workflows 和模型能力展开。"
+  },
+  {
+    "title": "Opus 4.8 testing: big step up on agentic/multi-step work, but it regressed on some one-shot generation vs 4.7",
+    "expected_category": "model",
+    "reason": "该社区讨论关注 Claude Opus 4.8 在 agentic coding、多步骤任务和一次性生成任务中的模型表现。"
   },
   {
     "title": "antigravity 变成了 codex 的模样， 3.5 更新",
