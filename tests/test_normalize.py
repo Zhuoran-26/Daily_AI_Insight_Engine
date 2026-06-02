@@ -72,3 +72,12 @@ def test_language_defaults_unknown(tmp_path):
     items = load_raw_news(path)
 
     assert items[0].language == "unknown"
+
+
+def test_missing_optional_provenance_defaults_to_none():
+    items = load_raw_news(SAMPLE_PATH)
+
+    assert items[0].source_channel is None
+    assert items[0].source_language is None
+    assert items[0].selection_reason is None
+    assert items[0].collected_at is None

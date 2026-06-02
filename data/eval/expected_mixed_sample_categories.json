@@ -1,0 +1,82 @@
+[
+  {
+    "title": "OpenAI frontier models and Codex are now available on AWS",
+    "expected_category": "infrastructure",
+    "reason": "该事件重点是 OpenAI 模型和 Codex 进入 AWS 云平台，主要体现企业部署、云基础设施和治理路径。"
+  },
+  {
+    "title": "Introducing Claude Opus 4.8",
+    "expected_category": "model",
+    "reason": "该事件核心是 Anthropic 发布新的 Claude Opus 4.8 model，并伴随能力与可靠性更新。"
+  },
+  {
+    "title": "腾讯面向全球市场推出全新AI工具及企业解决方案",
+    "expected_category": "application",
+    "reason": "该事件聚焦 WorkBuddy、Miora、TokenHub 等面向企业和创作者的 AI 产品与解决方案。"
+  },
+  {
+    "title": "文心 5.1 正式发布！多榜登顶，模型\"写得好更懂你\"",
+    "expected_category": "model",
+    "reason": "该事件核心是百度发布文心 5.1 基础模型并说明性能、训练和 Agent 能力提升。"
+  },
+  {
+    "title": "Anthropic races toward a Wall Street debut with a confidential SEC filing",
+    "expected_category": "application",
+    "reason": "该报道关注 Anthropic 商业化、资本市场和企业落地价值，属于 AI 公司应用生态与商业进展信号。"
+  },
+  {
+    "title": "Anthropic releases Opus 4.8 with new ‘dynamic workflow’ tool",
+    "expected_category": "agent",
+    "reason": "该报道虽然涉及模型发布，但重点强调 dynamic workflow、agent swarms 和 coding agent 工作流。"
+  },
+  {
+    "title": "Claude Opus 4.8 上线：提升 AI 编程可靠性，减少无依据结论",
+    "expected_category": "model",
+    "reason": "该报道主要讨论 Claude Opus 4.8 模型能力、可靠性和编程表现。"
+  },
+  {
+    "title": "百度发布文心大模型 5.1：搜索能力位居国内首位，预训练成本仅为业界 6%",
+    "expected_category": "model",
+    "reason": "该报道聚焦文心大模型 5.1 的模型能力、训练成本和榜单表现。"
+  },
+  {
+    "title": "OpenAI Models Land on Amazon Bedrock",
+    "expected_category": "infrastructure",
+    "reason": "该聚合信息强调 OpenAI models 在 Amazon Bedrock 上可用，重点是云平台与企业部署基础设施。"
+  },
+  {
+    "title": "New Claude, New Realities",
+    "expected_category": "model",
+    "reason": "该日更摘要围绕 Claude Opus 4.8 和相关模型生态变化展开，核心信号仍是模型能力更新。"
+  },
+  {
+    "title": "Claude Opus 4.8 发布：Agent 能力再升级，引入动态工作流",
+    "expected_category": "agent",
+    "reason": "该中文聚合信息重点强调 Agent 能力、动态工作流和开发者调用方式。"
+  },
+  {
+    "title": "阿里 Qoder 推出 Cloud Agents：企业 Agent 上线从一个月压缩到一天",
+    "expected_category": "agent",
+    "reason": "该信息直接围绕 Cloud Agents、企业 Agent 上线流程和 Agent 云服务展开。"
+  },
+  {
+    "title": "Claude Opus 4.8",
+    "expected_category": "model",
+    "reason": "该社区讨论围绕 Anthropic 发布 Claude Opus 4.8 及其模型能力、体验和采用价值展开。"
+  },
+  {
+    "title": "Ask HN: Is Claude Opus 4.8 broken?",
+    "expected_category": "model",
+    "reason": "该社区讨论关注 Claude Opus 4.8 模型升级后的可靠性和用户体验反馈。"
+  },
+  {
+    "title": "antigravity 变成了 codex 的模样， 3.5 更新",
+    "expected_category": "agent",
+    "reason": "该社区讨论聚焦 Antigravity、Codex 形态和 Gemini 3.5 Flash 对 AI coding agent 工具的影响。"
+  },
+  {
+    "title": "求 codex、claude code 订阅账单每月$200 的，或者国内 coding 订阅，有偿",
+    "expected_category": "application",
+    "reason": "该社区信息体现 AI coding 产品订阅、采购和成本问题，更接近应用与产品使用侧信号。"
+  }
+]

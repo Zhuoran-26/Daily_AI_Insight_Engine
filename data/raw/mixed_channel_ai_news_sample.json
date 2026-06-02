@@ -1,0 +1,202 @@
+{
+  "metadata": {
+    "note": "Phase 8.1 mixed English/Chinese multi-channel AI news sample. Records were manually curated from public, traceable pages and are intended for deterministic local demonstration, not live crawling.",
+    "curated_at": "2026-06-02",
+    "source_policy": "Only include public pages with a traceable URL and an explicit or clearly inferable publication date. Do not invent news, URLs, provenance fields, or source metadata.",
+    "channel_policy": "Each source_channel covers both en and zh sources: official, tech_media, aggregator, and social_media."
+  },
+  "items": [
+    {
+      "title": "OpenAI frontier models and Codex are now available on AWS",
+      "summary": "OpenAI 宣布 frontier models 和 Codex 已在 AWS 上可用，企业可通过既有安全、合规、采购和治理流程把 OpenAI 能力部署到生产环境。",
+      "source": "OpenAI",
+      "url": "https://openai.com/index/openai-frontier-models-and-codex-are-now-available-on-aws/",
+      "published_at": "2026-06-01",
+      "language": "en",
+      "source_channel": "official",
+      "source_language": "en",
+      "selection_reason": "该事件直接反映 frontier model 进入主流云基础设施，对企业 AI 部署、治理与采购决策有参考价值。",
+      "collected_at": "2026-06-02"
+    },
+    {
+      "title": "Introducing Claude Opus 4.8",
+      "summary": "Anthropic 发布 Claude Opus 4.8，强调 coding、agentic skills、动态工作流、effort control 和更少无依据结论，面向企业级长任务协作。",
+      "source": "Anthropic",
+      "url": "https://www.anthropic.com/news/claude-opus-4-8",
+      "published_at": "2026-05-28",
+      "language": "en",
+      "source_channel": "official",
+      "source_language": "en",
+      "selection_reason": "新旗舰 model 及 agent 工作流能力会影响开发者工具、企业自动化和模型选型判断，适合 AI 行业趋势分析与决策辅助。",
+      "collected_at": "2026-06-02"
+    },
+    {
+      "title": "腾讯面向全球市场推出全新AI工具及企业解决方案",
+      "summary": "腾讯在 Tencent Cloud Day Hong Kong 发布 WorkBuddy 国际版、Miora 国际版和 TokenHub，并强调 Agent Runtime、模型服务和企业 AI 落地能力。",
+      "source": "Tencent 腾讯",
+      "url": "https://www.tencent.com/zh-cn/articles/2202341.html",
+      "published_at": "2026-05-28",
+      "language": "zh",
+      "source_channel": "official",
+      "source_language": "zh",
+      "selection_reason": "该事件体现中国厂商将 AI agent、创意工具和 MaaS 平台推向全球市场，适合观察应用出海与企业采用趋势。",
+      "collected_at": "2026-06-02"
+    },
+    {
+      "title": "文心 5.1 正式发布！多榜登顶，模型\"写得好更懂你\"",
+      "summary": "百度发布文心 5.1 model，强调多维弹性预训练、训练成本下降、Search Arena 表现和 Agent 能力提升。",
+      "source": "ERNIE Blog",
+      "url": "https://ernie.baidu.com/blog/zh/posts/ernie-5.1-0508-release/",
+      "published_at": "2026-05-09",
+      "language": "zh",
+      "source_channel": "official",
+      "source_language": "zh",
+      "selection_reason": "该事件代表中文基础模型的性能、成本和 Agent 能力进展，可用于 AI 行业趋势分析和国产模型竞争力判断。",
+      "collected_at": "2026-06-02"
+    },
+    {
+      "title": "Anthropic races toward a Wall Street debut with a confidential SEC filing",
+      "summary": "AP 报道 Anthropic 已向 SEC 提交保密 IPO 文件，市场关注其高估值、Claude 商业化和 AI 公司公开上市节奏。",
+      "source": "AP News",
+      "url": "https://apnews.com/article/anthropic-ai-claude-ipo-572bb6cc12053c7aa95f775285cf4b73",
+      "published_at": "2026-06-01",
+      "language": "en",
+      "source_channel": "tech_media",
+      "source_language": "en",
+      "selection_reason": "该报道是 AI 资本市场与商业化信号，有助于判断 AI 行业资金热度、泡沫风险和上市窗口。",
+      "collected_at": "2026-06-02"
+    },
+    {
+      "title": "Anthropic releases Opus 4.8 with new ‘dynamic workflow’ tool",
+      "summary": "TechCrunch 报道 Claude Opus 4.8 发布及 dynamic workflow 工具，重点关注 agent swarms、编码任务和 Mythos 预览后的安全边界。",
+      "source": "TechCrunch",
+      "url": "https://techcrunch.com/2026/05/28/anthropic-releases-opus-4-8-with-new-dynamic-workflow-tool/",
+      "published_at": "2026-05-28",
+      "language": "en",
+      "source_channel": "tech_media",
+      "source_language": "en",
+      "selection_reason": "媒体报道补充了官方发布以外的竞争压力、产品节奏和安全讨论，适合风险预警与行业解读。",
+      "collected_at": "2026-06-02"
+    },
+    {
+      "title": "Claude Opus 4.8 上线：提升 AI 编程可靠性，减少无依据结论",
+      "summary": "IT之家报道 Claude Opus 4.8 上线，主打更强的 AI coding、agent 推理、知识工作和更主动的不确定性提示。",
+      "source": "IT之家",
+      "url": "https://www.ithome.com/0/956/827.htm",
+      "published_at": "2026-05-29",
+      "language": "zh",
+      "source_channel": "tech_media",
+      "source_language": "zh",
+      "selection_reason": "中文科技媒体视角可帮助观察国内开发者如何理解海外模型的编程可靠性与 agent 能力，支持 AI 行业趋势分析和决策辅助。",
+      "collected_at": "2026-06-02"
+    },
+    {
+      "title": "百度发布文心大模型 5.1：搜索能力位居国内首位，预训练成本仅为业界 6%",
+      "summary": "IT之家报道百度文心 5.1 model 发布，提到搜索能力排名、预训练成本下降以及 Agent 能力表现。",
+      "source": "IT之家",
+      "url": "https://www.ithome.com/0/948/079.htm",
+      "published_at": "2026-05-09",
+      "language": "zh",
+      "source_channel": "tech_media",
+      "source_language": "zh",
+      "selection_reason": "该报道提供中文媒体对国产基础模型效率与能力提升的归纳，便于与官方口径交叉对照并服务 AI 行业趋势分析。",
+      "collected_at": "2026-06-02"
+    },
+    {
+      "title": "OpenAI Models Land on Amazon Bedrock",
+      "summary": "Blockchain.News 的 AI News Detail 汇总 OpenAI models 与 Codex 登陆 Amazon Bedrock，强调企业通过 AWS 安全与治理体系采用 AI 的路径。",
+      "source": "Blockchain.News AI News",
+      "url": "https://blockchain.news/ainews/openai-models-land-on-amazon-bedrock",
+      "published_at": "2026-06-01",
+      "language": "en",
+      "source_channel": "aggregator",
+      "source_language": "en",
+      "selection_reason": "聚合平台把官方发布转化为面向决策者的要点摘要，可用于验证同一事件在不同信息渠道中的传播重点。",
+      "collected_at": "2026-06-02"
+    },
+    {
+      "title": "New Claude, New Realities",
+      "summary": "Tech Brew Ride Home 汇总 Anthropic Opus 4.8、融资估值、Amazon AI 使用榜单和数据采集创业公司等 AI 行业动态。",
+      "source": "Techmeme Ride Home",
+      "url": "https://www.podpage.com/network/ride-home/show/techmeme-ride-home/new-claude-new-realities/",
+      "published_at": "2026-05-29",
+      "language": "en",
+      "source_channel": "aggregator",
+      "source_language": "en",
+      "selection_reason": "日更型科技摘要能体现多事件组合后的行业热点，适合快速理解和决策辅助。",
+      "collected_at": "2026-06-02"
+    },
+    {
+      "title": "Claude Opus 4.8 发布：Agent 能力再升级，引入动态工作流",
+      "summary": "OpenAI Hub 聚合 Claude Opus 4.8 发布信息，强调 dynamic workflows、agent 能力、Fast Mode 和国内开发者调用路径。",
+      "source": "OpenAI Hub",
+      "url": "https://www.openai-hub.com/news/532/",
+      "published_at": "2026-05-28",
+      "language": "zh",
+      "source_channel": "aggregator",
+      "source_language": "zh",
+      "selection_reason": "中文聚合平台展示了海外模型发布在国内开发者生态中的传播和使用关注点，适合舆情监测与决策辅助。",
+      "collected_at": "2026-06-02"
+    },
+    {
+      "title": "阿里 Qoder 推出 Cloud Agents：企业 Agent 上线从一个月压缩到一天",
+      "summary": "OpenAI Hub 聚合阿里 Qoder Cloud Agents 信息，称其将 agent 底座、model 服务和运行环境打包为可 API 调用的云服务。",
+      "source": "OpenAI Hub",
+      "url": "https://www.openai-hub.com/news/524/",
+      "published_at": "2026-05-28",
+      "language": "zh",
+      "source_channel": "aggregator",
+      "source_language": "zh",
+      "selection_reason": "该聚合信息反映国内云厂商把云服务 Agent 化的趋势，适合跟踪企业 AI 工作流基础设施。",
+      "collected_at": "2026-06-02"
+    },
+    {
+      "title": "Claude Opus 4.8",
+      "summary": "Hacker News 社区围绕 Anthropic 发布 Claude Opus 4.8 展开讨论，关注新模型能力、开发者体验和企业使用价值。",
+      "source": "Hacker News",
+      "url": "https://news.ycombinator.com/item?id=48311647",
+      "published_at": "2026-05-28",
+      "language": "en",
+      "source_channel": "social_media",
+      "source_language": "en",
+      "selection_reason": "社区讨论可作为开发者舆情信号，帮助识别新模型发布后的采用意愿、疑虑和决策辅助价值。",
+      "collected_at": "2026-06-02"
+    },
+    {
+      "title": "Ask HN: Is Claude Opus 4.8 broken?",
+      "summary": "Hacker News 用户以 Ask HN 形式讨论 Claude Opus 4.8 的体验异常、可靠性和使用反馈，反映模型升级后的社区风险感知。",
+      "source": "Hacker News",
+      "url": "https://news.ycombinator.com/item?id=48316636",
+      "published_at": "2026-05-28",
+      "language": "en",
+      "source_channel": "social_media",
+      "source_language": "en",
+      "selection_reason": "该讨论体现模型更新后的用户舆情与可靠性风险，可用于舆情监测与风险预警。",
+      "collected_at": "2026-06-02"
+    },
+    {
+      "title": "antigravity 变成了 codex 的模样， 3.5 更新",
+      "summary": "V2EX 用户讨论 Google Antigravity 更新后的产品形态、Gemini 3.5 Flash 接入、IDE 拆分和配额体验，是 agent coding 工具的社区反馈。",
+      "source": "V2EX",
+      "url": "https://www.v2ex.com/t/1214011",
+      "published_at": "2026-05-20",
+      "language": "zh",
+      "source_channel": "social_media",
+      "source_language": "zh",
+      "selection_reason": "社区反馈能补充官方与媒体报道，揭示 AI 编程工具在真实用户环境中的体验问题和舆情风险。",
+      "collected_at": "2026-06-02"
+    },
+    {
+      "title": "求 codex、claude code 订阅账单每月$200 的，或者国内 coding 订阅，有偿",
+      "summary": "V2EX 帖子围绕 Codex、Claude Code 与国内 coding 订阅账单展开，反映 AI 编程工具订阅成本和报销需求的社区侧信号。",
+      "source": "V2EX",
+      "url": "https://www.v2ex.com/t/1216212",
+      "published_at": "2026-05-28",
+      "language": "zh",
+      "source_channel": "social_media",
+      "source_language": "zh",
+      "selection_reason": "该社区信息可用于观察 AI coding 工具的付费压力、采购合规和个人用户成本敏感度，适合舆情监测与风险预警。",
+      "collected_at": "2026-06-02"
+    }
+  ]
+}

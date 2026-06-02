@@ -10,6 +10,12 @@ from daily_ai_insight.errors import ValidationError
 from daily_ai_insight.models import RawNewsItem
 
 RAW_FIELDS = ("title", "summary", "source", "url", "published_at", "language")
+PROVENANCE_FIELDS = (
+    "source_channel",
+    "source_language",
+    "selection_reason",
+    "collected_at",
+)
 
 
 def _clean_string(value: Any) -> str:
@@ -41,6 +47,12 @@ def load_raw_news(path: str | Path) -> list[RawNewsItem]:
             raise ValidationError("Each raw news record must be an object")
 
         cleaned = {field: _clean_string(record.get(field, "")) for field in RAW_FIELDS}
+        cleaned.update(
+            {
+                field: _clean_string(record.get(field)) or None
+                for field in PROVENANCE_FIELDS
+            }
+        )
         if not cleaned["title"] or not cleaned["summary"]:
             continue
         if not cleaned["language"]:

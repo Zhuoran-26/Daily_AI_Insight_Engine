@@ -165,8 +165,21 @@ python3 -m daily_ai_insight.cli review --evaluation outputs/llm_evaluation_summa
 
 - `data/raw/sample_ai_news.json`：synthetic fixture，用于稳定测试和回归验证。
 - `data/raw/real_ai_news_sample.json`：real-world sample，用于展示真实来源、真实 URL 和实际 pipeline 效果。
+- `data/raw/mixed_channel_ai_news_sample.json`：Phase 8.1 中英混合、多渠道展示样例，覆盖官方渠道、科技媒体、聚合平台和社交媒体/社区平台。
 
-所有真实样例都必须保留 `source` 和 `url`。Harness 会阻止缺失来源、虚构 URL、低置信度或无法追溯的结构化事件进入最终报告。
+所有真实样例都必须保留 `source`、`url` 和 `published_at`。mixed sample 进一步保留 `source_channel`、`source_language`、`selection_reason` 和 `collected_at`，用于说明来源渠道、来源语言、事件选择理由和样本整理时间。
+
+mixed sample 是最终展示用的静态样例数据，目标是贴合 AI 行业趋势分析、舆情监测与风险预警、信息快速理解与决策辅助。它不代表完整实时舆情采集系统，也不会在测试中访问网络。
+
+数据约束：
+
+- 不编造新闻和 URL。
+- 发布日期、来源渠道、来源语言和选择理由来自 raw input，不由 LLM 生成。
+- 英文来源可以输入系统；面向用户的分析输出应为中文。
+- Schema key、category enum 和 extractor 参数保持英文，保证 Evaluation Harness 可复现。
+- 行业风险/机会分析应围绕 AI 行业和业务决策，不应把系统可信度风险误写成行业风险。
+
+Harness 会阻止缺失来源、虚构 URL、低置信度或无法追溯的结构化事件进入最终报告。
 
 ## 跨语言产品体验
 
@@ -240,6 +253,16 @@ python3 -m daily_ai_insight.cli evaluate \
   --expected data/eval/expected_real_sample_categories.json \
   --extractor rule \
   --output-prefix rule
+```
+
+运行中英混合多渠道样例评估：
+
+```bash
+python3 -m daily_ai_insight.cli evaluate \
+  --input data/raw/mixed_channel_ai_news_sample.json \
+  --expected data/eval/expected_mixed_sample_categories.json \
+  --extractor rule \
+  --output-prefix mixed_rule
 ```
 
 运行 LLM 评估：

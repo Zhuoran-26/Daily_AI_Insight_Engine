@@ -9,11 +9,12 @@ python3 -m pip install -e .
 python3 -m pytest
 python3 -m daily_ai_insight.cli run --input data/raw/real_ai_news_sample.json --extractor rule
 python3 -m daily_ai_insight.cli evaluate --input data/raw/real_ai_news_sample.json --expected data/eval/expected_real_sample_categories.json --extractor rule --output-prefix rule
+python3 -m daily_ai_insight.cli evaluate --input data/raw/mixed_channel_ai_news_sample.json --expected data/eval/expected_mixed_sample_categories.json --extractor rule --output-prefix mixed_rule
 python3 -m daily_ai_insight.cli review --evaluation outputs/llm_evaluation_summary.json --baseline outputs/rule_evaluation_summary.json
 streamlit run app.py
 ```
 
-这条路径验证 deterministic baseline、harnessed pipeline、evaluation、reviewer 和产品 Demo UI，不需要真实 API key。
+这条路径验证 deterministic baseline、harnessed pipeline、real sample evaluation、mixed-channel sample evaluation、reviewer 和产品 Demo UI，不需要真实 API key。
 
 ## 使用 DeepSeek 的最终验收路径
 
@@ -49,6 +50,18 @@ real_ai_news_sample.json
 ```
 
 确认 UI 显示有效的原始新闻数量。
+
+Phase 8.1 的中英混合多渠道样例也可以通过 CLI 验证：
+
+```bash
+python3 -m daily_ai_insight.cli evaluate \
+  --input data/raw/mixed_channel_ai_news_sample.json \
+  --expected data/eval/expected_mixed_sample_categories.json \
+  --extractor rule \
+  --output-prefix mixed_rule
+```
+
+该样例用于展示官方渠道、科技媒体、聚合平台、社交媒体/社区平台的中英混合覆盖。每条记录都保留来源、URL、发布日期、来源渠道、来源语言、选择理由和采集时间；它是产品演示静态样例，不代表完整实时舆情采集系统。
 
 ## 4. 选择抽取模式
 
@@ -137,6 +150,9 @@ Reviewer 可以使用当前 evaluation 结果，也可以使用已保存的 show
 - 运行后日报 section 使用中文，包括 `今日主要热点`、`分类分布`、`关键结论`、`趋势信号`、`风险与机会`、`方法说明`。
 - 输入英文新闻时，原始 title/source/url 保持原样，系统生成的分析内容面向中文用户。
 - 技术名和 source/url 保持原样，例如 OpenAI、DeepSeek、LLM、Agent、GPU。
+- mixed sample 中的英文来源可以输入系统，但面向用户的分析输出应为中文。
+- mixed sample 的 provenance 字段来自 raw input，不允许 LLM 编造或覆盖。
+- 风险/机会描述应围绕 AI 行业趋势、舆情监测与决策辅助，不应把系统可信度风险误写成行业风险。
 
 ## 10. 可选 DeepSeek / OpenAI-compatible Demo
 

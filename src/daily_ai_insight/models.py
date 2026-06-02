@@ -12,6 +12,10 @@ class RawNewsItem(BaseModel):
     url: str
     published_at: str
     language: str
+    source_channel: str | None = None
+    source_language: str | None = None
+    selection_reason: str | None = None
+    collected_at: str | None = None
 
     @field_validator("title", "summary", "source", "url")
     @classmethod
@@ -26,6 +30,20 @@ class RawNewsItem(BaseModel):
         if not value or not value.strip():
             return "unknown"
         return value.strip()
+
+    @field_validator(
+        "source_channel",
+        "source_language",
+        "selection_reason",
+        "collected_at",
+        mode="before",
+    )
+    @classmethod
+    def empty_optional_provenance_to_none(cls, value: object) -> str | None:
+        if value is None:
+            return None
+        cleaned = str(value).strip()
+        return cleaned or None
 
 
 class StructuredAIEvent(BaseModel):

@@ -23,6 +23,39 @@ The current real-world sample uses public sources from:
 
 These sources were chosen because they are traceable, stable enough for a local fixture, and closely aligned with the assignment's AI industry monitoring goal.
 
+## Phase 8.1 Mixed-channel Sample
+
+Phase 8.1 adds `data/raw/mixed_channel_ai_news_sample.json` as the final showcase-oriented sample. It is manually curated from recent public AI information and is designed to better match the assignment scenarios:
+
+- AI 行业趋势分析
+- 舆情监测与风险预警
+- 信息快速理解与决策辅助
+
+The mixed sample includes English and Chinese sources across four channels:
+
+| source_channel | Purpose |
+|---|---|
+| `official` | Company or product announcements used as primary source evidence. |
+| `tech_media` | News coverage that adds reporting context and external framing. |
+| `aggregator` | News aggregation or digest pages that show how events are summarized for fast scanning. |
+| `social_media` | Public community discussions that expose user sentiment, cost concerns, adoption friction, or risk signals. |
+
+Every mixed sample record keeps:
+
+- `source`
+- `url`
+- `published_at`
+- `source_channel`
+- `source_language`
+- `selection_reason`
+- `collected_at`
+
+`selection_reason` explains why the event matters for trend analysis, public-opinion monitoring, risk warning, or decision support. These provenance fields are raw input metadata. They are not generated or overwritten by the LLM.
+
+The mixed sample is still a static product demo fixture. It does not claim to be a full real-time public-opinion collection system, and tests do not fetch live websites.
+
+During Phase 8.1 source review, most mixed sample URLs were checked with `curl -L --head` or GET fallback. Some public community or official sites may reject automated curl requests even when the URL is a real public page. For example, OpenAI can return a Cloudflare challenge response, Hacker News rejects HEAD but serves GET/API checks, and V2EX reset curl connections from the local environment. These cases are treated as verification limitations and are not used as proof of source content beyond the recorded public URL and title/path review.
+
 ## Avoiding Hallucinated Sources
 
 The project avoids hallucinated sources by requiring every real sample record to include:
@@ -34,7 +67,16 @@ The project avoids hallucinated sources by requiring every real sample record to
 - `published_at`
 - `language`
 
+For the mixed sample, records must also include:
+
+- `source_channel`
+- `source_language`
+- `selection_reason`
+- `collected_at`
+
 Records are excluded if the source URL cannot be confirmed. The harness also rejects suspicious source URLs such as `fake://`, `hallucinated://`, or `example.com/unknown`, and every structured event must be grounded in an existing raw record's title, source, and URL.
+
+English sources can enter the system, but user-facing analysis should be Chinese. Schema keys, category enums, and extractor names remain English for compatibility and reproducibility.
 
 ## Why There Is No Complex Crawler Yet
 
