@@ -27,6 +27,7 @@
    - 发布日期：2026-06-01
    - 来源渠道：官方渠道 (`official`)
    - 来源语言：英文来源 (`en`)
+   - 采集日期：2026-06-02
    - 选择理由：官方渠道提供技术发布信息，可确认 OpenAI 模型与 Codex 进入 AWS 的事实和发布时间，服务 AI 行业趋势分析与企业部署决策辅助。
 2. **Introducing Claude Opus 4.8**
    - 来源：Anthropic
@@ -34,6 +35,7 @@
    - 发布日期：2026-05-28
    - 来源渠道：官方渠道 (`official`)
    - 来源语言：英文来源 (`en`)
+   - 采集日期：2026-06-02
    - 选择理由：官方渠道提供技术发布信息，可确认 Claude Opus 4.8 的模型能力、agent 工作流和可靠性变化，适合 AI 行业趋势分析与模型选型决策辅助。
 3. **腾讯面向全球市场推出全新AI工具及企业解决方案**
    - 来源：Tencent 腾讯
@@ -41,6 +43,7 @@
    - 发布日期：2026-05-28
    - 来源渠道：官方渠道 (`official`)
    - 来源语言：中文来源 (`zh`)
+   - 采集日期：2026-06-02
    - 选择理由：官方渠道提供技术发布信息，可确认腾讯 AI 工具与企业解决方案的发布时间和产品范围，适合观察应用出海趋势和企业决策辅助。
 4. **文心 5.1 正式发布！多榜登顶，模型"写得好更懂你"**
    - 来源：ERNIE Blog
@@ -48,6 +51,7 @@
    - 发布日期：2026-05-09
    - 来源渠道：官方渠道 (`official`)
    - 来源语言：中文来源 (`zh`)
+   - 采集日期：2026-06-02
    - 选择理由：官方渠道提供技术发布信息，可确认文心 5.1 的模型能力、训练成本和 Agent 进展，用于 AI 行业趋势分析和国产模型竞争力判断。
 5. **Anthropic races toward a Wall Street debut with a confidential SEC filing**
    - 来源：AP News
@@ -55,6 +59,7 @@
    - 发布日期：2026-06-01
    - 来源渠道：科技媒体 (`tech_media`)
    - 来源语言：英文来源 (`en`)
+   - 采集日期：2026-06-02
    - 选择理由：科技媒体的行业动态报道提供资本市场视角，有助于判断 AI 公司商业化热度、IPO 风险和投资决策辅助。
 6. **Anthropic releases Opus 4.8 with new ‘dynamic workflow’ tool**
    - 来源：TechCrunch
@@ -62,6 +67,7 @@
    - 发布日期：2026-05-28
    - 来源渠道：科技媒体 (`tech_media`)
    - 来源语言：英文来源 (`en`)
+   - 采集日期：2026-06-02
    - 选择理由：科技媒体的行业动态报道补充官方发布以外的竞争压力、产品节奏和安全讨论，适合 AI 行业趋势分析与风险预警。
 7. **Claude Opus 4.8 上线：提升 AI 编程可靠性，减少无依据结论**
    - 来源：IT之家
@@ -69,6 +75,7 @@
    - 发布日期：2026-05-29
    - 来源渠道：科技媒体 (`tech_media`)
    - 来源语言：中文来源 (`zh`)
+   - 采集日期：2026-06-02
    - 选择理由：中文科技媒体的行业动态报道可观察国内开发者如何理解海外模型的编程可靠性与 agent 能力，支持 AI 行业趋势分析和决策辅助。
 8. **百度发布文心大模型 5.1：搜索能力位居国内首位，预训练成本仅为业界 6%**
    - 来源：IT之家
@@ -76,6 +83,7 @@
    - 发布日期：2026-05-09
    - 来源渠道：科技媒体 (`tech_media`)
    - 来源语言：中文来源 (`zh`)
+   - 采集日期：2026-06-02
    - 选择理由：中文科技媒体的行业动态报道归纳国产基础模型效率与能力提升，便于与官方口径交叉对照并服务 AI 行业趋势分析。
 9. **GPT-5.5 and Codex are now GA on Amazon Bedrock**
    - 来源：Hacker News
@@ -83,6 +91,7 @@
    - 发布日期：2026-06-01
    - 来源渠道：聚合平台 (`aggregator`)
    - 来源语言：英文来源 (`en`)
+   - 采集日期：2026-06-02
    - 选择理由：聚合平台提供综合信息源和跨来源讨论热度，可帮助快速理解 OpenAI/AWS 合作在开发者与企业采购中的关注点，服务信息快速理解与决策辅助。
 10. **New Claude, New Realities**
    - 来源：Techmeme Ride Home
@@ -90,6 +99,7 @@
    - 发布日期：2026-05-29
    - 来源渠道：聚合平台 (`aggregator`)
    - 来源语言：英文来源 (`en`)
+   - 采集日期：2026-06-02
    - 选择理由：聚合平台提供综合信息源，日更摘要能体现多事件组合后的行业热点，适合信息快速理解、AI 行业趋势分析和决策辅助。
 11. **重磅联手！OpenAI 尖端模型与 Codex 正式登陆 AWS，企业级 AI 落地再提速**
    - 来源：AIbase
@@ -97,6 +107,7 @@
    - 发布日期：2026-06-02
    - 来源渠道：聚合平台 (`aggregator`)
    - 来源语言：中文来源 (`zh`)
+   - 采集日期：2026-06-02
    - 选择理由：聚合平台提供中文综合信息源，可观察海外官方发布在中文信息流中的摘要方式和传播重点，服务信息快速理解与企业决策辅助。
 12. **吊打GPT-5.5！Claude Opus 4.8 上线 价格暴降三分之二**
    - 来源：AIbase
@@ -104,20 +115,23 @@
    - 发布日期：2026-05-29
    - 来源渠道：聚合平台 (`aggregator`)
    - 来源语言：中文来源 (`zh`)
+   - 采集日期：2026-06-02
    - 选择理由：聚合平台提供中文综合信息源，可快速捕捉模型能力、价格和开发者生产力变化，服务 AI 行业趋势分析与信息快速理解。
 13. **Anthropic releases Claude Opus 4.8 with improved agentic reasoning, honesty, and a new "dynamic workflows" feature in Claude Code**
    - 来源：Reddit r/ClaudeCode
    - URL：https://www.reddit.com/r/ClaudeCode/comments/1tq9pcg/anthropic_releases_claude_opus_48_with_improved/
-   - 发布日期：2026-06-03
+   - 发布日期：2026-05-28
    - 来源渠道：社交/社区渠道 (`social_media`)
    - 来源语言：英文来源 (`en`)
+   - 采集日期：2026-06-03
    - 选择理由：社交/社区渠道提供英文舆论讨论热点，可捕捉 Claude Code 用户对新模型能力、工作流功能和可靠性的直接反馈，服务舆情监测、风险预警与决策辅助。
 14. **Opus 4.8 testing: big step up on agentic/multi-step work, but it regressed on some one-shot generation vs 4.7**
    - 来源：Reddit r/ArtificialInteligence
    - URL：https://www.reddit.com/r/ArtificialInteligence/comments/1tqd1fl/opus_48_testing_big_step_up_on_agenticmultistep/
-   - 发布日期：2026-06-03
+   - 发布日期：2026-05-28
    - 来源渠道：社交/社区渠道 (`social_media`)
    - 来源语言：英文来源 (`en`)
+   - 采集日期：2026-06-03
    - 选择理由：社交/社区渠道提供实测反馈型舆论讨论热点，可观察模型升级在长任务和一次性生成任务中的体验分化，服务舆情监测、风险预警与模型选型决策辅助。
 15. **antigravity 变成了 codex 的模样， 3.5 更新**
    - 来源：V2EX
@@ -125,6 +139,7 @@
    - 发布日期：2026-05-20
    - 来源渠道：社交/社区渠道 (`social_media`)
    - 来源语言：中文来源 (`zh`)
+   - 采集日期：2026-06-02
    - 选择理由：社交/社区渠道提供中文舆论讨论热点，可补充官方与媒体报道，揭示 AI 编程工具在真实用户环境中的体验问题和舆情风险。
 16. **求 codex、claude code 订阅账单每月$200 的，或者国内 coding 订阅，有偿**
    - 来源：V2EX
@@ -132,7 +147,21 @@
    - 发布日期：2026-05-28
    - 来源渠道：社交/社区渠道 (`social_media`)
    - 来源语言：中文来源 (`zh`)
+   - 采集日期：2026-06-02
    - 选择理由：社交/社区渠道提供中文舆论讨论热点，可观察 AI coding 工具付费压力、采购合规和个人用户成本敏感度，适合舆情监测、风险预警与决策辅助。
+
+
+## 热点聚类与多源覆盖
+
+同一热点可能被官方、科技媒体、聚合平台和社区重复提及。系统保留这些记录是为了观察信息扩散链路，而不是把它们简单视为重复数据。`published_at` 表示来源内容的发布时间，`collected_at` 表示样本采集或整理时间；社区源用于观察反馈和舆情，不作为事实主来源。
+
+- **claude-opus-4-8**：7 个来源；覆盖渠道：官方渠道、科技媒体、聚合平台、社交/社区渠道；覆盖语言：英文来源、中文来源；代表标题：Anthropic releases Opus 4.8 with new ‘dynamic workflow’ tool；代表来源：Anthropic、TechCrunch、IT之家、Techmeme Ride Home；包含官方来源：是；包含社区反馈：是
+- **openai-codex-aws**：3 个来源；覆盖渠道：官方渠道、聚合平台；覆盖语言：英文来源、中文来源；代表标题：OpenAI frontier models and Codex are now available on AWS；代表来源：OpenAI、Hacker News、AIbase；包含官方来源：是；包含社区反馈：否
+- **baidu-ernie-5-1**：2 个来源；覆盖渠道：官方渠道、科技媒体；覆盖语言：中文来源；代表标题：文心 5.1 正式发布！多榜登顶，模型"写得好更懂你"；代表来源：ERNIE Blog、IT之家；包含官方来源：是；包含社区反馈：否
+- **ai-coding-community-cost**：1 个来源；覆盖渠道：社交/社区渠道；覆盖语言：中文来源；代表标题：求 codex、claude code 订阅账单每月$200 的，或者国内 coding 订阅，有偿；代表来源：V2EX；包含官方来源：否；包含社区反馈：是
+- **ai-coding-community-feedback**：1 个来源；覆盖渠道：社交/社区渠道；覆盖语言：中文来源；代表标题：antigravity 变成了 codex 的模样， 3.5 更新；代表来源：V2EX；包含官方来源：否；包含社区反馈：是
+- **anthropic-ipo-market-signal**：1 个来源；覆盖渠道：科技媒体；覆盖语言：英文来源；代表标题：Anthropic races toward a Wall Street debut with a confidential SEC filing；代表来源：AP News；包含官方来源：否；包含社区反馈：否
+- **tencent-global-ai-tools**：1 个来源；覆盖渠道：官方渠道；覆盖语言：中文来源；代表标题：腾讯面向全球市场推出全新AI工具及企业解决方案；代表来源：Tencent 腾讯；包含官方来源：是；包含社区反馈：否
 
 
 ## 今日主要热点 Top 3–5
@@ -144,7 +173,7 @@
    - 中文摘要：TechCrunch 报道 Claude Opus 4.8 发布及 dynamic workflow 工具，重点关注 agent swarms、编码任务和 Mythos 预览后的安全边界。
    - URL：https://techcrunch.com/2026/05/28/anthropic-releases-opus-4-8-with-new-dynamic-workflow-tool/
 2. **Anthropic releases Claude Opus 4.8 with improved agentic reasoning, honesty, and a new "dynamic workflows" feature in Claude Code**
-   - 来源：Reddit r/ClaudeCode｜发布日期：2026-06-03
+   - 来源：Reddit r/ClaudeCode｜发布日期：2026-05-28
    - 分类：model｜事件类型：release
    - 重要性：7.0｜置信度：0.70
    - 中文摘要：Reddit r/ClaudeCode 用户围绕 Claude Opus 4.8 的 agentic reasoning、honesty、dynamic workflows 和 Claude Code 使用体验展开讨论。
@@ -185,14 +214,14 @@
 
 ### 2. Anthropic releases Claude Opus 4.8 with improved agentic reasoning, honesty, and a new "dynamic workflows" feature in Claude Code
 
-- 背景：Reddit r/ClaudeCode 在 2026-06-03 发布或讨论“Anthropic releases Claude Opus 4.8 with improved agentic reasoning, honesty, and a new "dynamic workflows" feature in Claude Code”。该信息来自社交/社区渠道，英文来源，摘要显示：Reddit r/ClaudeCode 用户围绕 Claude Opus 4.8 的 agentic reasoning、honesty、dynamic workflows 和 Claude Code 使用体验展开讨论。
+- 背景：Reddit r/ClaudeCode 在 2026-05-28 发布或讨论“Anthropic releases Claude Opus 4.8 with improved agentic reasoning, honesty, and a new "dynamic workflows" feature in Claude Code”。该信息来自社交/社区渠道，英文来源，摘要显示：Reddit r/ClaudeCode 用户围绕 Claude Opus 4.8 的 agentic reasoning、honesty、dynamic workflows 和 Claude Code 使用体验展开讨论。
 - 行业影响：前沿模型能力更新可能推动企业 AI 应用、开发者工具和模型 API 生态升级。
 - 趋势信号：模型能力升级仍是 AI 产业竞争的核心信号，后续需要持续观察能力、成本和调用生态变化。本事件来自社交/社区渠道，属于高优先级信息。
 - 行业机会：模型能力提升带来 AI coding、智能客服、内容生成、知识管理等场景机会。
 - 行业风险：模型能力集中在头部厂商，可能带来平台锁定、成本上升和生态依赖风险。
 - 决策提示：建议关注模型能力变化、API 成本、生态合作和开发者反馈。社区讨论适合用于捕捉用户体验、成本敏感度和舆论波动。该事件当前可作为高优先级对象。
 - 原文证据：Reddit r/ClaudeCode: Reddit r/ClaudeCode 用户围绕 Claude Opus 4.8 的 agentic reasoning、honesty、dynamic workflows 和 Claude Code 使用体验展开讨论。
-- 发布日期与来源：2026-06-03｜Reddit r/ClaudeCode｜https://www.reddit.com/r/ClaudeCode/comments/1tq9pcg/anthropic_releases_claude_opus_48_with_improved/
+- 发布日期与来源：2026-05-28｜Reddit r/ClaudeCode｜https://www.reddit.com/r/ClaudeCode/comments/1tq9pcg/anthropic_releases_claude_opus_48_with_improved/
 
 
 ### 3. OpenAI frontier models and Codex are now available on AWS
@@ -239,10 +268,10 @@
 - Agent 化和 workflow 化正在把 AI 从单次问答推向多步骤任务执行，企业流程场景值得跟进。
 - 应用场景落地显示 AI 能力正在进入更具体的办公、研发、内容和行业流程。
 - 开发者社区反馈可以补充官方与媒体信息，用于观察体验波动、成本敏感度和舆论热点。
+- 3 个热点出现多源覆盖（claude-opus-4-8、openai-codex-aws、baidu-ernie-5-1），说明这些事件存在官方发布、媒体解读、聚合扩散或社区反馈链路。
 - 模型能力升级仍是 AI 产业竞争的核心信号，后续需要持续观察能力、成本和调用生态变化。本事件来自科技媒体，属于高优先级信息。
 - 模型能力升级仍是 AI 产业竞争的核心信号，后续需要持续观察能力、成本和调用生态变化。本事件来自社交/社区渠道，属于高优先级信息。
 - 模型能力升级仍是 AI 产业竞争的核心信号，后续需要持续观察能力、成本和调用生态变化。本事件来自官方渠道，属于高优先级信息。
-- 模型能力升级仍是 AI 产业竞争的核心信号，后续需要持续观察能力、成本和调用生态变化。本事件来自聚合平台，属于高优先级信息。
 
 
 ## 舆情监测与风险预警
@@ -267,11 +296,12 @@
 
 ## 可视化结果说明
 
+- 来源渠道 × 来源语言覆盖矩阵回答：样本是否覆盖中英混合与多渠道来源。
+- 事件发布时间线回答：事件在时间上如何分布，哪些日期出现信息密集。
 - 分类分布图回答：今日 AI 信息主要集中在模型能力、智能体与工作流、基础设施还是应用产品。
-- Top 事件重要性图回答：哪些事件最值得业务用户优先阅读和跟进。
-- 结构化事件表回答：每条事件的来源、发布日期、分类、置信度和证据是否可追溯。
+- 重要性 × 置信度散点图回答：哪些高重要性事件值得优先关注，哪些事件需要进一步人工复核。
+- 影响领域分布回答：事件主要影响哪些业务或技术方向。
 - Rule vs LLM 评估对比回答：不同 extractor 在分类准确率、来源追溯和失败项上的差异。
-- 后续 Phase 8.3 可继续补充渠道×语言覆盖矩阵、发布时间线和重要性×置信度散点图。
 
 
 ## Harness 校验摘要

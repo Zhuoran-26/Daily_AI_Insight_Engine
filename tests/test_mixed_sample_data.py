@@ -20,6 +20,8 @@ REQUIRED_RAW_FIELDS = {
     "source_language",
     "selection_reason",
     "collected_at",
+    "canonical_topic",
+    "topic_role",
 }
 MIXED_SAMPLE_PATH = Path("data/raw/mixed_channel_ai_news_sample.json").resolve()
 EXPECTED_MIXED_PATH = Path("data/eval/expected_mixed_sample_categories.json").resolve()
@@ -78,6 +80,42 @@ def test_mixed_sample_can_be_normalized_and_preserves_provenance():
     assert all(item.source_language in {"en", "zh"} for item in items)
     assert all(item.selection_reason for item in items)
     assert all(item.collected_at for item in items)
+    assert all(item.canonical_topic for item in items)
+    assert all(item.topic_role for item in items)
+
+
+def test_mixed_sample_reddit_dates_keep_published_and_collected_dates_distinct():
+    reddit_items = [item for item in _mixed_items() if item["source"].startswith("Reddit")]
+
+    assert len(reddit_items) == 2
+    for item in reddit_items:
+        assert item["published_at"] == "2026-05-28"
+        assert item["collected_at"] == "2026-06-03"
+        assert item["published_at"] != item["collected_at"]
+        assert item["source_channel"] == "social_media"
+        assert item["topic_role"] == "community_feedback"
+
+
+def test_mixed_sample_topic_clusters_mark_repeated_hotspots():
+    items = _mixed_items()
+    by_topic: dict[str, list[dict[str, str]]] = defaultdict(list)
+    for item in items:
+        by_topic[item["canonical_topic"]].append(item)
+
+    claude_items = by_topic["claude-opus-4-8"]
+    openai_aws_items = by_topic["openai-codex-aws"]
+    baidu_items = by_topic["baidu-ernie-5-1"]
+
+    assert len(claude_items) >= 6
+    assert {item["source_channel"] for item in claude_items} == {
+        "official",
+        "tech_media",
+        "aggregator",
+        "social_media",
+    }
+    assert {item["source_language"] for item in claude_items} == {"en", "zh"}
+    assert len(openai_aws_items) == 3
+    assert len(baidu_items) == 2
 
 
 def test_mixed_sample_pipeline_runs_with_rule_extractor(tmp_path):
@@ -102,12 +140,16 @@ def test_mixed_sample_pipeline_runs_with_rule_extractor(tmp_path):
     report_text = report_path.read_text(encoding="utf-8")
     for phrase in (
         "数据来源概览",
+        "热点聚类与多源覆盖",
         "重点事件深度解读",
         "行业影响",
         "行业机会",
         "行业风险",
         "决策提示",
         "舆情监测与风险预警",
+        "published_at",
+        "collected_at",
+        "社区源用于观察反馈和舆情，不作为事实主来源",
     ):
         assert phrase in report_text
 

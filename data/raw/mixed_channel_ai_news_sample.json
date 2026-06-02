@@ -16,7 +16,9 @@
       "source_channel": "official",
       "source_language": "en",
       "selection_reason": "官方渠道提供技术发布信息，可确认 OpenAI 模型与 Codex 进入 AWS 的事实和发布时间，服务 AI 行业趋势分析与企业部署决策辅助。",
-      "collected_at": "2026-06-02"
+      "collected_at": "2026-06-02",
+      "canonical_topic": "openai-codex-aws",
+      "topic_role": "primary_announcement"
     },
     {
       "title": "Introducing Claude Opus 4.8",
@@ -28,7 +30,9 @@
       "source_channel": "official",
       "source_language": "en",
       "selection_reason": "官方渠道提供技术发布信息，可确认 Claude Opus 4.8 的模型能力、agent 工作流和可靠性变化，适合 AI 行业趋势分析与模型选型决策辅助。",
-      "collected_at": "2026-06-02"
+      "collected_at": "2026-06-02",
+      "canonical_topic": "claude-opus-4-8",
+      "topic_role": "primary_announcement"
     },
     {
       "title": "腾讯面向全球市场推出全新AI工具及企业解决方案",
@@ -40,7 +44,9 @@
       "source_channel": "official",
       "source_language": "zh",
       "selection_reason": "官方渠道提供技术发布信息，可确认腾讯 AI 工具与企业解决方案的发布时间和产品范围，适合观察应用出海趋势和企业决策辅助。",
-      "collected_at": "2026-06-02"
+      "collected_at": "2026-06-02",
+      "canonical_topic": "tencent-global-ai-tools",
+      "topic_role": "primary_announcement"
     },
     {
       "title": "文心 5.1 正式发布！多榜登顶，模型\"写得好更懂你\"",
@@ -52,7 +58,9 @@
       "source_channel": "official",
       "source_language": "zh",
       "selection_reason": "官方渠道提供技术发布信息，可确认文心 5.1 的模型能力、训练成本和 Agent 进展，用于 AI 行业趋势分析和国产模型竞争力判断。",
-      "collected_at": "2026-06-02"
+      "collected_at": "2026-06-02",
+      "canonical_topic": "baidu-ernie-5-1",
+      "topic_role": "primary_announcement"
     },
     {
       "title": "Anthropic races toward a Wall Street debut with a confidential SEC filing",
@@ -64,7 +72,9 @@
       "source_channel": "tech_media",
       "source_language": "en",
       "selection_reason": "科技媒体的行业动态报道提供资本市场视角，有助于判断 AI 公司商业化热度、IPO 风险和投资决策辅助。",
-      "collected_at": "2026-06-02"
+      "collected_at": "2026-06-02",
+      "canonical_topic": "anthropic-ipo-market-signal",
+      "topic_role": "market_signal"
     },
     {
       "title": "Anthropic releases Opus 4.8 with new ‘dynamic workflow’ tool",
@@ -76,7 +86,9 @@
       "source_channel": "tech_media",
       "source_language": "en",
       "selection_reason": "科技媒体的行业动态报道补充官方发布以外的竞争压力、产品节奏和安全讨论，适合 AI 行业趋势分析与风险预警。",
-      "collected_at": "2026-06-02"
+      "collected_at": "2026-06-02",
+      "canonical_topic": "claude-opus-4-8",
+      "topic_role": "media_analysis"
     },
     {
       "title": "Claude Opus 4.8 上线：提升 AI 编程可靠性，减少无依据结论",
@@ -88,7 +100,9 @@
       "source_channel": "tech_media",
       "source_language": "zh",
       "selection_reason": "中文科技媒体的行业动态报道可观察国内开发者如何理解海外模型的编程可靠性与 agent 能力，支持 AI 行业趋势分析和决策辅助。",
-      "collected_at": "2026-06-02"
+      "collected_at": "2026-06-02",
+      "canonical_topic": "claude-opus-4-8",
+      "topic_role": "media_analysis"
     },
     {
       "title": "百度发布文心大模型 5.1：搜索能力位居国内首位，预训练成本仅为业界 6%",
@@ -100,7 +114,9 @@
       "source_channel": "tech_media",
       "source_language": "zh",
       "selection_reason": "中文科技媒体的行业动态报道归纳国产基础模型效率与能力提升，便于与官方口径交叉对照并服务 AI 行业趋势分析。",
-      "collected_at": "2026-06-02"
+      "collected_at": "2026-06-02",
+      "canonical_topic": "baidu-ernie-5-1",
+      "topic_role": "media_analysis"
     },
     {
       "title": "GPT-5.5 and Codex are now GA on Amazon Bedrock",
@@ -112,7 +128,9 @@
       "source_channel": "aggregator",
       "source_language": "en",
       "selection_reason": "聚合平台提供综合信息源和跨来源讨论热度，可帮助快速理解 OpenAI/AWS 合作在开发者与企业采购中的关注点，服务信息快速理解与决策辅助。",
-      "collected_at": "2026-06-02"
+      "collected_at": "2026-06-02",
+      "canonical_topic": "openai-codex-aws",
+      "topic_role": "aggregated_summary"
     },
     {
       "title": "New Claude, New Realities",
@@ -124,7 +142,9 @@
       "source_channel": "aggregator",
       "source_language": "en",
       "selection_reason": "聚合平台提供综合信息源，日更摘要能体现多事件组合后的行业热点，适合信息快速理解、AI 行业趋势分析和决策辅助。",
-      "collected_at": "2026-06-02"
+      "collected_at": "2026-06-02",
+      "canonical_topic": "claude-opus-4-8",
+      "topic_role": "aggregated_summary"
     },
     {
       "title": "重磅联手！OpenAI 尖端模型与 Codex 正式登陆 AWS，企业级 AI 落地再提速",
@@ -136,7 +156,9 @@
       "source_channel": "aggregator",
       "source_language": "zh",
       "selection_reason": "聚合平台提供中文综合信息源，可观察海外官方发布在中文信息流中的摘要方式和传播重点，服务信息快速理解与企业决策辅助。",
-      "collected_at": "2026-06-02"
+      "collected_at": "2026-06-02",
+      "canonical_topic": "openai-codex-aws",
+      "topic_role": "aggregated_summary"
     },
     {
       "title": "吊打GPT-5.5！Claude Opus 4.8 上线 价格暴降三分之二",
@@ -148,31 +170,37 @@
       "source_channel": "aggregator",
       "source_language": "zh",
       "selection_reason": "聚合平台提供中文综合信息源，可快速捕捉模型能力、价格和开发者生产力变化，服务 AI 行业趋势分析与信息快速理解。",
-      "collected_at": "2026-06-02"
+      "collected_at": "2026-06-02",
+      "canonical_topic": "claude-opus-4-8",
+      "topic_role": "aggregated_summary"
     },
     {
       "title": "Anthropic releases Claude Opus 4.8 with improved agentic reasoning, honesty, and a new \"dynamic workflows\" feature in Claude Code",
       "summary": "Reddit r/ClaudeCode 用户围绕 Claude Opus 4.8 的 agentic reasoning、honesty、dynamic workflows 和 Claude Code 使用体验展开讨论。",
       "source": "Reddit r/ClaudeCode",
       "url": "https://www.reddit.com/r/ClaudeCode/comments/1tq9pcg/anthropic_releases_claude_opus_48_with_improved/",
-      "published_at": "2026-06-03",
+      "published_at": "2026-05-28",
       "language": "en",
       "source_channel": "social_media",
       "source_language": "en",
       "selection_reason": "社交/社区渠道提供英文舆论讨论热点，可捕捉 Claude Code 用户对新模型能力、工作流功能和可靠性的直接反馈，服务舆情监测、风险预警与决策辅助。",
-      "collected_at": "2026-06-03"
+      "collected_at": "2026-06-03",
+      "canonical_topic": "claude-opus-4-8",
+      "topic_role": "community_feedback"
     },
     {
       "title": "Opus 4.8 testing: big step up on agentic/multi-step work, but it regressed on some one-shot generation vs 4.7",
       "summary": "Reddit r/ArtificialInteligence 用户分享 Claude Opus 4.8 与 4.7 的对比测试，认为其多步骤 agentic coding 提升明显，但部分一次性生成任务可能退步。",
       "source": "Reddit r/ArtificialInteligence",
       "url": "https://www.reddit.com/r/ArtificialInteligence/comments/1tqd1fl/opus_48_testing_big_step_up_on_agenticmultistep/",
-      "published_at": "2026-06-03",
+      "published_at": "2026-05-28",
       "language": "en",
       "source_channel": "social_media",
       "source_language": "en",
       "selection_reason": "社交/社区渠道提供实测反馈型舆论讨论热点，可观察模型升级在长任务和一次性生成任务中的体验分化，服务舆情监测、风险预警与模型选型决策辅助。",
-      "collected_at": "2026-06-03"
+      "collected_at": "2026-06-03",
+      "canonical_topic": "claude-opus-4-8",
+      "topic_role": "community_feedback"
     },
     {
       "title": "antigravity 变成了 codex 的模样， 3.5 更新",
@@ -184,7 +212,9 @@
       "source_channel": "social_media",
       "source_language": "zh",
       "selection_reason": "社交/社区渠道提供中文舆论讨论热点，可补充官方与媒体报道，揭示 AI 编程工具在真实用户环境中的体验问题和舆情风险。",
-      "collected_at": "2026-06-02"
+      "collected_at": "2026-06-02",
+      "canonical_topic": "ai-coding-community-feedback",
+      "topic_role": "community_feedback"
     },
     {
       "title": "求 codex、claude code 订阅账单每月$200 的，或者国内 coding 订阅，有偿",
@@ -196,7 +226,9 @@
       "source_channel": "social_media",
       "source_language": "zh",
       "selection_reason": "社交/社区渠道提供中文舆论讨论热点，可观察 AI coding 工具付费压力、采购合规和个人用户成本敏感度，适合舆情监测、风险预警与决策辅助。",
-      "collected_at": "2026-06-02"
+      "collected_at": "2026-06-02",
+      "canonical_topic": "ai-coding-community-cost",
+      "topic_role": "community_feedback"
     }
   ]
 }

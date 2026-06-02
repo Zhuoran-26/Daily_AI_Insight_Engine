@@ -81,3 +81,33 @@ def test_missing_optional_provenance_defaults_to_none():
     assert items[0].source_language is None
     assert items[0].selection_reason is None
     assert items[0].collected_at is None
+    assert items[0].canonical_topic is None
+    assert items[0].topic_role is None
+
+
+def test_preserves_topic_provenance_fields(tmp_path):
+    payload = {
+        "items": [
+            {
+                "title": "Valid title",
+                "summary": "Valid summary",
+                "source": "Source",
+                "url": "https://source.example/",
+                "published_at": "2026-05-20",
+                "language": "en",
+                "source_channel": "official",
+                "source_language": "en",
+                "selection_reason": "官方渠道用于确认技术发布事实。",
+                "collected_at": "2026-06-03",
+                "canonical_topic": "source-topic",
+                "topic_role": "primary_announcement",
+            }
+        ]
+    }
+    path = tmp_path / "raw.json"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+
+    item = load_raw_news(path)[0]
+
+    assert item.canonical_topic == "source-topic"
+    assert item.topic_role == "primary_announcement"

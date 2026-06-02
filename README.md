@@ -128,6 +128,7 @@ Streamlit UI 支持：
 - 选择 `rule`、`mock-llm` 或 `openai-compatible` extractor
 - 一键运行 insight pipeline
 - 查看数据来源追溯、业务化 structured events、中文 Harness checklist 和 daily report
+- 查看热点聚类与多源覆盖，区分同一事件的官方发布、媒体解读、聚合扩散和社区反馈
 - 查看来源渠道 × 来源语言覆盖矩阵、事件发布时间线、分类分布、重要性 × 置信度散点图、影响领域分布、Rule vs LLM 评估对比
 - 运行 Evaluation Harness；mixed sample 默认使用 `expected_mixed_sample_categories.json`，real sample 自动使用 `expected_real_sample_categories.json`
 - 运行 AI Reviewer 并查看 final verdict 与 issue table；Reviewer 复审抽取与评估质量，不替代人工行业判断
@@ -170,9 +171,11 @@ python3 -m daily_ai_insight.cli review --evaluation outputs/llm_evaluation_summa
 - `data/raw/real_ai_news_sample.json`：real-world sample，用于展示真实来源、真实 URL 和实际 pipeline 效果。
 - `data/raw/mixed_channel_ai_news_sample.json`：Phase 8.1 中英混合、多渠道展示样例，直接对应笔试题“三、数据获取”的官方渠道、科技媒体、聚合平台和社交媒体/社区平台四类参考方向。
 
-所有真实样例都必须保留 `source`、`url` 和 `published_at`。mixed sample 进一步保留 `source_channel`、`source_language`、`selection_reason` 和 `collected_at`，用于说明来源渠道、来源语言、事件选择理由和样本整理时间。
+所有真实样例都必须保留 `source`、`url` 和 `published_at`。mixed sample 进一步保留 `source_channel`、`source_language`、`selection_reason`、`collected_at`、`canonical_topic` 和 `topic_role`，用于说明来源渠道、来源语言、事件选择理由、样本整理时间、热点聚类和同一热点中的来源角色。
 
 mixed sample 是最终展示用的静态样例数据，目标是贴合 AI 行业趋势分析、舆情监测与风险预警、信息快速理解与决策辅助。它采用中英混合来源：官方渠道用于确认技术发布信息，科技媒体用于行业动态报道，聚合平台用于综合信息流和跨来源热度观察，社交媒体/社区用于捕捉舆论讨论热点。它不代表完整实时舆情采集系统，也不会在测试中访问网络。
+
+`published_at` 表示来源内容本身的发布时间，`collected_at` 表示样本采集或整理时间。二者可能不同，尤其是 Reddit、V2EX 等社区来源；社区记录用于观察用户反馈和舆情变化，不作为事实主来源。同一热点如果出现在官方、媒体、聚合平台和社区中，系统通过 `canonical_topic` 聚合展示多源覆盖，而不是把它们简单当作重复数据删除。
 
 数据约束：
 
@@ -201,7 +204,7 @@ Harness 会阻止缺失来源、虚构 URL、低置信度或无法追溯的结�
 
 风险/机会只描述行业风险和行业机会，例如平台锁定、算力集中、合规压力、生态竞争、用户体验波动、企业 Agent workflow、AI coding、模型 API、云基础设施和垂直场景应用。不要把系统可信度、LLM 幻觉、Schema/Harness 校验或人工复核需求写成行业风险。
 
-日报新增中文业务 section：`数据来源概览`、`今日主要热点 Top 3–5`、`重点事件深度解读`、`趋势判断`、`舆情监测与风险预警`、`机会提示`、`可视化结果说明`、`Harness 校验摘要` 和 `方法说明`。如果某段事件分析来自 LLM，报告会显示“本段分析由 LLM 生成，已通过 Schema、Source Grounding 和 Harness 校验，但仍建议人工复核。”
+日报新增中文业务 section：`数据来源概览`、`热点聚类与多源覆盖`、`今日主要热点 Top 3–5`、`重点事件深度解读`、`趋势判断`、`舆情监测与风险预警`、`机会提示`、`可视化结果说明`、`Harness 校验摘要` 和 `方法说明`。如果某段事件分析来自 LLM，报告会显示“本段分析由 LLM 生成，已通过 Schema、Source Grounding 和 Harness 校验，但仍建议人工复核。”
 
 ## 跨语言产品体验
 

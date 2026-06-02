@@ -2,7 +2,7 @@ import importlib
 from pathlib import Path
 
 from daily_ai_insight import evaluate, pipeline, reviewer
-from daily_ai_insight.models import DailyInsightReport, StructuredAIEvent
+from daily_ai_insight.models import DailyInsightReport, StructuredAIEvent, TopicClusterSummary
 
 
 def test_app_imports_without_starting_streamlit_server():
@@ -63,6 +63,8 @@ def test_ui_pipeline_chart_helpers_use_report_data():
         evidence="OpenAI: OpenAI describes a model launch.",
         source_channel="official",
         source_language="en",
+        canonical_topic="openai-model-update",
+        topic_role="primary_announcement",
         industry_impact="模型更新影响企业应用。",
         industry_opportunity="AI coding 存在机会。",
         industry_risk="平台锁定风险需要关注。",
@@ -75,6 +77,18 @@ def test_ui_pipeline_chart_helpers_use_report_data():
         category_counts={"model": 1},
         source_channel_counts={"official": 1},
         source_language_counts={"en": 1},
+        topic_clusters=[
+            TopicClusterSummary(
+                canonical_topic="openai-model-update",
+                source_count=1,
+                source_channels=["官方渠道"],
+                source_languages=["英文来源"],
+                representative_title="OpenAI launches model update",
+                representative_sources=["OpenAI"],
+                has_official_source=True,
+                has_community_feedback=False,
+            )
+        ],
         key_takeaways=["model leads the sample."],
         trend_signals=["model momentum is visible."],
         risks_and_opportunities=["Opportunity: model launch."],
@@ -104,7 +118,27 @@ def test_ui_pipeline_chart_helpers_use_report_data():
     assert app.impact_area_distribution_chart_data(report) == [
         {"影响领域": "model_capabilities", "事件数": 1}
     ]
+    assert app.topic_cluster_table(report) == [
+        {
+            "canonical_topic": "openai-model-update",
+            "覆盖来源数量": 1,
+            "覆盖渠道": "官方渠道",
+            "覆盖语言": "英文来源",
+            "代表标题": "OpenAI launches model update",
+            "包含官方来源": "是",
+            "包含社区反馈": "否",
+        }
+    ]
     assert app.harness_checklist_table(report)[0] == {"检查项": "输入数量检查", "结果": "通过"}
+
+    for chart in (
+        app.source_coverage_matrix_chart(report),
+        app.event_timeline_chart(report),
+        app.category_distribution_chart(report),
+        app.importance_confidence_scatter_chart(report),
+        app.impact_area_distribution_chart(report),
+    ):
+        assert chart.to_dict()
 
 
 def test_ui_business_event_table_uses_chinese_friendly_columns():
@@ -155,7 +189,7 @@ def test_ui_source_provenance_table_for_mixed_sample():
     rows = app.source_provenance_table(app.MIXED_SAMPLE_PATH)
 
     assert rows
-    assert {"标题", "来源", "URL", "发布日期", "来源渠道", "来源语言", "选择理由"} == set(rows[0])
+    assert {"标题", "来源", "URL", "发布日期", "来源渠道", "来源语言", "选择理由", "采集日期"} == set(rows[0])
     assert {row["来源语言"] for row in rows} == {"英文", "中文"}
     assert "官方渠道" in {row["来源渠道"] for row in rows}
 

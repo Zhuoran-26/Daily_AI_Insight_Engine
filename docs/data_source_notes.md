@@ -49,12 +49,18 @@ Every mixed sample record keeps:
 - `source_language`
 - `selection_reason`
 - `collected_at`
+- `canonical_topic`
+- `topic_role`
 
 `selection_reason` explains why the source type matters for AI industry trend analysis, public-opinion monitoring and risk warning, or fast decision support. Official sources are used for technical release facts, tech media for industry reporting, aggregators for comprehensive information flow, and social/community sources for discussion hotspots. These provenance fields are raw input metadata. They are not generated or overwritten by the LLM.
 
 The mixed sample is still a static product demo fixture. It does not claim to be a full real-time public-opinion collection system, and tests do not fetch live websites.
 
 During Phase 8.1 source review, most mixed sample URLs were checked with `curl -L --head` or GET fallback. Some public community or official sites may reject automated curl requests even when the URL is a real public page. For example, OpenAI can return a Cloudflare challenge response, Hacker News rejects HEAD but serves GET/API checks, and Reddit or V2EX can block or reset curl connections from the local environment. These cases are treated as verification limitations and are not used as proof of source content beyond the recorded public URL and title/path review.
+
+Phase 8.4 adds topic-level provenance with `canonical_topic` and `topic_role`. These fields come from the curated raw input and are copied through extraction; they are not inferred by the LLM. The goal is to show multi-source coverage for the same hotspot: an official announcement can establish the release fact, media can add industry framing, aggregators can show cross-source visibility, and community/social sources can reveal feedback or risk signals.
+
+`published_at` and `collected_at` are intentionally separate. `published_at` is the source page or post publication date, while `collected_at` is the date the local fixture was collected or reviewed. In Phase 8.4, Reddit community records were audited and corrected to use the observed post date `2026-05-28` as `published_at`, while keeping `2026-06-03` as `collected_at`. Community records are used for public-opinion monitoring and risk warning, not as primary sources for factual release claims.
 
 ## Avoiding Hallucinated Sources
 
@@ -73,6 +79,8 @@ For the mixed sample, records must also include:
 - `source_language`
 - `selection_reason`
 - `collected_at`
+- `canonical_topic`
+- `topic_role`
 
 Records are excluded if the source URL cannot be confirmed. The harness also rejects suspicious source URLs such as `fake://`, `hallucinated://`, or `example.com/unknown`, and every structured event must be grounded in an existing raw record's title, source, and URL.
 

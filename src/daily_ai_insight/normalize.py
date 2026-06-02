@@ -15,6 +15,8 @@ PROVENANCE_FIELDS = (
     "source_language",
     "selection_reason",
     "collected_at",
+    "canonical_topic",
+    "topic_role",
 )
 
 

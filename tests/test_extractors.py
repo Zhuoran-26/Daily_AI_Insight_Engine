@@ -57,6 +57,8 @@ def llm_json_for_item(
         "url": url or raw_item.url,
         "published_at": raw_item.published_at,
         "language": raw_item.language,
+        "canonical_topic": "llm-invented-topic",
+        "topic_role": "llm_invented_role",
         "category": "application",
         "event_type": "application_update",
         "entities": [raw_item.source],
@@ -97,6 +99,14 @@ def test_rule_based_extractor_generates_one_event_per_input():
         for event in events
         for term in FORBIDDEN_SYSTEM_RISK_TERMS
     )
+
+
+def test_rule_based_extractor_preserves_topic_provenance():
+    raw_item = load_raw_news(MIXED_SAMPLE_PATH)[0]
+    event = RuleBasedExtractor().extract([raw_item])[0]
+
+    assert event.canonical_topic == raw_item.canonical_topic
+    assert event.topic_role == raw_item.topic_role
 
 
 def test_mock_llm_valid_mode_runs_through_pipeline(tmp_path):
@@ -252,6 +262,11 @@ def test_openai_compatible_parses_business_fields_and_preserves_raw_provenance()
     assert event.source_channel == raw_item.source_channel
     assert event.source_language == raw_item.source_language
     assert event.selection_reason == raw_item.selection_reason
+    assert event.collected_at == raw_item.collected_at
+    assert event.canonical_topic == raw_item.canonical_topic
+    assert event.topic_role == raw_item.topic_role
+    assert event.canonical_topic != "llm-invented-topic"
+    assert event.topic_role != "llm_invented_role"
 
 
 def test_openai_compatible_low_confidence_is_blocked(tmp_path):

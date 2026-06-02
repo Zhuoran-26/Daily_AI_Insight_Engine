@@ -16,6 +16,8 @@ class RawNewsItem(BaseModel):
     source_language: str | None = None
     selection_reason: str | None = None
     collected_at: str | None = None
+    canonical_topic: str | None = None
+    topic_role: str | None = None
 
     @field_validator("title", "summary", "source", "url")
     @classmethod
@@ -36,6 +38,8 @@ class RawNewsItem(BaseModel):
         "source_language",
         "selection_reason",
         "collected_at",
+        "canonical_topic",
+        "topic_role",
         mode="before",
     )
     @classmethod
@@ -67,6 +71,8 @@ class StructuredAIEvent(BaseModel):
     source_language: str | None = None
     selection_reason: str | None = None
     collected_at: str | None = None
+    canonical_topic: str | None = None
+    topic_role: str | None = None
     background: str | None = None
     industry_impact: str | None = None
     trend_signal: str | None = None
@@ -99,6 +105,8 @@ class StructuredAIEvent(BaseModel):
         "source_language",
         "selection_reason",
         "collected_at",
+        "canonical_topic",
+        "topic_role",
         "background",
         "industry_impact",
         "trend_signal",
@@ -115,6 +123,31 @@ class StructuredAIEvent(BaseModel):
         return cleaned or None
 
 
+class EvaluationItemResult(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    title: str
+    expected_category: str
+    predicted_category: str | None
+    category_match: bool
+    confidence: float | None = Field(default=None, ge=0, le=1)
+    grounded: bool
+    error: str | None
+
+
+class TopicClusterSummary(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    canonical_topic: str
+    source_count: int = Field(ge=0)
+    source_channels: list[str]
+    source_languages: list[str]
+    representative_title: str
+    representative_sources: list[str]
+    has_official_source: bool
+    has_community_feedback: bool
+
+
 class DailyInsightReport(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True)
 
@@ -125,6 +158,7 @@ class DailyInsightReport(BaseModel):
     category_counts: dict[str, int]
     source_channel_counts: dict[str, int] = Field(default_factory=dict)
     source_language_counts: dict[str, int] = Field(default_factory=dict)
+    topic_clusters: list[TopicClusterSummary] = Field(default_factory=list)
     key_takeaways: list[str]
     trend_signals: list[str]
     risks_and_opportunities: list[str]
@@ -138,18 +172,6 @@ class DailyInsightReport(BaseModel):
         if not value or not value.strip():
             raise ValueError("date must not be empty")
         return value.strip()
-
-
-class EvaluationItemResult(BaseModel):
-    model_config = ConfigDict(str_strip_whitespace=True)
-
-    title: str
-    expected_category: str
-    predicted_category: str | None
-    category_match: bool
-    confidence: float | None = Field(default=None, ge=0, le=1)
-    grounded: bool
-    error: str | None
 
 
 class EvaluationSummary(BaseModel):

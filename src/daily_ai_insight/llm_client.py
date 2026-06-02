@@ -124,6 +124,8 @@ class OpenAICompatibleClient:
             "source_language": item.source_language,
             "selection_reason": item.selection_reason,
             "collected_at": item.collected_at,
+            "canonical_topic": item.canonical_topic,
+            "topic_role": item.topic_role,
         }
         feedback_block = ""
         if feedback:

@@ -67,6 +67,8 @@ def test_structured_event_accepts_business_analysis_fields():
             source_language="en",
             selection_reason="用于 AI 行业趋势分析。",
             collected_at="2026-06-03",
+            canonical_topic="openai-model-update",
+            topic_role="primary_announcement",
             background="该事件来自官方发布。",
             industry_impact="模型能力更新影响企业应用。",
             trend_signal="模型能力升级仍是行业趋势。",
@@ -80,6 +82,8 @@ def test_structured_event_accepts_business_analysis_fields():
 
     assert event.background == "该事件来自官方发布。"
     assert event.industry_impact == "模型能力更新影响企业应用。"
+    assert event.canonical_topic == "openai-model-update"
+    assert event.topic_role == "primary_announcement"
     assert event.llm_generated is True
     assert event.requires_human_review is True
 
@@ -89,5 +93,7 @@ def test_structured_event_accepts_legacy_data_without_business_fields():
 
     assert event.background is None
     assert event.industry_risk is None
+    assert event.canonical_topic is None
+    assert event.topic_role is None
     assert event.llm_generated is False
     assert event.requires_human_review is False

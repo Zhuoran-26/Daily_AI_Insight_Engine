@@ -13,10 +13,10 @@ Rules:
 - Use only the input news record.
 - Do not invent source names.
 - Do not invent URLs.
-- Do not change `title`, `source`, `url`, `published_at`, `language`, or provenance fields such as `source_channel`, `source_language`, `selection_reason`, and `collected_at`.
+- Do not change `title`, `source`, `url`, `published_at`, `language`, or provenance fields such as `source_channel`, `source_language`, `selection_reason`, `collected_at`, `canonical_topic`, and `topic_role`.
 - The system will override immutable fields from the raw input, but you must not attempt to modify them.
 - Do not translate source name or URL.
-- Do not modify title/source/url/published_at/language/provenance fields.
+- Do not modify title/source/url/published_at/language/provenance/topic fields.
 - `evidence` must be copied from or directly grounded in the input title or summary.
 - If uncertain, lower confidence instead of guessing, and set `requires_human_review=true`.
 - Do not add news that is not present in the input.

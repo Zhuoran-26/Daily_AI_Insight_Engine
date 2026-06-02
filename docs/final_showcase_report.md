@@ -8,6 +8,8 @@ The current system can load curated raw news, normalize each item into `RawNewsI
 
 For the final showcase, the recommended input is `data/raw/mixed_channel_ai_news_sample.json`. It is a Chinese/English multi-channel sample aligned with the assignment's data acquisition guidance: official channels, tech media, aggregators, and social/community sources.
 
+The mixed sample also includes topic-level provenance with `canonical_topic` and `topic_role`. This lets the system show when one hotspot is covered by multiple source types instead of treating repeated appearances as accidental duplicates.
+
 ## Why This Is More Than Vibe Coding
 
 This project does not ask an LLM to directly write a plausible report. It builds an inspectable workflow around model output:
@@ -60,6 +62,7 @@ Harness Engineering is the control layer around the AI pipeline:
 - item-level retry limits prevent uncontrolled LLM repair loops
 - fail-fast behavior avoids silently producing unsupported reports
 - no structured event can invent a raw source outside the input data
+- raw `canonical_topic` and `topic_role` are copied through extraction and are not inferred by the LLM
 
 These guardrails make LLM extraction optional but verification mandatory.
 
@@ -76,6 +79,7 @@ The generated daily report is oriented to:
 It contains:
 
 - 数据来源概览 with sample count, channel/language distribution, URL, publication date, source channel, source language, and selection reason
+- 热点聚类与多源覆盖, showing official announcements, media framing, aggregator visibility, and community feedback around the same canonical topic
 - 今日主要热点 Top 3–5
 - 重点事件深度解读 with background, industry impact, trend signal, industry opportunity, industry risk, decision hint, evidence, and source traceability
 - 趋势判断 based on model capability, Agent/workflow, cloud infrastructure, application landing, and community feedback
@@ -84,6 +88,8 @@ It contains:
 - 可视化结果说明 that explains what each current chart answers
 - Harness 校验摘要 as a Chinese checklist
 - 方法说明 that documents deterministic rule baseline and LLM validation constraints
+
+`published_at` is treated as the source publication date, while `collected_at` is the local fixture collection or review date. This is especially important for community sources such as Reddit or V2EX: they are useful for public-opinion monitoring and feedback signals, but they do not replace official sources for factual release claims.
 
 ## Streamlit Product Demo
 
@@ -95,6 +101,7 @@ The product view includes:
 - 业务化结构化事件表: Chinese-friendly columns for category, source channel, summary, industry impact, opportunity, risk, and URL, with raw JSON kept in an expander
 - 中文 Harness checklist: source integrity, schema validation, source grounding, evidence grounding, loop guard, confidence threshold, and extractor name, with raw JSON kept in an expander
 - 多样化可视化: source channel × language heatmap, event timeline, category distribution, importance × confidence scatter, impact-area distribution, and Rule vs LLM comparison
+- 热点聚类与多源覆盖: canonical topic, source count, covered channels/languages, representative title, official-source flag, and community-feedback flag
 - LLM 人工复核提示: LLM-generated analysis is marked for human review without being treated as an industry risk
 
 These charts answer practical questions for trend analysis, public-opinion monitoring, risk warning, and decision support: whether the sample is balanced across sources, when events cluster, which AI themes dominate, which events deserve priority, which business/technical areas are affected, and how rule and LLM extractors compare under the same harness.

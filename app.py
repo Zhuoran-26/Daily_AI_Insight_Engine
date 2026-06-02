@@ -58,9 +58,9 @@ CATEGORY_LABELS = {
 }
 
 EXTRACTOR_DESCRIPTIONS = {
-    "rule": "无需 API key 的稳定规则 baseline。",
-    "mock-llm": "用于测试 LLM workflow 的模拟模式。",
-    "openai-compatible": "需要 .env 中配置 DeepSeek / OpenAI-compatible API key。",
+    "rule": "规则 baseline，不需要 API key，稳定可复现，适合离线演示。",
+    "mock-llm": "模拟 LLM 输出，用于测试 Harness 和异常拦截。",
+    "openai-compatible": "真实 LLM 模式，调用 DeepSeek / OpenAI-compatible API，适合复杂语义抽取。",
 }
 
 
@@ -126,6 +126,7 @@ def source_provenance_table(input_path: Path) -> list[dict[str, Any]]:
             "来源渠道": source_channel_label(item.source_channel),
             "来源语言": source_language_label(item.source_language or item.language),
             "选择理由": item.selection_reason or "未提供",
+            "采集日期": item.collected_at or "未提供",
         }
         for item in load_raw_news(input_path)
     ]
@@ -163,6 +164,21 @@ def structured_events_business_table(events: list[dict[str, Any]]) -> list[dict[
             "URL": event.get("url", ""),
         }
         for event in events
+    ]
+
+
+def topic_cluster_table(report: DailyInsightReport) -> list[dict[str, Any]]:
+    return [
+        {
+            "canonical_topic": cluster.canonical_topic,
+            "覆盖来源数量": cluster.source_count,
+            "覆盖渠道": "、".join(cluster.source_channels),
+            "覆盖语言": "、".join(cluster.source_languages),
+            "代表标题": cluster.representative_title,
+            "包含官方来源": "是" if cluster.has_official_source else "否",
+            "包含社区反馈": "是" if cluster.has_community_feedback else "否",
+        }
+        for cluster in report.topic_clusters
     ]
 
 
@@ -254,6 +270,94 @@ def impact_area_distribution_chart_data(report: DailyInsightReport) -> list[dict
         {"影响领域": area, "事件数": count}
         for area, count in sorted(counts.items())
     ]
+
+
+def source_coverage_matrix_chart(report: DailyInsightReport) -> alt.Chart:
+    return (
+        alt.Chart(alt.Data(values=source_coverage_matrix_data(report)))
+        .mark_rect()
+        .encode(
+            x=alt.X("来源语言:N", title="来源语言"),
+            y=alt.Y("来源渠道:N", title="来源渠道"),
+            color=alt.Color("数量:Q", title="数量"),
+            tooltip=[
+                alt.Tooltip("来源渠道:N"),
+                alt.Tooltip("来源语言:N"),
+                alt.Tooltip("数量:Q"),
+            ],
+        )
+        .properties(height=220)
+    )
+
+
+def event_timeline_chart(report: DailyInsightReport) -> alt.Chart:
+    return (
+        alt.Chart(alt.Data(values=event_timeline_chart_data(report)))
+        .mark_area(opacity=0.55, line=True)
+        .encode(
+            x=alt.X("发布日期:T", title="发布日期"),
+            y=alt.Y("事件数:Q", title="事件数", scale=alt.Scale(domainMin=0)),
+            tooltip=[
+                alt.Tooltip("发布日期:T"),
+                alt.Tooltip("事件数:Q"),
+            ],
+        )
+        .properties(height=220)
+    )
+
+
+def category_distribution_chart(report: DailyInsightReport) -> alt.Chart:
+    return (
+        alt.Chart(alt.Data(values=category_distribution_chart_data(report)))
+        .mark_arc(innerRadius=45)
+        .encode(
+            theta=alt.Theta("数量:Q"),
+            color=alt.Color("分类:N", title="分类"),
+            tooltip=[
+                alt.Tooltip("分类:N"),
+                alt.Tooltip("数量:Q"),
+            ],
+        )
+        .properties(height=240)
+    )
+
+
+def importance_confidence_scatter_chart(report: DailyInsightReport) -> alt.Chart:
+    return (
+        alt.Chart(alt.Data(values=importance_confidence_scatter_data(report)))
+        .mark_circle(size=90, opacity=0.8)
+        .encode(
+            x=alt.X("置信度:Q", title="置信度", scale=alt.Scale(domain=[0, 1])),
+            y=alt.Y("重要性:Q", title="重要性", scale=alt.Scale(domain=[0, 10])),
+            color=alt.Color("分类:N", title="分类"),
+            tooltip=[
+                alt.Tooltip("标题:N"),
+                alt.Tooltip("来源:N"),
+                alt.Tooltip("发布日期:T"),
+                alt.Tooltip("分类:N"),
+                alt.Tooltip("重要性:Q"),
+                alt.Tooltip("置信度:Q"),
+            ],
+        )
+        .properties(height=240)
+    )
+
+
+def impact_area_distribution_chart(report: DailyInsightReport) -> alt.Chart:
+    return (
+        alt.Chart(alt.Data(values=impact_area_distribution_chart_data(report)))
+        .mark_bar()
+        .encode(
+            x=alt.X("事件数:Q", title="事件数"),
+            y=alt.Y("影响领域:N", title="影响领域", sort="-x"),
+            color=alt.Color("影响领域:N", legend=None),
+            tooltip=[
+                alt.Tooltip("影响领域:N"),
+                alt.Tooltip("事件数:Q"),
+            ],
+        )
+        .properties(height=220)
+    )
 
 
 def extractor_accuracy_comparison_chart_data(
@@ -412,19 +516,22 @@ def _render_source_provenance_section(st: Any, input_path: Path) -> None:
 
 
 def _render_extractor_section(st: Any) -> str:
-    st.header("2. 抽取模式")
+    st.header("2. 结构化洞察生成方式")
     extractor_name = st.selectbox(
-        "选择 extractor",
+        "选择生成方式",
         ["rule", "mock-llm", "openai-compatible"],
         index=0,
     )
+    st.caption(
+        "该选项决定系统如何从已输入的新闻/公告/社区信息中生成结构化事件、摘要、分类、趋势、风险与机会；"
+        "它不负责联网抓取新闻。"
+    )
     st.info(EXTRACTOR_DESCRIPTIONS[extractor_name])
 
-    if extractor_name == "openai-compatible" and not is_openai_key_configured():
-        st.warning(
-            "当前未配置 OPENAI_API_KEY。请先在 .env 中配置有效的 DeepSeek / OpenAI-compatible API key，"
-            "否则该模式不会运行。"
-        )
+    if is_openai_key_configured():
+        st.success("✅ 已检测到 OpenAI-compatible API 配置，可使用真实 LLM 抽取。")
+    else:
+        st.warning("⚠️ 未检测到 API key，openai-compatible 无法运行；可切换到 rule 模式。")
 
     return extractor_name
 
@@ -436,85 +543,48 @@ def _render_visualization_section(st: Any, report: DailyInsightReport) -> None:
     with col_matrix:
         st.markdown("**来源渠道 × 来源语言覆盖矩阵**")
         st.caption("这个图回答什么问题：这个图用于验证样本是否覆盖中英混合与多渠道来源。")
-        matrix_data = source_coverage_matrix_data(report)
-        matrix_chart = (
-            alt.Chart(alt.Data(values=matrix_data))
-            .mark_rect()
-            .encode(
-                x=alt.X("来源语言:N", title="来源语言"),
-                y=alt.Y("来源渠道:N", title="来源渠道"),
-                color=alt.Color("数量:Q", title="数量"),
-                tooltip=["来源渠道", "来源语言", "数量"],
-            )
-            .properties(height=220)
-        )
-        st.altair_chart(matrix_chart, use_container_width=True)
+        _render_altair_chart_safely(st, source_coverage_matrix_chart(report), "来源渠道 × 来源语言覆盖矩阵")
 
     with col_timeline:
         st.markdown("**事件发布时间线**")
         st.caption("这个图回答什么问题：这个图用于观察样本在时间上的分布，体现每日信息流和近期热点。")
-        timeline_data = event_timeline_chart_data(report)
-        timeline_chart = (
-            alt.Chart(alt.Data(values=timeline_data))
-            .mark_area(opacity=0.55, line=True)
-            .encode(
-                x=alt.X("发布日期:T", title="发布日期"),
-                y=alt.Y("事件数:Q", title="事件数", scale=alt.Scale(domainMin=0)),
-                tooltip=["发布日期:T", "事件数:Q"],
-            )
-            .properties(height=220)
-        )
-        st.altair_chart(timeline_chart, use_container_width=True)
+        _render_altair_chart_safely(st, event_timeline_chart(report), "事件发布时间线")
 
     col_category, col_scatter = st.columns(2)
     with col_category:
         st.markdown("**分类分布**")
         st.caption("这个图回答什么问题：这个图用于观察当前 AI 热点集中在哪些方向。")
-        category_data = category_distribution_chart_data(report)
-        category_chart = (
-            alt.Chart(alt.Data(values=category_data))
-            .mark_arc(innerRadius=45)
-            .encode(
-                theta=alt.Theta("数量:Q"),
-                color=alt.Color("分类:N", title="分类"),
-                tooltip=["分类", "数量"],
-            )
-            .properties(height=240)
-        )
-        st.altair_chart(category_chart, use_container_width=True)
+        _render_altair_chart_safely(st, category_distribution_chart(report), "分类分布")
 
     with col_scatter:
         st.markdown("**重要性 × 置信度散点图**")
         st.caption("这个图回答什么问题：这个图用于辅助判断哪些事件值得优先关注，哪些高重要性但低置信度的事件需要人工复核。")
-        scatter_data = importance_confidence_scatter_data(report)
-        scatter_chart = (
-            alt.Chart(alt.Data(values=scatter_data))
-            .mark_circle(size=90, opacity=0.8)
-            .encode(
-                x=alt.X("置信度:Q", title="置信度", scale=alt.Scale(domain=[0, 1])),
-                y=alt.Y("重要性:Q", title="重要性", scale=alt.Scale(domain=[0, 10])),
-                color=alt.Color("分类:N", title="分类"),
-                tooltip=["标题", "来源", "发布日期", "分类", "重要性", "置信度"],
-            )
-            .properties(height=240)
-        )
-        st.altair_chart(scatter_chart, use_container_width=True)
+        _render_altair_chart_safely(st, importance_confidence_scatter_chart(report), "重要性 × 置信度散点图")
 
     st.markdown("**影响领域分布**")
     st.caption("这个图回答什么问题：这个图用于观察事件主要影响哪些业务或技术方向。")
-    impact_data = impact_area_distribution_chart_data(report)
-    impact_chart = (
-        alt.Chart(alt.Data(values=impact_data))
-        .mark_bar()
-        .encode(
-            x=alt.X("事件数:Q", title="事件数"),
-            y=alt.Y("影响领域:N", title="影响领域", sort="-x"),
-            color=alt.Color("影响领域:N", legend=None),
-            tooltip=["影响领域", "事件数"],
-        )
-        .properties(height=220)
+    _render_altair_chart_safely(st, impact_area_distribution_chart(report), "影响领域分布")
+
+
+def _render_topic_cluster_section(st: Any, report: DailyInsightReport) -> None:
+    st.subheader("热点聚类与多源覆盖")
+    st.caption(
+        "同一热点可能被官方、科技媒体、聚合平台和社区重复提及。这里展示的是信息扩散与多源覆盖，"
+        "不是把多条记录简单视为重复数据；社区源用于观察反馈和舆情，不作为事实主来源。"
     )
-    st.altair_chart(impact_chart, use_container_width=True)
+    rows = topic_cluster_table(report)
+    if rows:
+        st.dataframe(rows, use_container_width=True)
+    else:
+        st.info("当前报告没有可展示的热点聚类。")
+
+
+def _render_altair_chart_safely(st: Any, chart: alt.Chart, chart_name: str) -> None:
+    try:
+        chart.to_dict()
+        st.altair_chart(chart, use_container_width=True)
+    except Exception as exc:
+        st.warning(f"{chart_name} 渲染失败：{exc}")
 
 
 def _render_llm_review_note(st: Any, report: DailyInsightReport) -> None:
@@ -552,6 +622,7 @@ def _render_pipeline_section(st: Any, input_path: Path | None, extractor_name: s
     col_extractor.metric("抽取模式", report.harness_summary.get("extractor_name", "unknown"))
 
     _render_visualization_section(st, report)
+    _render_topic_cluster_section(st, report)
 
     st.subheader("今日主要热点")
     st.dataframe(top_events_table(report), use_container_width=True)

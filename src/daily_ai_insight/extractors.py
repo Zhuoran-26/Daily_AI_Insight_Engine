@@ -92,6 +92,8 @@ class RuleBasedExtractor(BaseExtractor):
                     source_language=item.source_language,
                     selection_reason=item.selection_reason,
                     collected_at=item.collected_at,
+                    canonical_topic=item.canonical_topic,
+                    topic_role=item.topic_role,
                     **build_business_analysis(item, category, importance_score),
                 )
             )
@@ -151,6 +153,8 @@ class MockLLMExtractor(BaseExtractor):
                     source_language=item.source_language,
                     selection_reason=item.selection_reason,
                     collected_at=item.collected_at,
+                    canonical_topic=item.canonical_topic,
+                    topic_role=item.topic_role,
                     **build_business_analysis(
                         item,
                         category,
@@ -276,6 +280,8 @@ class OpenAICompatibleExtractor(BaseExtractor):
             "source_language": raw_item.source_language,
             "selection_reason": raw_item.selection_reason,
             "collected_at": raw_item.collected_at,
+            "canonical_topic": raw_item.canonical_topic,
+            "topic_role": raw_item.topic_role,
             "background": response.get("background"),
             "industry_impact": response.get("industry_impact"),
             "trend_signal": response.get("trend_signal"),

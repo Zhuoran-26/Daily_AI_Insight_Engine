@@ -8,7 +8,7 @@ from pathlib import Path
 
 from jinja2 import Template
 
-from daily_ai_insight.models import DailyInsightReport, StructuredAIEvent
+from daily_ai_insight.models import DailyInsightReport, StructuredAIEvent, TopicClusterSummary
 
 FORBIDDEN_SYSTEM_RISK_TERMS = ("LLM", "幻觉", "人工复核", "可信度", "Harness", "Schema")
 
@@ -40,7 +40,16 @@ REPORT_TEMPLATE = """# AI 行业洞察日报
    - 发布日期：{{ event.published_at }}
    - 来源渠道：{{ channel_label(event.source_channel) }}{% if event.source_channel %} (`{{ event.source_channel }}`){% endif %}
    - 来源语言：{{ language_label(event.source_language or event.language) }}{% if event.source_language or event.language %} (`{{ event.source_language or event.language }}`){% endif %}
+   - 采集日期：{{ optional_text(event.collected_at) }}
    - 选择理由：{{ optional_text(event.selection_reason) }}
+{% endfor %}
+
+## 热点聚类与多源覆盖
+
+同一热点可能被官方、科技媒体、聚合平台和社区重复提及。系统保留这些记录是为了观察信息扩散链路，而不是把它们简单视为重复数据。`published_at` 表示来源内容的发布时间，`collected_at` 表示样本采集或整理时间；社区源用于观察反馈和舆情，不作为事实主来源。
+
+{% for cluster in report.topic_clusters -%}
+- **{{ cluster.canonical_topic }}**：{{ cluster.source_count }} 个来源；覆盖渠道：{{ cluster.source_channels | join("、") }}；覆盖语言：{{ cluster.source_languages | join("、") }}；代表标题：{{ cluster.representative_title }}；代表来源：{{ cluster.representative_sources | join("、") }}；包含官方来源：{{ yes_no(cluster.has_official_source) }}；包含社区反馈：{{ yes_no(cluster.has_community_feedback) }}
 {% endfor %}
 
 ## 今日主要热点 Top 3–5
@@ -126,9 +135,10 @@ def build_daily_report(
     category_counts = dict(Counter(event.category for event in events))
     source_channel_counts = _build_source_channel_counts(events)
     source_language_counts = _build_source_language_counts(events)
+    topic_clusters = build_topic_clusters(events)
     top_events = sorted(events, key=lambda event: event.importance_score, reverse=True)[:5]
     key_takeaways = _build_key_takeaways(events, category_counts)
-    trend_signals = _build_trend_signals(events, category_counts, source_channel_counts)
+    trend_signals = _build_trend_signals(events, category_counts, source_channel_counts, topic_clusters)
     risks_and_opportunities = _build_risks_and_opportunities(events)
     opportunity_signals = _build_opportunity_signals(events)
     return DailyInsightReport(
@@ -139,6 +149,7 @@ def build_daily_report(
         category_counts=category_counts,
         source_channel_counts=source_channel_counts,
         source_language_counts=source_language_counts,
+        topic_clusters=topic_clusters,
         key_takeaways=key_takeaways,
         trend_signals=trend_signals,
         risks_and_opportunities=risks_and_opportunities,
@@ -156,6 +167,7 @@ def render_report(report: DailyInsightReport) -> str:
         optional_text=optional_text,
         checked=checked,
         pass_label=pass_label,
+        yes_no=yes_no,
     )
 
 
@@ -187,6 +199,7 @@ def _build_trend_signals(
     events: list[StructuredAIEvent],
     category_counts: dict[str, int],
     source_channel_counts: dict[str, int],
+    topic_clusters: list[TopicClusterSummary],
 ) -> list[str]:
     if not events:
         return ["没有可用的已校验事件，因此不生成趋势判断。"]
@@ -202,6 +215,12 @@ def _build_trend_signals(
         signals.append("应用场景落地显示 AI 能力正在进入更具体的办公、研发、内容和行业流程。")
     if source_channel_counts.get("social_media"):
         signals.append("开发者社区反馈可以补充官方与媒体信息，用于观察体验波动、成本敏感度和舆论热点。")
+    multi_source_clusters = [cluster for cluster in topic_clusters if cluster.source_count >= 2]
+    if multi_source_clusters:
+        labels = "、".join(cluster.canonical_topic for cluster in multi_source_clusters[:4])
+        signals.append(
+            f"{len(multi_source_clusters)} 个热点出现多源覆盖（{labels}），说明这些事件存在官方发布、媒体解读、聚合扩散或社区反馈链路。"
+        )
 
     top_event_signals = [
         event.trend_signal
@@ -209,6 +228,39 @@ def _build_trend_signals(
         if event.trend_signal
     ]
     return _unique_preserve_order([*signals, *top_event_signals])[:8]
+
+
+def build_topic_clusters(events: list[StructuredAIEvent]) -> list[TopicClusterSummary]:
+    grouped: dict[str, list[StructuredAIEvent]] = {}
+    for event in events:
+        topic = event.canonical_topic or "uncategorized"
+        grouped.setdefault(topic, []).append(event)
+
+    clusters: list[TopicClusterSummary] = []
+    for topic, topic_events in grouped.items():
+        ordered = sorted(topic_events, key=lambda event: event.importance_score, reverse=True)
+        clusters.append(
+            TopicClusterSummary(
+                canonical_topic=topic,
+                source_count=len(topic_events),
+                source_channels=_unique_preserve_order(
+                    [channel_label(event.source_channel) for event in topic_events]
+                ),
+                source_languages=_unique_preserve_order(
+                    [language_label(event.source_language or event.language) for event in topic_events]
+                ),
+                representative_title=ordered[0].title,
+                representative_sources=_unique_preserve_order(
+                    [event.source for event in topic_events]
+                )[:4],
+                has_official_source=any(event.source_channel == "official" for event in topic_events),
+                has_community_feedback=any(
+                    event.source_channel == "social_media" or event.topic_role == "community_feedback"
+                    for event in topic_events
+                ),
+            )
+        )
+    return sorted(clusters, key=lambda cluster: (-cluster.source_count, cluster.canonical_topic))
 
 
 def _build_risks_and_opportunities(events: list[StructuredAIEvent]) -> list[str]:
@@ -241,11 +293,12 @@ def _build_opportunity_signals(events: list[StructuredAIEvent]) -> list[str]:
 
 def _build_visualization_notes() -> list[str]:
     return [
+        "来源渠道 × 来源语言覆盖矩阵回答：样本是否覆盖中英混合与多渠道来源。",
+        "事件发布时间线回答：事件在时间上如何分布，哪些日期出现信息密集。",
         "分类分布图回答：今日 AI 信息主要集中在模型能力、智能体与工作流、基础设施还是应用产品。",
-        "Top 事件重要性图回答：哪些事件最值得业务用户优先阅读和跟进。",
-        "结构化事件表回答：每条事件的来源、发布日期、分类、置信度和证据是否可追溯。",
+        "重要性 × 置信度散点图回答：哪些高重要性事件值得优先关注，哪些事件需要进一步人工复核。",
+        "影响领域分布回答：事件主要影响哪些业务或技术方向。",
         "Rule vs LLM 评估对比回答：不同 extractor 在分类准确率、来源追溯和失败项上的差异。",
-        "后续 Phase 8.3 可继续补充渠道×语言覆盖矩阵、发布时间线和重要性×置信度散点图。",
     ]
 
 
@@ -303,3 +356,7 @@ def checked(value: object) -> str:
 
 def pass_label(value: object) -> str:
     return "通过" if value is True else "未通过"
+
+
+def yes_no(value: bool) -> str:
+    return "是" if value else "否"
