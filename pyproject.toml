@@ -10,6 +10,7 @@ dependencies = [
     "pytest>=8.0",
     "openai>=1.0",
     "python-dotenv>=1.0",
+    "streamlit>=1.35,<1.36",
 ]
 
 [project.scripts]

@@ -104,6 +104,31 @@ data/processed/structured_events.json
 outputs/daily_report.md
 ```
 
+## 本地产品 Demo
+
+CLI 是稳定工程入口，Streamlit 是产品演示入口。`rule` 模式不需要 API key；DeepSeek / OpenAI-compatible 模式需要本地 `.env`。
+
+安装依赖后启动 UI：
+
+```bash
+python3 -m pip install -e .
+streamlit run app.py
+```
+
+Streamlit UI 支持：
+
+- 选择 `sample_ai_news.json` 或 `real_ai_news_sample.json`
+- 上传自定义新闻 JSON，不覆盖原始数据文件
+- 选择 `rule`、`mock-llm` 或 `openai-compatible` extractor
+- 一键运行 insight pipeline
+- 查看 structured events、harness summary 和 daily report
+- 运行 Evaluation Harness 并查看 metrics、mismatch 和 failed items
+- 运行 AI Reviewer 并查看 final verdict 与 issue table
+
+如果选择 `openai-compatible` 但缺少 `OPENAI_API_KEY`，UI 会明确提示并阻止运行，不会静默 fallback 到 `rule`。
+
+手动演示步骤见 [`docs/manual_demo_checklist.md`](docs/manual_demo_checklist.md)。
+
 ## 端到端实际验收
 
 下面流程模拟从 GitHub 重新 clone 后进行验收。该流程不需要 API key，可以验证项目是否能真实运行。`rule` 模式是稳定 baseline，`openai-compatible` 模式才需要本地 `.env`。
