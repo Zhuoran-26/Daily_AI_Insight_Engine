@@ -39,5 +39,9 @@ def test_report_markdown_is_generated(tmp_path):
     text = path.read_text(encoding="utf-8")
 
     assert "Harness Summary" in text
+    assert "Trend Signals" in text
+    assert "Risks and Opportunities" in text
     assert "Methodology Note" in text
     assert "deterministic baseline" in text
+    assert report.trend_signals
+    assert report.risks_and_opportunities

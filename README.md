@@ -2,19 +2,34 @@
 
 AI 行业信息结构化分析与日报生成系统。
 
+适用场景：同花顺 AI 应用岗位笔试项目。
+
 这个项目不是把新闻丢给模型后直接生成一篇看起来合理的报告，而是一个工程化 AI Coding / Agentic Engineering 项目：从真实来源数据、结构化抽取、Schema 校验、Harness 约束、质量评估、AI Reviewer 复审，到最终日报输出，形成一条可运行、可测试、可解释的端到端链路。
+
+核心亮点：
+
+- Context Engineering
+- Harness Engineering
+- Item-level LLM Extraction
+- Structured Output
+- Evaluation Harness
+- AI Reviewer
+- Streamlit Product Demo
+- Test-backed Development
 
 ## 推荐查看顺序
 
 1. [`docs/final_showcase_report.md`](docs/final_showcase_report.md)
    项目最终亮点、架构、Rule baseline 与 DeepSeek V4 Flash 的真实对比结果。
-2. [`docs/ai_coding_showcase.md`](docs/ai_coding_showcase.md)
+2. [`docs/submission_checklist.md`](docs/submission_checklist.md)
+   对照题目要求逐项验收项目实现。
+3. [`docs/ai_coding_showcase.md`](docs/ai_coding_showcase.md)
    展示 Context Engineering、Harness Engineering、Structured Output、Self Verification 等 AI Coding 方法论。
-3. [`outputs/llm_evaluation_report.md`](outputs/llm_evaluation_report.md)
+4. [`outputs/llm_evaluation_report.md`](outputs/llm_evaluation_report.md)
    展示 DeepSeek V4 Flash 与 rule baseline 的结构化抽取评估结果。
-4. [`outputs/review_report.md`](outputs/review_report.md)
+5. [`outputs/review_report.md`](outputs/review_report.md)
    展示 AI Reviewer 对评估结果的复审、问题识别和 critique-revise 建议。
-5. [`outputs/daily_report.md`](outputs/daily_report.md)
+6. [`outputs/daily_report.md`](outputs/daily_report.md)
    展示最终生成的 AI 行业日报。
 
 ## 核心方法论
@@ -79,25 +94,16 @@ outputs/review_report.md
 
 ## 快速运行
 
-安装项目：
+CLI 和 Streamlit 两种入口都可以本地运行：
 
 ```bash
 python3 -m pip install -e .
-```
-
-运行默认测试：
-
-```bash
 python3 -m pytest
-```
-
-使用真实样例数据运行稳定 rule baseline：
-
-```bash
 python3 -m daily_ai_insight.cli run --input data/raw/real_ai_news_sample.json --extractor rule
+streamlit run app.py
 ```
 
-生成：
+CLI pipeline 会生成：
 
 ```text
 data/processed/structured_events.json
@@ -180,7 +186,7 @@ python3 -m daily_ai_insight.cli run --input data/raw/real_ai_news_sample.json --
 
 如果缺少 `OPENAI_API_KEY`，`openai-compatible` 会清晰失败，不会静默 fallback 到 `rule`，也不会假装 LLM 成功。
 
-## DeepSeek / OpenAI-compatible 运行方式
+## DeepSeek / OpenAI-compatible 模式
 
 创建本地环境文件：
 

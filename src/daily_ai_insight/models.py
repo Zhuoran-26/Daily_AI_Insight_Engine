@@ -73,6 +73,8 @@ class DailyInsightReport(BaseModel):
     top_events: list[StructuredAIEvent]
     category_counts: dict[str, int]
     key_takeaways: list[str]
+    trend_signals: list[str]
+    risks_and_opportunities: list[str]
     harness_summary: dict[str, str | int | float | bool]
 
     @field_validator("date")

@@ -72,6 +72,22 @@
 - The report is grounded in 7 distinct source labels from raw inputs.
 
 
+## Trend Signals
+
+- model leads the sample with 9 validated events, indicating the dominant theme for this run.
+- 13 events have importance score >= 6.0, suggesting several items are worth daily-report attention.
+- Agent and application activity accounts for 3 events, showing productization momentum beyond model releases.
+- Infrastructure appears in 1 event, indicating continued demand for deployment and compute foundations.
+
+
+## Risks and Opportunities
+
+- Opportunity: the leading model theme can guide deeper follow-up analysis and demo storytelling.
+- Opportunity: the top event 'Advancing voice intelligence with new models in the API' provides a concrete anchor for the daily report.
+- Risk: average extraction confidence is 0.70; low-confidence or semantically ambiguous items should remain reviewable.
+- Risk: deterministic category rules can misclassify complex product or agent news, so LLM extraction should stay behind harness checks.
+
+
 ## Harness Summary
 
 - input_count: 13

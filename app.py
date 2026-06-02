@@ -92,6 +92,41 @@ def category_counts_table(report: DailyInsightReport) -> list[dict[str, Any]]:
     ]
 
 
+def category_distribution_chart_data(report: DailyInsightReport) -> list[dict[str, Any]]:
+    return category_counts_table(report)
+
+
+def top_events_importance_chart_data(report: DailyInsightReport) -> list[dict[str, Any]]:
+    return [
+        {
+            "title": event.title,
+            "importance_score": event.importance_score,
+        }
+        for event in report.top_events
+    ]
+
+
+def extractor_accuracy_comparison_chart_data(
+    rule_path: Path = SAVED_RULE_EVALUATION_PATH,
+    llm_path: Path = SAVED_LLM_EVALUATION_PATH,
+) -> list[dict[str, Any]]:
+    if not rule_path.exists() or not llm_path.exists():
+        return []
+
+    rule_summary = load_evaluation_summary(rule_path)
+    llm_summary = load_evaluation_summary(llm_path)
+    return [
+        {
+            "extractor": "rule baseline",
+            "category_accuracy": rule_summary.category_accuracy,
+        },
+        {
+            "extractor": "DeepSeek V4 Flash",
+            "category_accuracy": llm_summary.category_accuracy,
+        },
+    ]
+
+
 def mismatched_items_table(summary: EvaluationSummary) -> list[dict[str, Any]]:
     return [
         {
@@ -226,9 +261,11 @@ def _render_pipeline_section(st: Any, input_path: Path | None, extractor_name: s
     col_extractor.metric("Extractor", report.harness_summary.get("extractor_name", "unknown"))
 
     st.subheader("Category Counts")
+    st.bar_chart(category_distribution_chart_data(report), x="category", y="count")
     st.dataframe(category_counts_table(report), use_container_width=True)
 
     st.subheader("Top Events")
+    st.bar_chart(top_events_importance_chart_data(report), x="title", y="importance_score")
     st.dataframe(top_events_table(report), use_container_width=True)
 
     st.subheader("Structured Events")
@@ -289,6 +326,11 @@ def _render_evaluation_section(st: Any, input_path: Path | None, extractor_name:
     col_grounding.metric("Grounding pass rate", f"{summary.grounding_pass_rate:.2f}")
     col_confidence.metric("Avg confidence", f"{summary.average_confidence:.2f}")
     col_failed.metric("Failed items", summary.failed_items)
+
+    comparison_data = extractor_accuracy_comparison_chart_data()
+    if comparison_data:
+        st.subheader("Rule vs LLM Accuracy")
+        st.bar_chart(comparison_data, x="extractor", y="category_accuracy")
 
     st.subheader("Mismatched Items")
     st.dataframe(mismatched_items_table(summary), use_container_width=True)

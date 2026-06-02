@@ -1,6 +1,30 @@
-# Manual Demo Checklist
+# 手动演示验收清单
 
-Use this checklist to verify the lightweight Streamlit product demo without requiring a production deployment.
+用于验证轻量 Streamlit 产品 Demo 和 CLI 端到端流程，不需要生产部署。
+
+## 不需要 API Key 的最终验收路径
+
+```bash
+python3 -m pip install -e .
+python3 -m pytest
+python3 -m daily_ai_insight.cli run --input data/raw/real_ai_news_sample.json --extractor rule
+python3 -m daily_ai_insight.cli evaluate --input data/raw/real_ai_news_sample.json --expected data/eval/expected_real_sample_categories.json --extractor rule --output-prefix rule
+python3 -m daily_ai_insight.cli review --evaluation outputs/llm_evaluation_summary.json --baseline outputs/rule_evaluation_summary.json
+streamlit run app.py
+```
+
+这条路径验证 deterministic baseline、harnessed pipeline、evaluation、reviewer 和产品 Demo UI，不需要真实 API key。
+
+## 使用 DeepSeek 的最终验收路径
+
+```bash
+cp .env.example .env
+python3 scripts/smoke_test_llm.py
+RUN_LLM_INTEGRATION=1 python3 -m pytest tests/test_llm_integration.py
+python3 -m daily_ai_insight.cli evaluate --input data/raw/real_ai_news_sample.json --expected data/eval/expected_real_sample_categories.json --extractor openai-compatible --output-prefix llm
+```
+
+运行 DeepSeek 路径前，请先在本地编辑 `.env`。不要提交 `.env` 或任何真实 API key。
 
 ## 1. Install Dependencies
 
