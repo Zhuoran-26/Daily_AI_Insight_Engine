@@ -1,206 +1,199 @@
 # Daily AI Insight Engine
 
-Daily AI Insight Engine turns daily AI-related news into structured events, validates those events with harness checks, and generates a traceable daily report.
+AI 行业信息结构化分析与日报生成系统。
 
-This repository is being built for an AI application interview task. The goal is not only to produce a report, but to show a disciplined AI engineering workflow: context engineering, structured output, harness engineering, self verification, and test-backed development.
+这个项目不是把新闻丢给模型后直接生成一篇看起来合理的报告，而是一个工程化 AI Coding / Agentic Engineering 项目：从真实来源数据、结构化抽取、Schema 校验、Harness 约束、质量评估、AI Reviewer 复审，到最终日报输出，形成一条可运行、可测试、可解释的端到端链路。
 
-Final interview showcase: [docs/final_showcase_report.md](/Users/aragoto/Desktop/Daily_AI_Insight_Engine/docs/final_showcase_report.md)
+## 推荐查看顺序
 
-## Why This Is Not Vibe Coding
+1. [`docs/final_showcase_report.md`](docs/final_showcase_report.md)
+   项目最终亮点、架构、Rule baseline 与 DeepSeek V4 Flash 的真实对比结果。
+2. [`docs/ai_coding_showcase.md`](docs/ai_coding_showcase.md)
+   展示 Context Engineering、Harness Engineering、Structured Output、Self Verification 等 AI Coding 方法论。
+3. [`outputs/llm_evaluation_report.md`](outputs/llm_evaluation_report.md)
+   展示 DeepSeek V4 Flash 与 rule baseline 的结构化抽取评估结果。
+4. [`outputs/review_report.md`](outputs/review_report.md)
+   展示 AI Reviewer 对评估结果的复审、问题识别和 critique-revise 建议。
+5. [`outputs/daily_report.md`](outputs/daily_report.md)
+   展示最终生成的 AI 行业日报。
 
-Ordinary vibe coding would paste raw news into an AI model and submit a report if it looked plausible. This project keeps the pipeline inspectable:
+## 核心方法论
 
-- raw news keeps source and URL metadata
-- structured events must preserve source grounding
-- generated reports are built from validated events
-- low-confidence or ungrounded records fail fast
-- every implementation phase has automated tests
+本项目重点展示以下 AI Engineering 能力：
 
-## Harness Engineering
+- **Context Engineering**：用 `AGENTS.md`、项目规格文档、技能说明、prompt 和 fixture 管理上下文，而不是靠一次性提示词。
+- **Harness Engineering**：用代码层约束阻止无来源事件、幻觉 URL、低置信度结果和不可控 agent loop 进入最终报告。
+- **Item-level LLM Extraction**：OpenAI-compatible extractor 按单条 `RawNewsItem` 调用 LLM，降低 batch JSON 失败风险，并让 retry 和错误定位更精确。
+- **Structured Output**：所有原始新闻、结构化事件、日报、评估摘要和 reviewer 输出都有明确 schema 或结构化格式。
+- **Self Verification**：每个阶段都有 schema validation、source grounding、confidence check 或测试验证。
+- **Evaluation Harness**：用 expected fixture 量化 category accuracy、grounding pass rate、failed item count 和 confidence，而不是凭主观感觉判断质量。
+- **AI Reviewer / Critique-Revise**：用 deterministic reviewer 检查 mismatch、低置信度、失败项、baseline 对比和输出文件完整性。
+- **Test-backed Development**：默认测试不依赖真实 API key，真实 LLM 集成测试通过环境变量显式开启。
 
-The `PipelineHarness` is a control layer around the pipeline. It prevents:
+## 为什么这不是普通 Vibe Coding
 
-- hallucinated sources by rejecting fake or generated URLs
-- ungrounded events by requiring every event to match a raw source/title/URL
-- infinite loops by enforcing a processing step budget
-- unverifiable output by requiring schema validation and confidence checks
-- low-confidence results from directly entering the final report
+普通 vibe coding 往往是：
 
-The current MVP is deterministic. Future LLM or Agent stages must pass through the same harness before their outputs can be used downstream.
+- 让 AI 直接读新闻并生成报告
+- 人工觉得报告合理就提交
+- 没有中间结构化产物
+- 没有 source grounding
+- 没有自动化质量评估
 
-## Current Baseline
+本项目的做法是：
 
-The default mode is a deterministic rule baseline:
+- 原始输入保留 `source` 和 `url`
+- 抽取结果必须是 `StructuredAIEvent`
+- LLM 输出必须通过 JSON parse、Pydantic validation、source grounding、evidence grounding 和 confidence gate
+- pipeline 保持 fail-fast，不能生成误导性报告
+- evaluation harness 量化 extractor 的质量
+- AI Reviewer 复审评估结果并给出可执行改进建议
 
-1. Load synthetic sample AI news from `data/raw/sample_ai_news.json`.
-2. Normalize raw records into `RawNewsItem`.
-3. Validate raw source fields.
-4. Convert records into `StructuredAIEvent` with the selected extractor.
-5. Run schema validation plus harness grounding, evidence, confidence, and loop-budget checks.
-6. Generate `data/processed/structured_events.json`.
-7. Generate `outputs/daily_report.md`.
+## 项目流程
 
-The sample data is synthetic for reproducible testing. URLs point to trusted public homepages or official source hubs, not invented article URLs.
+当前架构：
 
-## Data Strategy
-
-The project uses two local raw-data fixtures:
-
-- `data/raw/sample_ai_news.json`: synthetic fixture for stable, repeatable tests.
-- `data/raw/real_ai_news_sample.json`: real-world sample for interview demonstration and qualitative review.
-
-The synthetic fixture is intentionally controlled so schema, harness, and report behavior can be tested without depending on live websites. The real-world sample shows that the same pipeline can process traceable public AI news and announcements.
-
-All real sample records must retain `source` and `url`. The harness blocks missing, suspicious, or hallucinated source URLs and requires each structured event to stay grounded in the raw input record that produced it.
-
-## Install
-
-```bash
-python -m pip install -e .
+```text
+RawNewsItem
+-> Extractor Strategy
+-> Item-level LLM Extraction
+-> Schema Validation
+-> Harness Verification
+-> Evaluation Harness
+-> AI Reviewer
+-> Report Generation
 ```
 
-If your shell does not provide `python`, use `python3` for the commands below.
+核心输出：
 
-## Run Tests
-
-```bash
-python -m pytest
+```text
+data/processed/structured_events.json
+outputs/daily_report.md
+outputs/rule_evaluation_summary.json
+outputs/rule_evaluation_report.md
+outputs/llm_evaluation_summary.json
+outputs/llm_evaluation_report.md
+outputs/review_summary.json
+outputs/review_report.md
 ```
 
-## Run Pipeline
+## 快速运行
+
+安装项目：
 
 ```bash
-python -m daily_ai_insight.cli run --input data/raw/sample_ai_news.json --extractor rule
+python3 -m pip install -e .
 ```
 
-Equivalent `python3` command:
+运行默认测试：
 
 ```bash
-python3 -m daily_ai_insight.cli run --input data/raw/sample_ai_news.json --extractor rule
+python3 -m pytest
 ```
 
-Generated files:
-
-- `data/processed/structured_events.json`
-- `outputs/daily_report.md`
-
-## Running with Real-world Sample
+使用真实样例数据运行稳定 rule baseline：
 
 ```bash
 python3 -m daily_ai_insight.cli run --input data/raw/real_ai_news_sample.json --extractor rule
 ```
 
-This uses the same deterministic baseline and writes the same output paths:
+生成：
 
-- `data/processed/structured_events.json`
-- `outputs/daily_report.md`
-
-## Extractor Modes
-
-The pipeline supports three extractor modes:
-
-- `rule`: default deterministic baseline. It is fully local, reproducible, and does not call an LLM.
-- `mock-llm`: local test double for LLM workflow. It simulates semantic extraction and unsafe LLM behavior in tests without calling an API.
-- `openai-compatible`: real OpenAI-compatible LLM extractor. It reads `OPENAI_API_KEY`, optional `OPENAI_BASE_URL`, and optional `OPENAI_MODEL`.
-
-Run the real-world sample with mock LLM workflow:
-
-```bash
-python3 -m daily_ai_insight.cli run --input data/raw/real_ai_news_sample.json --extractor mock-llm
+```text
+data/processed/structured_events.json
+outputs/daily_report.md
 ```
 
-Run the optional OpenAI-compatible interface:
+## 端到端实际验收
+
+下面流程模拟从 GitHub 重新 clone 后进行验收。该流程不需要 API key，可以验证项目是否能真实运行。`rule` 模式是稳定 baseline，`openai-compatible` 模式才需要本地 `.env`。
 
 ```bash
+git clone https://github.com/Zhuoran-26/Daily_AI_Insight_Engine.git
+cd Daily_AI_Insight_Engine
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install --upgrade pip
+python3 -m pip install -e .
+python3 -m daily_ai_insight.cli run --input data/raw/real_ai_news_sample.json --extractor rule
+python3 -m daily_ai_insight.cli evaluate --input data/raw/real_ai_news_sample.json --expected data/eval/expected_real_sample_categories.json --extractor rule --output-prefix rule
+python3 -m daily_ai_insight.cli review --evaluation outputs/llm_evaluation_summary.json --baseline outputs/rule_evaluation_summary.json
+```
+
+这组命令可以验证：
+
+- 项目依赖可以安装
+- pipeline 可以真实跑通
+- rule baseline 可以重新生成日报
+- evaluation harness 可以重新生成 rule 评估
+- reviewer 可以基于已提交的 LLM evaluation 与新生成的 rule baseline 做复审
+
+## 数据策略
+
+项目保留两类输入数据：
+
+- `data/raw/sample_ai_news.json`：synthetic fixture，用于稳定测试和回归验证。
+- `data/raw/real_ai_news_sample.json`：real-world sample，用于展示真实来源、真实 URL 和实际 pipeline 效果。
+
+所有真实样例都必须保留 `source` 和 `url`。Harness 会阻止缺失来源、虚构 URL、低置信度或无法追溯的结构化事件进入最终报告。
+
+## Extractor 模式
+
+项目支持三种 extractor：
+
+- `rule`：默认 deterministic baseline，本地可复现，不需要 LLM。
+- `mock-llm`：本地测试替身，用于模拟 LLM 工作流、幻觉 source/url、低置信度和 malformed output。
+- `openai-compatible`：真实 OpenAI-compatible LLM 接口，当前默认面向 DeepSeek API，需要本地 `.env`。
+
+运行示例：
+
+```bash
+python3 -m daily_ai_insight.cli run --input data/raw/real_ai_news_sample.json --extractor rule
+python3 -m daily_ai_insight.cli run --input data/raw/real_ai_news_sample.json --extractor mock-llm
 python3 -m daily_ai_insight.cli run --input data/raw/real_ai_news_sample.json --extractor openai-compatible
 ```
 
-If `OPENAI_API_KEY` is missing, `openai-compatible` fails clearly and does not generate a misleading report. The OpenAI SDK is installed for this mode, but `rule` and `mock-llm` do not require API access.
+如果缺少 `OPENAI_API_KEY`，`openai-compatible` 会清晰失败，不会静默 fallback 到 `rule`，也不会假装 LLM 成功。
 
-## Using DeepSeek / OpenAI-compatible LLM
+## DeepSeek / OpenAI-compatible 运行方式
 
-The default reproducible mode is still `rule`. The `openai-compatible` mode is an optional real LLM enhancement path and requires a local API key.
-
-Create a local environment file:
+创建本地环境文件：
 
 ```bash
 cp .env.example .env
-# then edit .env and replace OPENAI_API_KEY with your local key
+# 编辑 .env，填入自己的 DeepSeek API key
 ```
 
-Default suggested values:
+`.env.example` 示例：
 
 ```env
 OPENAI_API_KEY=your_api_key_here
 OPENAI_BASE_URL=https://api.deepseek.com
 OPENAI_MODEL=deepseek-v4-flash
-# For stronger reasoning, you can use:
+# 如需更强推理，可改用:
 # OPENAI_MODEL=deepseek-v4-pro
 ```
 
-`deepseek-v4-flash` is the default recommended model for this project. If you need stronger reasoning, change `OPENAI_MODEL` to `deepseek-v4-pro`. Keep the API key only in `.env`; `.env` is ignored by git.
+注意：
 
-Run with the real LLM extractor:
+- `.env` 不要提交。
+- 不要把真实 API key 写进 README、测试或代码。
+- DeepSeek 默认模型为 `deepseek-v4-flash`。
+- 如果需要更强推理，可以把 `OPENAI_MODEL` 改为 `deepseek-v4-pro`。
 
-```bash
-python3 -m daily_ai_insight.cli run --input data/raw/real_ai_news_sample.json --extractor openai-compatible
-```
-
-The `.env` file is ignored by git. Do not commit real API keys.
-
-LLM output is not trusted directly. The extractor retries invalid output up to two times, then fails without falling back to `rule`. Every LLM result must pass JSON parsing, Pydantic schema validation, `validate_structured_events`, source grounding, evidence grounding, and confidence checks before a report is written.
-
-To manually run the real integration test:
-
-```bash
-RUN_LLM_INTEGRATION=1 python3 -m pytest tests/test_llm_integration.py
-```
-
-Without `RUN_LLM_INTEGRATION=1` and `OPENAI_API_KEY`, the integration test is skipped and the rest of the project remains fully testable.
-
-Recommended LLM verification order:
+建议验证顺序：
 
 ```bash
 python3 scripts/smoke_test_llm.py
 RUN_LLM_INTEGRATION=1 python3 -m pytest tests/test_llm_integration.py
-python3 -m daily_ai_insight.cli run --input data/raw/real_ai_news_sample.json --extractor openai-compatible
+python3 -m daily_ai_insight.cli evaluate --input data/raw/real_ai_news_sample.json --expected data/eval/expected_real_sample_categories.json --extractor openai-compatible --output-prefix llm
 ```
 
-## Item-Level LLM Extraction
-
-The OpenAI-compatible extractor processes one `RawNewsItem` at a time. For each item it calls the LLM, parses one JSON object, validates one `StructuredAIEvent`, applies single-item source/evidence grounding, checks confidence, and retries only that item up to two times.
-
-The LLM can suggest category, event type, entities, impact areas, importance, confidence, summary, and evidence. The system forces `title`, `source`, `url`, `published_at`, `language`, and `id` from the raw input, so the model cannot rewrite source metadata.
-
-This design reduces batch-level JSON failures, makes retry scope smaller, and makes errors easier to locate because failures include item index and title.
+默认测试不会调用真实 API。只有设置 `RUN_LLM_INTEGRATION=1` 且本地存在 `OPENAI_API_KEY` 时，才会运行真实 LLM integration test。
 
 ## Evaluation Harness
 
-Run extractor evaluation against the real-world sample and expected category fixture:
-
-```bash
-python3 -m daily_ai_insight.cli evaluate \
-  --input data/raw/real_ai_news_sample.json \
-  --expected data/eval/expected_real_sample_categories.json \
-  --extractor rule
-```
-
-You can compare extractors:
-
-```bash
-python3 -m daily_ai_insight.cli evaluate --input data/raw/real_ai_news_sample.json --expected data/eval/expected_real_sample_categories.json --extractor rule
-python3 -m daily_ai_insight.cli evaluate --input data/raw/real_ai_news_sample.json --expected data/eval/expected_real_sample_categories.json --extractor mock-llm
-python3 -m daily_ai_insight.cli evaluate --input data/raw/real_ai_news_sample.json --expected data/eval/expected_real_sample_categories.json --extractor openai-compatible
-```
-
-The `rule` and `mock-llm` evaluations do not need an API key. The `openai-compatible` evaluation needs `.env` configuration.
-
-Evaluation outputs:
-
-- `outputs/evaluation_summary.json`
-- `outputs/evaluation_report.md`
-
-To preserve side-by-side comparison artifacts, add `--output-prefix`:
+运行 rule baseline 评估：
 
 ```bash
 python3 -m daily_ai_insight.cli evaluate \
@@ -208,7 +201,11 @@ python3 -m daily_ai_insight.cli evaluate \
   --expected data/eval/expected_real_sample_categories.json \
   --extractor rule \
   --output-prefix rule
+```
 
+运行 LLM 评估：
+
+```bash
 python3 -m daily_ai_insight.cli evaluate \
   --input data/raw/real_ai_news_sample.json \
   --expected data/eval/expected_real_sample_categories.json \
@@ -216,18 +213,31 @@ python3 -m daily_ai_insight.cli evaluate \
   --output-prefix llm
 ```
 
-Prefixed outputs:
+评估输出：
 
-- `outputs/rule_evaluation_summary.json`
-- `outputs/rule_evaluation_report.md`
-- `outputs/llm_evaluation_summary.json`
-- `outputs/llm_evaluation_report.md`
+```text
+outputs/rule_evaluation_summary.json
+outputs/rule_evaluation_report.md
+outputs/llm_evaluation_summary.json
+outputs/llm_evaluation_report.md
+```
 
-The evaluation harness measures category accuracy, valid output count, failed items, grounding pass rate, and confidence distribution. It is separate from the production pipeline: evaluation records item-level failures for analysis, while the pipeline remains fail-fast to avoid misleading reports.
+当前已验证结果：
 
-## AI Reviewer Workflow
+| Extractor | Category Accuracy | Grounding Pass Rate | Avg Confidence | Failed Items |
+|---|---:|---:|---:|---:|
+| Rule baseline | 0.38 | 1.00 | 0.70 | 0 |
+| DeepSeek V4 Flash | 0.69 | 1.00 | 0.92 | 0 |
 
-Run the deterministic reviewer over an evaluation summary and optional baseline:
+结论：
+
+- rule baseline 暴露了规则方法在复杂语义分类上的局限。
+- DeepSeek V4 Flash 在复杂语义分类上更强。
+- Harness 保证两种模式都保持 source grounding，不允许无来源事件进入报告。
+
+## AI Reviewer / Critique-Revise
+
+运行 reviewer：
 
 ```bash
 python3 -m daily_ai_insight.cli review \
@@ -235,45 +245,73 @@ python3 -m daily_ai_insight.cli review \
   --baseline outputs/rule_evaluation_summary.json
 ```
 
-Generated reviewer outputs:
+生成：
 
-- `outputs/review_summary.json`
-- `outputs/review_report.md`
+```text
+outputs/review_summary.json
+outputs/review_report.md
+```
 
-The reviewer checks category mismatches, failed items, grounding rate, confidence, comparison against the rule baseline, and whether evaluation/daily report artifacts exist. It provides a critique-revise surface for interview discussion without trusting subjective impressions alone.
+Reviewer 会检查：
 
-## Recommended Demo Order
+- category mismatch
+- failed item
+- grounding pass rate 是否低于 1.0
+- average confidence 是否低于阈值
+- LLM accuracy 是否明显高于 rule baseline
+- evaluation report 和 daily report 是否存在
 
-1. Run tests: `python3 -m pytest`
-2. Run rule evaluation with prefix: `python3 -m daily_ai_insight.cli evaluate --input data/raw/real_ai_news_sample.json --expected data/eval/expected_real_sample_categories.json --extractor rule --output-prefix rule`
-3. Run LLM evaluation with prefix: `python3 -m daily_ai_insight.cli evaluate --input data/raw/real_ai_news_sample.json --expected data/eval/expected_real_sample_categories.json --extractor openai-compatible --output-prefix llm`
-4. Run reviewer: `python3 -m daily_ai_insight.cli review --evaluation outputs/llm_evaluation_summary.json --baseline outputs/rule_evaluation_summary.json`
-5. Open [docs/final_showcase_report.md](/Users/aragoto/Desktop/Daily_AI_Insight_Engine/docs/final_showcase_report.md)
-6. Generate the final daily report: `python3 -m daily_ai_insight.cli run --input data/raw/real_ai_news_sample.json --extractor openai-compatible`
+当前 reviewer 结论是 `reviewed_with_warnings`，原因是 DeepSeek V4 Flash 虽然显著高于 rule baseline，但仍存在少量 category mismatch。这是项目刻意保留的 critique-revise 展示面，而不是把 LLM 输出包装成完美结果。
 
-## Why Rule Baseline Is Not the Final Intelligence Layer
+## Harness Engineering 约束
 
-The rule extractor is valuable because it is deterministic, cheap, testable, and useful as a fallback. It is not expected to solve complex semantic classification. For example, application or agent news that mentions `GPT`, `Claude`, or `Gemini` may be over-classified as `model`.
+Harness 的目标不是增强功能，而是防止不可信 AI 输出进入下游：
 
-Complex semantic extraction should move to an LLM extractor, but only behind mandatory verification:
+- 阻止 hallucinated source/url
+- 阻止 ungrounded event
+- 阻止 confidence 过低的结果进入最终报告
+- 限制 LLM retry 次数，避免不可控 agent loop
+- 对每个 extractor 使用同一套 schema validation 和 grounding checks
+- pipeline 出错时 fail fast，不生成误导性报告
 
-- Pydantic schema validation
-- source grounding against `RawNewsItem`
-- evidence grounding against title or summary
-- confidence threshold checks
-- item-level retry budgets
-- deterministic fallback behavior
-- automated tests for hallucinated sources and low confidence
+## 面试演示建议
 
-## Future LLM/Agent Extension Points
+推荐演示顺序：
 
-The deterministic extractor can be supplemented by the real OpenAI-compatible extractor, but only behind these controls:
+1. 展示 README 顶部项目定位，强调这是工程化 AI Coding / Agentic Engineering 项目。
+2. 展示 [`docs/final_showcase_report.md`](docs/final_showcase_report.md)，快速说明整体架构和结果。
+3. 运行 rule pipeline：
 
-- Pydantic schema validation
-- source grounding against `RawNewsItem`
-- confidence threshold checks
-- loop and retry budgets
-- deterministic fallback behavior
-- AI reviewer and human review queue
+   ```bash
+   python3 -m daily_ai_insight.cli run --input data/raw/real_ai_news_sample.json --extractor rule
+   ```
 
-No future model output should enter the final report unless it passes these checks.
+4. 展示 rule vs LLM evaluation：
+
+   ```text
+   outputs/rule_evaluation_report.md
+   outputs/llm_evaluation_report.md
+   ```
+
+5. 展示 reviewer report：
+
+   ```text
+   outputs/review_report.md
+   ```
+
+6. 解释 Harness 如何防止幻觉、无来源事件和不可控 agent loop。
+
+## 已知限制
+
+- 当前 real-world sample 规模为 13 条，适合展示与评估，但不是完整生产数据集。
+- evidence grounding 使用保守启发式，主要依赖 title/summary 可追溯片段。
+- 真实新闻目前是手动整理样例，尚未接入 RSS/API collector。
+- AI Reviewer 当前是 deterministic reviewer，还没有实现多轮自动 prompt repair。
+
+## 后续演进
+
+- 接入 RSS/API collector。
+- 增加 reviewer-driven prompt refinement。
+- 支持多日趋势追踪。
+- 增加 Streamlit 或静态可视化 dashboard。
+- 增加 CI workflow，自动运行默认测试与 fixture 校验。
