@@ -1,0 +1,155 @@
+{
+  "extractor": "rule",
+  "total_items": 16,
+  "successful_items": 16,
+  "failed_items": 0,
+  "category_accuracy": 0.5,
+  "grounding_pass_rate": 1.0,
+  "average_confidence": 0.6999999999999998,
+  "item_results": [
+    {
+      "title": "OpenAI frontier models and Codex are now available on AWS",
+      "expected_category": "infrastructure",
+      "predicted_category": "model",
+      "category_match": false,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    },
+    {
+      "title": "Introducing Claude Opus 4.8",
+      "expected_category": "model",
+      "predicted_category": "model",
+      "category_match": true,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    },
+    {
+      "title": "\u817e\u8baf\u9762\u5411\u5168\u7403\u5e02\u573a\u63a8\u51fa\u5168\u65b0AI\u5de5\u5177\u53ca\u4f01\u4e1a\u89e3\u51b3\u65b9\u6848",
+      "expected_category": "application",
+      "predicted_category": "agent",
+      "category_match": false,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    },
+    {
+      "title": "\u6587\u5fc3 5.1 \u6b63\u5f0f\u53d1\u5e03\uff01\u591a\u699c\u767b\u9876\uff0c\u6a21\u578b\"\u5199\u5f97\u597d\u66f4\u61c2\u4f60\"",
+      "expected_category": "model",
+      "predicted_category": "model",
+      "category_match": true,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    },
+    {
+      "title": "Anthropic races toward a Wall Street debut with a confidential SEC filing",
+      "expected_category": "application",
+      "predicted_category": "model",
+      "category_match": false,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    },
+    {
+      "title": "Anthropic releases Opus 4.8 with new \u2018dynamic workflow\u2019 tool",
+      "expected_category": "agent",
+      "predicted_category": "model",
+      "category_match": false,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    },
+    {
+      "title": "Claude Opus 4.8 \u4e0a\u7ebf\uff1a\u63d0\u5347 AI \u7f16\u7a0b\u53ef\u9760\u6027\uff0c\u51cf\u5c11\u65e0\u4f9d\u636e\u7ed3\u8bba",
+      "expected_category": "model",
+      "predicted_category": "model",
+      "category_match": true,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    },
+    {
+      "title": "\u767e\u5ea6\u53d1\u5e03\u6587\u5fc3\u5927\u6a21\u578b 5.1\uff1a\u641c\u7d22\u80fd\u529b\u4f4d\u5c45\u56fd\u5185\u9996\u4f4d\uff0c\u9884\u8bad\u7ec3\u6210\u672c\u4ec5\u4e3a\u4e1a\u754c 6%",
+      "expected_category": "model",
+      "predicted_category": "model",
+      "category_match": true,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    },
+    {
+      "title": "GPT-5.5 and Codex are now GA on Amazon Bedrock",
+      "expected_category": "infrastructure",
+      "predicted_category": "model",
+      "category_match": false,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    },
+    {
+      "title": "New Claude, New Realities",
+      "expected_category": "model",
+      "predicted_category": "model",
+      "category_match": true,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    },
+    {
+      "title": "\u91cd\u78c5\u8054\u624b\uff01OpenAI \u5c16\u7aef\u6a21\u578b\u4e0e Codex \u6b63\u5f0f\u767b\u9646 AWS\uff0c\u4f01\u4e1a\u7ea7 AI \u843d\u5730\u518d\u63d0\u901f",
+      "expected_category": "infrastructure",
+      "predicted_category": "application",
+      "category_match": false,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    },
+    {
+      "title": "\u540a\u6253GPT-5.5\uff01Claude Opus 4.8 \u4e0a\u7ebf \u4ef7\u683c\u66b4\u964d\u4e09\u5206\u4e4b\u4e8c",
+      "expected_category": "model",
+      "predicted_category": "model",
+      "category_match": true,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    },
+    {
+      "title": "Anthropic releases Claude Opus 4.8 with improved agentic reasoning, honesty, and a new \"dynamic workflows\" feature in Claude Code",
+      "expected_category": "model",
+      "predicted_category": "model",
+      "category_match": true,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    },
+    {
+      "title": "Opus 4.8 testing: big step up on agentic/multi-step work, but it regressed on some one-shot generation vs 4.7",
+      "expected_category": "model",
+      "predicted_category": "model",
+      "category_match": true,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    },
+    {
+      "title": "antigravity \u53d8\u6210\u4e86 codex \u7684\u6a21\u6837\uff0c 3.5 \u66f4\u65b0",
+      "expected_category": "agent",
+      "predicted_category": "model",
+      "category_match": false,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    },
+    {
+      "title": "\u6c42 codex\u3001claude code \u8ba2\u9605\u8d26\u5355\u6bcf\u6708$200 \u7684\uff0c\u6216\u8005\u56fd\u5185 coding \u8ba2\u9605\uff0c\u6709\u507f",
+      "expected_category": "application",
+      "predicted_category": "model",
+      "category_match": false,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    }
+  ]
+}

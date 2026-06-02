@@ -27,14 +27,14 @@
 
 - 严重程度: info
 - 区域: schema
-- 详情: 全部 13 条样本都生成了有效评估结果。
+- 详情: 全部 16 条样本都生成了有效评估结果。
 - 建议动作: 继续保留当前 evaluation 路径中的 schema 与 harness 校验。
 
 ### 检测到分类不一致项
 
 - 严重程度: warning
 - 区域: category
-- 详情: 4 条成功样本的预测分类与 expected fixture 不一致。
+- 详情: 2 条成功样本的预测分类与 expected fixture 不一致。
 - 建议动作: 复查不一致标题，并在合理时更新抽取规则、prompt 或 expected fixture 说明。
 
 ### 来源追溯全部通过
@@ -48,21 +48,21 @@
 
 - 严重程度: info
 - 区域: confidence
-- 详情: 平均置信度为 0.92，达到 0.70 阈值。
+- 详情: 平均置信度为 0.90，达到 0.70 阈值。
 - 建议动作: 继续在准确率之外展示置信度分布。
 
 ### Extractor 相比 baseline 有提升
 
 - 严重程度: info
 - 区域: category
-- 详情: openai-compatible 准确率为 0.69；rule baseline 准确率为 0.38；提升幅度为 0.31。
+- 详情: openai-compatible 准确率为 0.88；rule baseline 准确率为 0.38；提升幅度为 0.49。
 - 建议动作: 可以在 showcase 中使用该对比，同时说明仍然存在的分类不一致项。
 
 ### 评估报告存在
 
 - 严重程度: info
 - 区域: report
-- 详情: 已找到 evaluation report：outputs/llm_evaluation_report.md。
+- 详情: 已找到 evaluation report：outputs/ui_evaluation_report.md。
 - 建议动作: 将该报告作为人工可读的质量评估产物。
 
 ### 分析日报存在
