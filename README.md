@@ -2,7 +2,6 @@
 
 AI 行业信息结构化分析与日报生成系统。
 
-适用场景：同花顺 AI 应用岗位笔试项目。
 
 这个项目不是把新闻丢给模型后直接生成一篇看起来合理的报告，而是一个工程化 AI Coding / Agentic Engineering 项目：从真实来源数据、结构化抽取、Schema 校验、Harness 约束、质量评估、AI Reviewer 复审，到最终日报输出，形成一条可运行、可测试、可解释的端到端链路。
 
@@ -22,7 +21,7 @@ AI 行业信息结构化分析与日报生成系统。
 1. [`docs/final_showcase_report.md`](docs/final_showcase_report.md)
    项目最终亮点、架构、Rule baseline 与 DeepSeek V4 Flash 的真实对比结果。
 2. [`docs/submission_checklist.md`](docs/submission_checklist.md)
-   对照题目要求逐项验收项目实现。
+   逐项验收项目实现。
 3. [`docs/ai_coding_showcase.md`](docs/ai_coding_showcase.md)
    展示 Context Engineering、Harness Engineering、Structured Output、Self Verification 等 AI Coding 方法论。
 4. [`outputs/mixed_llm_evaluation_report.md`](outputs/mixed_llm_evaluation_report.md)
@@ -214,7 +213,7 @@ Harness 会阻止缺失来源、虚构 URL、低置信度或无法追溯的结�
 
 本项目面向中文产品体验设计，但支持英文/中文新闻输入。
 
-当输入数据为英文新闻时，系统会保留原始 `title`、`source` 和 `url`，同时将结构化摘要、趋势判断、风险机会和最终报告输出为中文，方便中文业务团队阅读。
+当输入数据为英文新闻时，系统会保留原始 `title`、`source` 和 `url`，同时将结构化摘要、趋势判断、风险机会和最终报告输出为中文，方便中文业务团队/用户阅读。
 
 英文 source 不等于英文产品体验。产品输出层面向中文用户；Schema 层保持英文 key、英文 category enum 和固定 extractor name，是为了保证工程稳定、自动化测试和 Evaluation Harness 可复现。
 
@@ -256,7 +255,7 @@ OPENAI_MODEL=deepseek-v4-flash
 # OPENAI_MODEL=deepseek-v4-pro
 ```
 
-注意：
+**注意**：
 
 - `.env` 不要提交。
 - 不要把真实 API key 写进 README、测试或代码。
@@ -377,32 +376,6 @@ Harness 的目标不是增强功能，而是防止不可信 AI 输出进入下�
 - 对每个 extractor 使用同一套 schema validation 和 grounding checks
 - pipeline 出错时 fail fast，不生成误导性报告
 
-## 面试演示建议
-
-推荐演示顺序：
-
-1. 展示 README 顶部项目定位，强调这是工程化 AI Coding / Agentic Engineering 项目。
-2. 展示 [`docs/final_showcase_report.md`](docs/final_showcase_report.md)，快速说明整体架构和结果。
-3. 运行 rule pipeline：
-
-   ```bash
-   python3 -m daily_ai_insight.cli run --input data/raw/mixed_channel_ai_news_sample.json --extractor rule
-   ```
-
-4. 展示 rule vs LLM evaluation：
-
-   ```text
-   outputs/mixed_rule_evaluation_report.md
-   outputs/mixed_llm_evaluation_report.md
-   ```
-
-5. 展示 reviewer report：
-
-   ```text
-   outputs/review_report.md
-   ```
-
-6. 解释 Harness 如何防止幻觉、无来源事件和不可控 agent loop。
 
 ## 已知限制
 
