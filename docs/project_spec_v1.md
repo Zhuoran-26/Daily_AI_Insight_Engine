@@ -44,9 +44,9 @@ The first version should not require:
 
 The MVP architecture follows a staged pipeline:
 
-Collector -> Extractor -> Validator -> Analyzer -> Reporter
+Collector / Loader -> Extractor Strategy -> Schema Validation -> Harness Verification -> Analyzer -> Reporter
 
-### Collector
+### Collector / Loader
 
 Collects or prepares raw AI-related news items from documented sources. For the MVP, static manually curated data is acceptable if sources and selection reasons are documented.
 
@@ -57,9 +57,9 @@ Responsibilities:
 - avoid duplicates where possible
 - preserve enough raw context for extraction
 
-### Extractor
+### Extractor Strategy
 
-Transforms each `RawNewsItem` into one or more `StructuredAIEvent` records.
+Transforms each `RawNewsItem` into one or more `StructuredAIEvent` records. The extractor is a strategy interface so the project can run deterministic rules by default while leaving space for optional LLM extraction.
 
 Responsibilities:
 
@@ -67,10 +67,12 @@ Responsibilities:
 - separate facts from model interpretation
 - include confidence and evidence fields
 - preserve provenance back to raw news records
+- support `rule`, `mock-llm`, and optional `openai-compatible` modes
+- fail clearly when an optional LLM extractor is selected without required configuration
 
-### Validator
+### Schema Validation
 
-Checks structured records before analysis.
+Checks structured records before harness verification and analysis.
 
 Responsibilities:
 
@@ -79,6 +81,21 @@ Responsibilities:
 - check provenance links
 - flag low-confidence or malformed records
 - produce validation status and failure reasons
+
+### Harness Verification
+
+Blocks unsafe extractor output before analysis.
+
+Responsibilities:
+
+- check source integrity
+- check extractor name
+- check schema compliance
+- check source and URL grounding
+- check evidence grounding
+- enforce confidence threshold
+- enforce loop or step budget
+- fail fast instead of silently repairing unsafe output
 
 ### Analyzer
 

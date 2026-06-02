@@ -73,6 +73,21 @@ This project uses harness constraints instead:
 
 The harness is a control layer around AI behavior. It prevents hallucinated sources, unsupported claims, unbounded loops, and outputs that cannot be checked by code.
 
+## Optional LLM, Mandatory Verification
+
+The project can run without an LLM. The default `rule` extractor is deterministic and fully local, while `mock-llm` tests the LLM workflow without network access.
+
+If a real LLM extractor is added, its output does not become trusted because "the LLM says so." Every extractor output must pass:
+
+- Pydantic schema validation
+- source grounding against `RawNewsItem`
+- evidence grounding against raw title or summary
+- confidence threshold checks
+- loop and step budget controls
+- automated tests for hallucinated source URLs and low confidence
+
+The `openai-compatible` extractor is currently an interface position. Without `OPENAI_API_KEY`, it fails clearly. With a future adapter, it must still return `StructuredAIEvent` records and remain behind the same harness verification.
+
 ## Human-in-the-loop Design
 
 The MVP should keep human review possible at multiple points:

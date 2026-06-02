@@ -76,8 +76,11 @@
 
 - input_count: 13
 - output_count: 13
+- extractor_name: rule
 - source_integrity_passed: True
+- schema_compliance_passed: True
 - grounding_passed: True
+- evidence_grounding_passed: True
 - loop_guard_passed: True
 - min_confidence: 0.5
 - deterministic_baseline: True
