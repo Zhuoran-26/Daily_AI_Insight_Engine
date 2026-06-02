@@ -8,11 +8,13 @@ from daily_ai_insight.llm_client import OpenAICompatibleConfig
 
 def test_env_example_uses_deepseek_v4_flash_default():
     text = open(".env.example", encoding="utf-8").read()
+    api_key_line = next(line for line in text.splitlines() if line.startswith("OPENAI_API_KEY="))
+    api_key_value = api_key_line.split("=", 1)[1]
 
     assert "OPENAI_BASE_URL=https://api.deepseek.com" in text
     assert "OPENAI_MODEL=deepseek-v4-flash" in text
     assert "# OPENAI_MODEL=deepseek-v4-pro" in text
-    assert "your_api_key_here" in text
+    assert api_key_value in {"", "your_api_key_here"}
 
 
 def test_env_file_is_ignored_by_git():

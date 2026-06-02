@@ -105,6 +105,20 @@ This separates two concerns:
 
 For interview review, `outputs/evaluation_report.md` can be shown directly to explain where the rule baseline works, where it misclassifies complex semantics, and how LLM extractors can be compared under the same validation rules.
 
+## AI Reviewer / Critique-Revise Workflow
+
+The reviewer layer turns evaluation results into structured critique. A deterministic `RuleBasedReviewer` reads an `EvaluationSummary`, optionally compares it with a rule baseline, and emits `ReviewIssue` records for category mismatches, failed items, grounding failures, low confidence, weak baseline improvement, and missing report artifacts.
+
+This is the revise loop entry point. Instead of saying "the report looks fine," the project can say:
+
+- which extractor improved over baseline
+- which mismatches remain
+- whether grounding stayed intact
+- whether confidence is strong enough for a showcase claim
+- whether the Markdown artifacts needed for review exist
+
+The current reviewer is deterministic on purpose. It provides a stable critique surface for tests and demos, while leaving room for a future LLM reviewer that must follow the same schema, source-grounding, confidence, and step-budget constraints.
+
 ## Human-in-the-loop Design
 
 The MVP should keep human review possible at multiple points:

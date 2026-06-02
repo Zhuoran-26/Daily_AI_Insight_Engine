@@ -1,0 +1,128 @@
+{
+  "extractor": "rule",
+  "total_items": 13,
+  "successful_items": 13,
+  "failed_items": 0,
+  "category_accuracy": 0.38461538461538464,
+  "grounding_pass_rate": 1.0,
+  "average_confidence": 0.7,
+  "item_results": [
+    {
+      "title": "OpenAI frontier models and Codex are now available on AWS",
+      "expected_category": "model",
+      "predicted_category": "model",
+      "category_match": true,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    },
+    {
+      "title": "Work with Codex from anywhere",
+      "expected_category": "agent",
+      "predicted_category": "agent",
+      "category_match": true,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    },
+    {
+      "title": "Advancing voice intelligence with new models in the API",
+      "expected_category": "model",
+      "predicted_category": "model",
+      "category_match": true,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    },
+    {
+      "title": "A new personal finance experience in ChatGPT",
+      "expected_category": "application",
+      "predicted_category": "model",
+      "category_match": false,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    },
+    {
+      "title": "Anthropic acquires Stainless",
+      "expected_category": "agent",
+      "predicted_category": "model",
+      "category_match": false,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    },
+    {
+      "title": "PwC is deploying Claude to build technology, execute deals, and reinvent enterprise functions for clients",
+      "expected_category": "application",
+      "predicted_category": "model",
+      "category_match": false,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    },
+    {
+      "title": "The Gemini app becomes more agentic, delivering proactive, 24/7 help",
+      "expected_category": "agent",
+      "predicted_category": "model",
+      "category_match": false,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    },
+    {
+      "title": "I/O 2026 developer highlights: Antigravity, Gemini API, AI Studio",
+      "expected_category": "agent",
+      "predicted_category": "model",
+      "category_match": false,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    },
+    {
+      "title": "Gemini Intelligence brings proactive AI to Android",
+      "expected_category": "application",
+      "predicted_category": "model",
+      "category_match": false,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    },
+    {
+      "title": "Introducing Muse Spark: Meta's Most Powerful Model Yet",
+      "expected_category": "application",
+      "predicted_category": "model",
+      "category_match": false,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    },
+    {
+      "title": "Apple unveils new accessibility features, and updates powered by Apple Intelligence",
+      "expected_category": "application",
+      "predicted_category": "application",
+      "category_match": true,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    },
+    {
+      "title": "Meta partners with AWS on Graviton chips to power agentic AI",
+      "expected_category": "infrastructure",
+      "predicted_category": "agent",
+      "category_match": false,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    },
+    {
+      "title": "AI factories: The new infrastructure of intelligence",
+      "expected_category": "infrastructure",
+      "predicted_category": "infrastructure",
+      "category_match": true,
+      "confidence": 0.7,
+      "grounded": true,
+      "error": null
+    }
+  ]
+}

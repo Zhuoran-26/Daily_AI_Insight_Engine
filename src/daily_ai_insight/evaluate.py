@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 from jinja2 import Template
@@ -14,6 +15,9 @@ from daily_ai_insight.llm_client import OpenAICompatibleConfig
 from daily_ai_insight.models import EvaluationItemResult, EvaluationSummary, RawNewsItem, StructuredAIEvent
 from daily_ai_insight.normalize import load_raw_news
 from daily_ai_insight.validate import validate_raw_items, validate_structured_events
+
+DEFAULT_EVALUATION_SUMMARY_PATH = Path("outputs/evaluation_summary.json")
+DEFAULT_EVALUATION_REPORT_PATH = Path("outputs/evaluation_report.md")
 
 EVALUATION_REPORT_TEMPLATE = """# Extractor Evaluation Report
 
@@ -106,8 +110,8 @@ def run_evaluation(
 
 def write_evaluation_outputs(
     summary: EvaluationSummary,
-    summary_path: str | Path = "outputs/evaluation_summary.json",
-    report_path: str | Path = "outputs/evaluation_report.md",
+    summary_path: str | Path = DEFAULT_EVALUATION_SUMMARY_PATH,
+    report_path: str | Path = DEFAULT_EVALUATION_REPORT_PATH,
 ) -> tuple[Path, Path]:
     json_path = Path(summary_path)
     md_path = Path(report_path)
@@ -120,6 +124,20 @@ def write_evaluation_outputs(
     )
     md_path.write_text(render_evaluation_report(summary), encoding="utf-8")
     return json_path, md_path
+
+
+def evaluation_output_paths(output_prefix: str | None = None) -> tuple[Path, Path]:
+    if not output_prefix:
+        return DEFAULT_EVALUATION_SUMMARY_PATH, DEFAULT_EVALUATION_REPORT_PATH
+
+    safe_prefix = output_prefix.strip()
+    if not re.fullmatch(r"[A-Za-z0-9_-]+", safe_prefix):
+        raise PipelineError("Evaluation output prefix may only contain letters, numbers, underscores, and hyphens")
+
+    return (
+        Path(f"outputs/{safe_prefix}_evaluation_summary.json"),
+        Path(f"outputs/{safe_prefix}_evaluation_report.md"),
+    )
 
 
 def render_evaluation_report(summary: EvaluationSummary) -> str:

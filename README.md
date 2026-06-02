@@ -4,6 +4,8 @@ Daily AI Insight Engine turns daily AI-related news into structured events, vali
 
 This repository is being built for an AI application interview task. The goal is not only to produce a report, but to show a disciplined AI engineering workflow: context engineering, structured output, harness engineering, self verification, and test-backed development.
 
+Final interview showcase: [docs/final_showcase_report.md](/Users/aragoto/Desktop/Daily_AI_Insight_Engine/docs/final_showcase_report.md)
+
 ## Why This Is Not Vibe Coding
 
 Ordinary vibe coding would paste raw news into an AI model and submit a report if it looked plausible. This project keeps the pipeline inspectable:
@@ -198,7 +200,56 @@ Evaluation outputs:
 - `outputs/evaluation_summary.json`
 - `outputs/evaluation_report.md`
 
+To preserve side-by-side comparison artifacts, add `--output-prefix`:
+
+```bash
+python3 -m daily_ai_insight.cli evaluate \
+  --input data/raw/real_ai_news_sample.json \
+  --expected data/eval/expected_real_sample_categories.json \
+  --extractor rule \
+  --output-prefix rule
+
+python3 -m daily_ai_insight.cli evaluate \
+  --input data/raw/real_ai_news_sample.json \
+  --expected data/eval/expected_real_sample_categories.json \
+  --extractor openai-compatible \
+  --output-prefix llm
+```
+
+Prefixed outputs:
+
+- `outputs/rule_evaluation_summary.json`
+- `outputs/rule_evaluation_report.md`
+- `outputs/llm_evaluation_summary.json`
+- `outputs/llm_evaluation_report.md`
+
 The evaluation harness measures category accuracy, valid output count, failed items, grounding pass rate, and confidence distribution. It is separate from the production pipeline: evaluation records item-level failures for analysis, while the pipeline remains fail-fast to avoid misleading reports.
+
+## AI Reviewer Workflow
+
+Run the deterministic reviewer over an evaluation summary and optional baseline:
+
+```bash
+python3 -m daily_ai_insight.cli review \
+  --evaluation outputs/llm_evaluation_summary.json \
+  --baseline outputs/rule_evaluation_summary.json
+```
+
+Generated reviewer outputs:
+
+- `outputs/review_summary.json`
+- `outputs/review_report.md`
+
+The reviewer checks category mismatches, failed items, grounding rate, confidence, comparison against the rule baseline, and whether evaluation/daily report artifacts exist. It provides a critique-revise surface for interview discussion without trusting subjective impressions alone.
+
+## Recommended Demo Order
+
+1. Run tests: `python3 -m pytest`
+2. Run rule evaluation with prefix: `python3 -m daily_ai_insight.cli evaluate --input data/raw/real_ai_news_sample.json --expected data/eval/expected_real_sample_categories.json --extractor rule --output-prefix rule`
+3. Run LLM evaluation with prefix: `python3 -m daily_ai_insight.cli evaluate --input data/raw/real_ai_news_sample.json --expected data/eval/expected_real_sample_categories.json --extractor openai-compatible --output-prefix llm`
+4. Run reviewer: `python3 -m daily_ai_insight.cli review --evaluation outputs/llm_evaluation_summary.json --baseline outputs/rule_evaluation_summary.json`
+5. Open [docs/final_showcase_report.md](/Users/aragoto/Desktop/Daily_AI_Insight_Engine/docs/final_showcase_report.md)
+6. Generate the final daily report: `python3 -m daily_ai_insight.cli run --input data/raw/real_ai_news_sample.json --extractor openai-compatible`
 
 ## Why Rule Baseline Is Not the Final Intelligence Layer
 

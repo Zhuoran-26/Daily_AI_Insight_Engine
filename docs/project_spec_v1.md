@@ -46,6 +46,10 @@ The MVP architecture follows a staged pipeline:
 
 Collector / Loader -> Extractor Strategy -> Schema Validation -> Harness Verification -> Analyzer -> Reporter
 
+The showcase evaluation flow extends the pipeline with quality measurement and critique:
+
+RawNewsItem -> Extractor Strategy -> Item-level LLM Extraction -> Schema Validation -> Harness Verification -> Evaluation Harness -> AI Reviewer -> Report Generation
+
 ### Collector / Loader
 
 Collects or prepares raw AI-related news items from documented sources. For the MVP, static manually curated data is acceptable if sources and selection reasons are documented.
@@ -110,6 +114,12 @@ This design reduces token pressure and whole-batch JSON failure risk. It also ma
 The project includes a separate evaluation harness for extractor comparison. It runs an extractor against raw input, compares predicted categories against an expected fixture, and reports category accuracy, valid output rate, grounding pass rate, confidence distribution, and failed item count.
 
 Evaluation is intentionally distinct from production pipeline behavior. The pipeline remains fail-fast to avoid generating misleading reports. Evaluation records item-level failures so the team can inspect extractor weaknesses, compare `rule`, `mock-llm`, and `openai-compatible`, and demonstrate quality measurement during an interview.
+
+### AI Reviewer / Critique-Revise Workflow
+
+The project includes a deterministic reviewer layer for evaluation artifacts. It reviews `EvaluationSummary` outputs, compares an extractor against the rule baseline when available, checks for category mismatches, failed items, grounding gaps, low confidence, and missing report artifacts, then emits a structured review summary and Markdown review report.
+
+This reviewer is not a replacement for harness validation. Harness checks block unsafe data before downstream use. The reviewer explains what the results mean, what should be revised, and what can be safely claimed in a showcase. The critique-revise loop is bounded and inspectable: review findings are structured, severity-ranked, and tied to concrete follow-up actions.
 
 ### Analyzer
 

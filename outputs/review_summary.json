@@ -1,0 +1,58 @@
+{
+  "total_issues": 7,
+  "error_count": 0,
+  "warning_count": 1,
+  "info_count": 6,
+  "issues": [
+    {
+      "severity": "info",
+      "area": "schema",
+      "title": "No failed evaluation items",
+      "detail": "All 13 items produced valid evaluation results.",
+      "suggested_action": "Keep the current schema and harness checks in the evaluation path."
+    },
+    {
+      "severity": "warning",
+      "area": "category",
+      "title": "Category mismatches detected",
+      "detail": "4 successful items were classified differently from the expected fixture.",
+      "suggested_action": "Review mismatched titles and update extractor rules, prompts, or expected fixture notes if justified."
+    },
+    {
+      "severity": "info",
+      "area": "grounding",
+      "title": "Grounding pass rate is complete",
+      "detail": "Every evaluated item passed source grounding checks.",
+      "suggested_action": "Keep source and URL preservation mandatory for all extractor modes."
+    },
+    {
+      "severity": "info",
+      "area": "confidence",
+      "title": "Average confidence meets threshold",
+      "detail": "Average confidence is 0.92, meeting the 0.70 threshold.",
+      "suggested_action": "Continue reporting confidence distribution alongside accuracy."
+    },
+    {
+      "severity": "info",
+      "area": "category",
+      "title": "Extractor improves over baseline",
+      "detail": "openai-compatible accuracy is 0.69; rule baseline accuracy is 0.38; delta is 0.31.",
+      "suggested_action": "Use this comparison in the showcase, while still explaining remaining mismatches."
+    },
+    {
+      "severity": "info",
+      "area": "report",
+      "title": "Evaluation report exists",
+      "detail": "Found evaluation report at outputs/llm_evaluation_report.md.",
+      "suggested_action": "Use the report as the human-readable quality artifact."
+    },
+    {
+      "severity": "info",
+      "area": "report",
+      "title": "Daily report exists",
+      "detail": "Found daily report at outputs/daily_report.md.",
+      "suggested_action": "Use the daily report as the final generated artifact after validating evaluation results."
+    }
+  ],
+  "final_verdict": "reviewed_with_warnings"
+}
