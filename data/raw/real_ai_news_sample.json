@@ -1,0 +1,113 @@
+{
+  "metadata": {
+    "note": "Real-world AI news sample manually curated from public sources for Phase 3 interview demonstration. Tests use this local fixture and do not access the network.",
+    "curated_at": "2026-06-02",
+    "source_policy": "Only include items with public, traceable URLs. Do not include unverifiable or invented sources."
+  },
+  "items": [
+    {
+      "title": "OpenAI frontier models and Codex are now available on AWS",
+      "summary": "OpenAI announced that frontier models and Codex are available through AWS, expanding enterprise access for model deployment and coding workflows.",
+      "source": "OpenAI",
+      "url": "https://openai.com/index/openai-frontier-models-and-codex-are-now-available-on-aws/",
+      "published_at": "2026-06-01",
+      "language": "en"
+    },
+    {
+      "title": "Work with Codex from anywhere",
+      "summary": "OpenAI described Codex updates that let users manage longer-running coding agent tasks from mobile and remote environments.",
+      "source": "OpenAI",
+      "url": "https://openai.com/index/work-with-codex-from-anywhere/",
+      "published_at": "2026-05-14",
+      "language": "en"
+    },
+    {
+      "title": "Advancing voice intelligence with new models in the API",
+      "summary": "OpenAI released new voice models and API capabilities for realtime speech experiences, including improved conversational application support.",
+      "source": "OpenAI",
+      "url": "https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/",
+      "published_at": "2026-05-07",
+      "language": "en"
+    },
+    {
+      "title": "A new personal finance experience in ChatGPT",
+      "summary": "OpenAI introduced a ChatGPT personal finance experience with tools for financial education, planning, and user-facing assistance.",
+      "source": "OpenAI",
+      "url": "https://openai.com/index/personal-finance-chatgpt/",
+      "published_at": "2026-05-15",
+      "language": "en"
+    },
+    {
+      "title": "Anthropic acquires Stainless",
+      "summary": "Anthropic announced the acquisition of Stainless to strengthen SDK, CLI, and MCP server tooling around Claude agent connectivity.",
+      "source": "Anthropic",
+      "url": "https://www.anthropic.com/news/anthropic-acquires-stainless",
+      "published_at": "2026-05-18",
+      "language": "en"
+    },
+    {
+      "title": "PwC is deploying Claude to build technology, execute deals, and reinvent enterprise functions for clients",
+      "summary": "Anthropic and PwC expanded their alliance around Claude Code, Claude for Financial Services, and enterprise AI adoption.",
+      "source": "Anthropic",
+      "url": "https://www.anthropic.com/news/pwc-expanded-partnership",
+      "published_at": "2026-05-14",
+      "language": "en"
+    },
+    {
+      "title": "The Gemini app becomes more agentic, delivering proactive, 24/7 help",
+      "summary": "Google announced Gemini app updates that emphasize agentic assistance, personalization, and deeper task support.",
+      "source": "Google",
+      "url": "https://blog.google/innovation-and-ai/products/gemini-app/next-evolution-gemini-app/",
+      "published_at": "2026-05-19",
+      "language": "en"
+    },
+    {
+      "title": "I/O 2026 developer highlights: Antigravity, Gemini API, AI Studio",
+      "summary": "Google summarized developer updates across Gemini API, agent tooling, development platforms, and AI-assisted software workflows.",
+      "source": "Google Developers Blog",
+      "url": "https://blog.google/innovation-and-ai/technology/developers-tools/google-io-2026-developer-highlights/",
+      "published_at": "2026-05-19",
+      "language": "en"
+    },
+    {
+      "title": "Gemini Intelligence brings proactive AI to Android",
+      "summary": "Google introduced Android experiences that use Gemini intelligence across user-facing mobile features and productivity workflows.",
+      "source": "Google",
+      "url": "https://blog.google/products-and-platforms/platforms/android/gemini-intelligence/",
+      "published_at": "2026-05-12",
+      "language": "en"
+    },
+    {
+      "title": "Introducing Muse Spark: Meta's Most Powerful Model Yet",
+      "summary": "Meta introduced Muse Spark, a generative AI tool for creative advertising and media application workflows.",
+      "source": "Meta",
+      "url": "https://about.fb.com/news/2026/04/introducing-muse-spark-meta-superintelligence-labs/",
+      "published_at": "2026-04-08",
+      "language": "en"
+    },
+    {
+      "title": "Apple unveils new accessibility features, and updates powered by Apple Intelligence",
+      "summary": "Apple previewed accessibility features that use Apple Intelligence for VoiceOver, Magnifier, Voice Control, and related user-facing experiences.",
+      "source": "Apple Newsroom",
+      "url": "https://www.apple.com/newsroom/2026/05/apple-unveils-new-accessibility-features-and-updates-with-apple-intelligence/",
+      "published_at": "2026-05-19",
+      "language": "en"
+    },
+    {
+      "title": "Meta partners with AWS on Graviton chips to power agentic AI",
+      "summary": "Meta announced work with AWS around Graviton chips and compute infrastructure for large-scale AI workloads.",
+      "source": "Meta",
+      "url": "https://about.fb.com/news/2026/04/meta-partners-with-aws-on-graviton-chips-to-power-agentic-ai/",
+      "published_at": "2026-04-24",
+      "language": "en"
+    },
+    {
+      "title": "AI factories: The new infrastructure of intelligence",
+      "summary": "NVIDIA described AI factory infrastructure, Blackwell Ultra systems, and GPU-driven deployment patterns for industrial AI workloads.",
+      "source": "NVIDIA",
+      "url": "https://blogs.nvidia.com/blog/ai-factories-the-new-infrastructure-of-intelligence/",
+      "published_at": "2026-05-27",
+      "language": "en"
+    }
+  ]
+}

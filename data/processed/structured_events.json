@@ -1,10 +1,50 @@
 [
   {
     "id": "evt-001",
-    "title": "OpenAI introduces new GPT model evaluation workflow",
-    "source": "OpenAI News",
-    "url": "https://openai.com/news/",
-    "published_at": "2026-05-20",
+    "title": "OpenAI frontier models and Codex are now available on AWS",
+    "source": "OpenAI",
+    "url": "https://openai.com/index/openai-frontier-models-and-codex-are-now-available-on-aws/",
+    "published_at": "2026-06-01",
+    "language": "en",
+    "category": "model",
+    "event_type": "application_update",
+    "entities": [
+      "OpenAI"
+    ],
+    "impact_areas": [
+      "model_capabilities"
+    ],
+    "importance_score": 6.0,
+    "confidence": 0.7,
+    "summary": "OpenAI announced that frontier models and Codex are available through AWS, expanding enterprise access for model deployment and coding workflows.",
+    "evidence": "OpenAI: OpenAI announced that frontier models and Codex are available through AWS, expanding enterprise access for model deployment and coding workflows."
+  },
+  {
+    "id": "evt-002",
+    "title": "Work with Codex from anywhere",
+    "source": "OpenAI",
+    "url": "https://openai.com/index/work-with-codex-from-anywhere/",
+    "published_at": "2026-05-14",
+    "language": "en",
+    "category": "agent",
+    "event_type": "agent_update",
+    "entities": [
+      "OpenAI"
+    ],
+    "impact_areas": [
+      "automation"
+    ],
+    "importance_score": 6.0,
+    "confidence": 0.7,
+    "summary": "OpenAI described Codex updates that let users manage longer-running coding agent tasks from mobile and remote environments.",
+    "evidence": "OpenAI: OpenAI described Codex updates that let users manage longer-running coding agent tasks from mobile and remote environments."
+  },
+  {
+    "id": "evt-003",
+    "title": "Advancing voice intelligence with new models in the API",
+    "source": "OpenAI",
+    "url": "https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/",
+    "published_at": "2026-05-07",
     "language": "en",
     "category": "model",
     "event_type": "release",
@@ -14,40 +54,40 @@
     "impact_areas": [
       "model_capabilities"
     ],
-    "importance_score": 8.0,
+    "importance_score": 7.0,
     "confidence": 0.7,
-    "summary": "OpenAI described a model release workflow focused on evaluation, safety checks, and developer feedback before broader launch.",
-    "evidence": "OpenAI News: OpenAI described a model release workflow focused on evaluation, safety checks, and developer feedback before broader launch."
+    "summary": "OpenAI released new voice models and API capabilities for realtime speech experiences, including improved conversational application support.",
+    "evidence": "OpenAI: OpenAI released new voice models and API capabilities for realtime speech experiences, including improved conversational application support."
   },
   {
-    "id": "evt-002",
-    "title": "Google DeepMind shares Gemini research update",
-    "source": "Google DeepMind Blog",
-    "url": "https://deepmind.google/discover/blog/",
-    "published_at": "2026-05-21",
+    "id": "evt-004",
+    "title": "A new personal finance experience in ChatGPT",
+    "source": "OpenAI",
+    "url": "https://openai.com/index/personal-finance-chatgpt/",
+    "published_at": "2026-05-15",
     "language": "en",
     "category": "model",
-    "event_type": "benchmark",
+    "event_type": "application_update",
     "entities": [
-      "Google"
+      "OpenAI"
     ],
     "impact_areas": [
       "model_capabilities"
     ],
-    "importance_score": 7.0,
+    "importance_score": 6.0,
     "confidence": 0.7,
-    "summary": "Google DeepMind highlighted Gemini model improvements for multimodal reasoning and benchmark tracking across research tasks.",
-    "evidence": "Google DeepMind Blog: Google DeepMind highlighted Gemini model improvements for multimodal reasoning and benchmark tracking across research tasks."
+    "summary": "OpenAI introduced a ChatGPT personal finance experience with tools for financial education, planning, and user-facing assistance.",
+    "evidence": "OpenAI: OpenAI introduced a ChatGPT personal finance experience with tools for financial education, planning, and user-facing assistance."
   },
   {
-    "id": "evt-003",
-    "title": "Anthropic expands Claude enterprise controls",
-    "source": "Anthropic News",
-    "url": "https://www.anthropic.com/news",
-    "published_at": "2026-05-22",
+    "id": "evt-005",
+    "title": "Anthropic acquires Stainless",
+    "source": "Anthropic",
+    "url": "https://www.anthropic.com/news/anthropic-acquires-stainless",
+    "published_at": "2026-05-18",
     "language": "en",
     "category": "model",
-    "event_type": "regulation",
+    "event_type": "agent_update",
     "entities": [
       "Anthropic"
     ],
@@ -56,155 +96,115 @@
     ],
     "importance_score": 6.0,
     "confidence": 0.7,
-    "summary": "Anthropic presented Claude model features aimed at enterprise deployment, policy control, and safer assistant behavior.",
-    "evidence": "Anthropic News: Anthropic presented Claude model features aimed at enterprise deployment, policy control, and safer assistant behavior."
+    "summary": "Anthropic announced the acquisition of Stainless to strengthen SDK, CLI, and MCP server tooling around Claude agent connectivity.",
+    "evidence": "Anthropic: Anthropic announced the acquisition of Stainless to strengthen SDK, CLI, and MCP server tooling around Claude agent connectivity."
   },
   {
-    "id": "evt-004",
-    "title": "NVIDIA announces Blackwell GPU platform update",
-    "source": "NVIDIA Blog",
-    "url": "https://blogs.nvidia.com/",
-    "published_at": "2026-05-22",
+    "id": "evt-006",
+    "title": "PwC is deploying Claude to build technology, execute deals, and reinvent enterprise functions for clients",
+    "source": "Anthropic",
+    "url": "https://www.anthropic.com/news/pwc-expanded-partnership",
+    "published_at": "2026-05-14",
     "language": "en",
-    "category": "infrastructure",
+    "category": "model",
     "event_type": "application_update",
     "entities": [
-      "NVIDIA"
+      "Anthropic"
     ],
     "impact_areas": [
-      "compute"
+      "model_capabilities"
     ],
     "importance_score": 6.0,
     "confidence": 0.7,
-    "summary": "NVIDIA discussed GPU infrastructure improvements for training and inference workloads, emphasizing data center deployment.",
-    "evidence": "NVIDIA Blog: NVIDIA discussed GPU infrastructure improvements for training and inference workloads, emphasizing data center deployment."
+    "summary": "Anthropic and PwC expanded their alliance around Claude Code, Claude for Financial Services, and enterprise AI adoption.",
+    "evidence": "Anthropic: Anthropic and PwC expanded their alliance around Claude Code, Claude for Financial Services, and enterprise AI adoption."
   },
   {
-    "id": "evt-005",
-    "title": "Meta releases open model tooling for developers",
-    "source": "Meta AI Blog",
-    "url": "https://ai.meta.com/blog/",
-    "published_at": "2026-05-23",
+    "id": "evt-007",
+    "title": "The Gemini app becomes more agentic, delivering proactive, 24/7 help",
+    "source": "Google",
+    "url": "https://blog.google/innovation-and-ai/products/gemini-app/next-evolution-gemini-app/",
+    "published_at": "2026-05-19",
     "language": "en",
     "category": "model",
-    "event_type": "release",
+    "event_type": "agent_update",
+    "entities": [
+      "Google"
+    ],
+    "impact_areas": [
+      "model_capabilities"
+    ],
+    "importance_score": 6.0,
+    "confidence": 0.7,
+    "summary": "Google announced Gemini app updates that emphasize agentic assistance, personalization, and deeper task support.",
+    "evidence": "Google: Google announced Gemini app updates that emphasize agentic assistance, personalization, and deeper task support."
+  },
+  {
+    "id": "evt-008",
+    "title": "I/O 2026 developer highlights: Antigravity, Gemini API, AI Studio",
+    "source": "Google Developers Blog",
+    "url": "https://blog.google/innovation-and-ai/technology/developers-tools/google-io-2026-developer-highlights/",
+    "published_at": "2026-05-19",
+    "language": "en",
+    "category": "model",
+    "event_type": "agent_update",
+    "entities": [
+      "Google"
+    ],
+    "impact_areas": [
+      "model_capabilities"
+    ],
+    "importance_score": 6.0,
+    "confidence": 0.7,
+    "summary": "Google summarized developer updates across Gemini API, agent tooling, development platforms, and AI-assisted software workflows.",
+    "evidence": "Google Developers Blog: Google summarized developer updates across Gemini API, agent tooling, development platforms, and AI-assisted software workflows."
+  },
+  {
+    "id": "evt-009",
+    "title": "Gemini Intelligence brings proactive AI to Android",
+    "source": "Google",
+    "url": "https://blog.google/products-and-platforms/platforms/android/gemini-intelligence/",
+    "published_at": "2026-05-12",
+    "language": "en",
+    "category": "model",
+    "event_type": "application_update",
+    "entities": [
+      "Google"
+    ],
+    "impact_areas": [
+      "model_capabilities"
+    ],
+    "importance_score": 6.0,
+    "confidence": 0.7,
+    "summary": "Google introduced Android experiences that use Gemini intelligence across user-facing mobile features and productivity workflows.",
+    "evidence": "Google: Google introduced Android experiences that use Gemini intelligence across user-facing mobile features and productivity workflows."
+  },
+  {
+    "id": "evt-010",
+    "title": "Introducing Muse Spark: Meta's Most Powerful Model Yet",
+    "source": "Meta",
+    "url": "https://about.fb.com/news/2026/04/introducing-muse-spark-meta-superintelligence-labs/",
+    "published_at": "2026-04-08",
+    "language": "en",
+    "category": "model",
+    "event_type": "application_update",
     "entities": [
       "Meta"
     ],
     "impact_areas": [
       "model_capabilities"
     ],
-    "importance_score": 7.0,
-    "confidence": 0.7,
-    "summary": "Meta shared developer tooling around open model usage, release workflows, and application integration patterns.",
-    "evidence": "Meta AI Blog: Meta shared developer tooling around open model usage, release workflows, and application integration patterns."
-  },
-  {
-    "id": "evt-006",
-    "title": "Microsoft adds agent workflows to Copilot",
-    "source": "Microsoft AI Blog",
-    "url": "https://blogs.microsoft.com/ai/",
-    "published_at": "2026-05-24",
-    "language": "en",
-    "category": "agent",
-    "event_type": "agent_update",
-    "entities": [
-      "Microsoft"
-    ],
-    "impact_areas": [
-      "automation"
-    ],
     "importance_score": 6.0,
     "confidence": 0.7,
-    "summary": "Microsoft described agent features for Copilot that help users automate multi-step tasks across productivity applications.",
-    "evidence": "Microsoft AI Blog: Microsoft described agent features for Copilot that help users automate multi-step tasks across productivity applications."
-  },
-  {
-    "id": "evt-007",
-    "title": "Hugging Face publishes agent benchmark toolkit",
-    "source": "Hugging Face Blog",
-    "url": "https://huggingface.co/blog",
-    "published_at": "2026-05-24",
-    "language": "en",
-    "category": "agent",
-    "event_type": "benchmark",
-    "entities": [
-      "Hugging Face"
-    ],
-    "impact_areas": [
-      "automation"
-    ],
-    "importance_score": 7.0,
-    "confidence": 0.7,
-    "summary": "Hugging Face introduced benchmark tooling for evaluating agent behavior, reproducibility, and task completion reliability.",
-    "evidence": "Hugging Face Blog: Hugging Face introduced benchmark tooling for evaluating agent behavior, reproducibility, and task completion reliability."
-  },
-  {
-    "id": "evt-008",
-    "title": "Mistral AI launches enterprise model deployment option",
-    "source": "Mistral AI News",
-    "url": "https://mistral.ai/news/",
-    "published_at": "2026-05-25",
-    "language": "en",
-    "category": "model",
-    "event_type": "release",
-    "entities": [
-      "Mistral"
-    ],
-    "impact_areas": [
-      "model_capabilities"
-    ],
-    "importance_score": 7.0,
-    "confidence": 0.7,
-    "summary": "Mistral AI announced a launch path for enterprise model deployment with emphasis on controlled infrastructure choices.",
-    "evidence": "Mistral AI News: Mistral AI announced a launch path for enterprise model deployment with emphasis on controlled infrastructure choices."
-  },
-  {
-    "id": "evt-009",
-    "title": "GitHub improves coding agent experience",
-    "source": "GitHub Blog",
-    "url": "https://github.blog/",
-    "published_at": "2026-05-25",
-    "language": "en",
-    "category": "agent",
-    "event_type": "agent_update",
-    "entities": [
-      "GitHub Blog"
-    ],
-    "impact_areas": [
-      "automation"
-    ],
-    "importance_score": 4.0,
-    "confidence": 0.7,
-    "summary": "GitHub described updates to coding agent workflows intended to improve repository navigation, review, and implementation tasks.",
-    "evidence": "GitHub Blog: GitHub described updates to coding agent workflows intended to improve repository navigation, review, and implementation tasks."
-  },
-  {
-    "id": "evt-010",
-    "title": "AWS expands generative AI application templates",
-    "source": "AWS Machine Learning Blog",
-    "url": "https://aws.amazon.com/blogs/machine-learning/",
-    "published_at": "2026-05-26",
-    "language": "en",
-    "category": "application",
-    "event_type": "application_update",
-    "entities": [
-      "Amazon"
-    ],
-    "impact_areas": [
-      "productivity"
-    ],
-    "importance_score": 6.0,
-    "confidence": 0.7,
-    "summary": "Amazon Web Services shared application templates for generative AI teams building enterprise assistants and workflow tools.",
-    "evidence": "AWS Machine Learning Blog: Amazon Web Services shared application templates for generative AI teams building enterprise assistants and workflow tools."
+    "summary": "Meta introduced Muse Spark, a generative AI tool for creative advertising and media application workflows.",
+    "evidence": "Meta: Meta introduced Muse Spark, a generative AI tool for creative advertising and media application workflows."
   },
   {
     "id": "evt-011",
-    "title": "Apple highlights on-device AI application features",
+    "title": "Apple unveils new accessibility features, and updates powered by Apple Intelligence",
     "source": "Apple Newsroom",
-    "url": "https://www.apple.com/newsroom/",
-    "published_at": "2026-05-26",
+    "url": "https://www.apple.com/newsroom/2026/05/apple-unveils-new-accessibility-features-and-updates-with-apple-intelligence/",
+    "published_at": "2026-05-19",
     "language": "en",
     "category": "application",
     "event_type": "application_update",
@@ -216,14 +216,34 @@
     ],
     "importance_score": 6.0,
     "confidence": 0.7,
-    "summary": "Apple highlighted application features that use on-device intelligence for privacy-aware writing, search, and productivity tasks.",
-    "evidence": "Apple Newsroom: Apple highlighted application features that use on-device intelligence for privacy-aware writing, search, and productivity tasks."
+    "summary": "Apple previewed accessibility features that use Apple Intelligence for VoiceOver, Magnifier, Voice Control, and related user-facing experiences.",
+    "evidence": "Apple Newsroom: Apple previewed accessibility features that use Apple Intelligence for VoiceOver, Magnifier, Voice Control, and related user-facing experiences."
   },
   {
     "id": "evt-012",
-    "title": "NVIDIA and cloud partners discuss AI infrastructure demand",
-    "source": "NVIDIA Data Center",
-    "url": "https://www.nvidia.com/en-us/data-center/",
+    "title": "Meta partners with AWS on Graviton chips to power agentic AI",
+    "source": "Meta",
+    "url": "https://about.fb.com/news/2026/04/meta-partners-with-aws-on-graviton-chips-to-power-agentic-ai/",
+    "published_at": "2026-04-24",
+    "language": "en",
+    "category": "agent",
+    "event_type": "agent_update",
+    "entities": [
+      "Meta"
+    ],
+    "impact_areas": [
+      "automation"
+    ],
+    "importance_score": 6.0,
+    "confidence": 0.7,
+    "summary": "Meta announced work with AWS around Graviton chips and compute infrastructure for large-scale AI workloads.",
+    "evidence": "Meta: Meta announced work with AWS around Graviton chips and compute infrastructure for large-scale AI workloads."
+  },
+  {
+    "id": "evt-013",
+    "title": "AI factories: The new infrastructure of intelligence",
+    "source": "NVIDIA",
+    "url": "https://blogs.nvidia.com/blog/ai-factories-the-new-infrastructure-of-intelligence/",
     "published_at": "2026-05-27",
     "language": "en",
     "category": "infrastructure",
@@ -236,7 +256,7 @@
     ],
     "importance_score": 6.0,
     "confidence": 0.7,
-    "summary": "NVIDIA and cloud ecosystem partners discussed GPU capacity, chip supply, and infrastructure planning for AI workloads.",
-    "evidence": "NVIDIA Data Center: NVIDIA and cloud ecosystem partners discussed GPU capacity, chip supply, and infrastructure planning for AI workloads."
+    "summary": "NVIDIA described AI factory infrastructure, Blackwell Ultra systems, and GPU-driven deployment patterns for industrial AI workloads.",
+    "evidence": "NVIDIA: NVIDIA described AI factory infrastructure, Blackwell Ultra systems, and GPU-driven deployment patterns for industrial AI workloads."
   }
 ]

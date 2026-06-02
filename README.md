@@ -40,6 +40,17 @@ Phase 2 implements a deterministic baseline:
 
 The sample data is synthetic for reproducible testing. URLs point to trusted public homepages or official source hubs, not invented article URLs.
 
+## Data Strategy
+
+The project uses two local raw-data fixtures:
+
+- `data/raw/sample_ai_news.json`: synthetic fixture for stable, repeatable tests.
+- `data/raw/real_ai_news_sample.json`: real-world sample for interview demonstration and qualitative review.
+
+The synthetic fixture is intentionally controlled so schema, harness, and report behavior can be tested without depending on live websites. The real-world sample shows that the same pipeline can process traceable public AI news and announcements.
+
+All real sample records must retain `source` and `url`. The harness blocks missing, suspicious, or hallucinated source URLs and requires each structured event to stay grounded in the raw input record that produced it.
+
 ## Install
 
 ```bash
@@ -60,7 +71,24 @@ python -m pytest
 python -m daily_ai_insight.cli run --input data/raw/sample_ai_news.json
 ```
 
+Equivalent `python3` command:
+
+```bash
+python3 -m daily_ai_insight.cli run --input data/raw/sample_ai_news.json
+```
+
 Generated files:
+
+- `data/processed/structured_events.json`
+- `outputs/daily_report.md`
+
+## Running with Real-world Sample
+
+```bash
+python3 -m daily_ai_insight.cli run --input data/raw/real_ai_news_sample.json
+```
+
+This uses the same deterministic baseline and writes the same output paths:
 
 - `data/processed/structured_events.json`
 - `outputs/daily_report.md`

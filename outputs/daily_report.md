@@ -6,76 +6,76 @@
 
 ## Total Events
 
-12
+13
 
 ## Top Events
 
-1. **OpenAI introduces new GPT model evaluation workflow**
-   - Source: OpenAI News
-   - URL: https://openai.com/news/
-   - Category: model
-   - Event Type: release
-   - Importance: 8.0
-   - Confidence: 0.70
-   - Summary: OpenAI described a model release workflow focused on evaluation, safety checks, and developer feedback before broader launch.
-   - Evidence: OpenAI News: OpenAI described a model release workflow focused on evaluation, safety checks, and developer feedback before broader launch.
-2. **Google DeepMind shares Gemini research update**
-   - Source: Google DeepMind Blog
-   - URL: https://deepmind.google/discover/blog/
-   - Category: model
-   - Event Type: benchmark
-   - Importance: 7.0
-   - Confidence: 0.70
-   - Summary: Google DeepMind highlighted Gemini model improvements for multimodal reasoning and benchmark tracking across research tasks.
-   - Evidence: Google DeepMind Blog: Google DeepMind highlighted Gemini model improvements for multimodal reasoning and benchmark tracking across research tasks.
-3. **Meta releases open model tooling for developers**
-   - Source: Meta AI Blog
-   - URL: https://ai.meta.com/blog/
+1. **Advancing voice intelligence with new models in the API**
+   - Source: OpenAI
+   - URL: https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/
    - Category: model
    - Event Type: release
    - Importance: 7.0
    - Confidence: 0.70
-   - Summary: Meta shared developer tooling around open model usage, release workflows, and application integration patterns.
-   - Evidence: Meta AI Blog: Meta shared developer tooling around open model usage, release workflows, and application integration patterns.
-4. **Hugging Face publishes agent benchmark toolkit**
-   - Source: Hugging Face Blog
-   - URL: https://huggingface.co/blog
+   - Summary: OpenAI released new voice models and API capabilities for realtime speech experiences, including improved conversational application support.
+   - Evidence: OpenAI: OpenAI released new voice models and API capabilities for realtime speech experiences, including improved conversational application support.
+2. **OpenAI frontier models and Codex are now available on AWS**
+   - Source: OpenAI
+   - URL: https://openai.com/index/openai-frontier-models-and-codex-are-now-available-on-aws/
+   - Category: model
+   - Event Type: application_update
+   - Importance: 6.0
+   - Confidence: 0.70
+   - Summary: OpenAI announced that frontier models and Codex are available through AWS, expanding enterprise access for model deployment and coding workflows.
+   - Evidence: OpenAI: OpenAI announced that frontier models and Codex are available through AWS, expanding enterprise access for model deployment and coding workflows.
+3. **Work with Codex from anywhere**
+   - Source: OpenAI
+   - URL: https://openai.com/index/work-with-codex-from-anywhere/
    - Category: agent
-   - Event Type: benchmark
-   - Importance: 7.0
+   - Event Type: agent_update
+   - Importance: 6.0
    - Confidence: 0.70
-   - Summary: Hugging Face introduced benchmark tooling for evaluating agent behavior, reproducibility, and task completion reliability.
-   - Evidence: Hugging Face Blog: Hugging Face introduced benchmark tooling for evaluating agent behavior, reproducibility, and task completion reliability.
-5. **Mistral AI launches enterprise model deployment option**
-   - Source: Mistral AI News
-   - URL: https://mistral.ai/news/
+   - Summary: OpenAI described Codex updates that let users manage longer-running coding agent tasks from mobile and remote environments.
+   - Evidence: OpenAI: OpenAI described Codex updates that let users manage longer-running coding agent tasks from mobile and remote environments.
+4. **A new personal finance experience in ChatGPT**
+   - Source: OpenAI
+   - URL: https://openai.com/index/personal-finance-chatgpt/
    - Category: model
-   - Event Type: release
-   - Importance: 7.0
+   - Event Type: application_update
+   - Importance: 6.0
    - Confidence: 0.70
-   - Summary: Mistral AI announced a launch path for enterprise model deployment with emphasis on controlled infrastructure choices.
-   - Evidence: Mistral AI News: Mistral AI announced a launch path for enterprise model deployment with emphasis on controlled infrastructure choices.
+   - Summary: OpenAI introduced a ChatGPT personal finance experience with tools for financial education, planning, and user-facing assistance.
+   - Evidence: OpenAI: OpenAI introduced a ChatGPT personal finance experience with tools for financial education, planning, and user-facing assistance.
+5. **Anthropic acquires Stainless**
+   - Source: Anthropic
+   - URL: https://www.anthropic.com/news/anthropic-acquires-stainless
+   - Category: model
+   - Event Type: agent_update
+   - Importance: 6.0
+   - Confidence: 0.70
+   - Summary: Anthropic announced the acquisition of Stainless to strengthen SDK, CLI, and MCP server tooling around Claude agent connectivity.
+   - Evidence: Anthropic: Anthropic announced the acquisition of Stainless to strengthen SDK, CLI, and MCP server tooling around Claude agent connectivity.
 
 
 ## Category Distribution
 
-- model: 5
-- infrastructure: 2
-- agent: 3
-- application: 2
+- model: 9
+- agent: 2
+- application: 1
+- infrastructure: 1
 
 
 ## Key Takeaways
 
-- model is the largest category in the validated sample with 5 events.
-- The top ranked event is 'OpenAI introduces new GPT model evaluation workflow' from OpenAI News.
-- The report is grounded in 12 distinct source labels from raw inputs.
+- model is the largest category in the validated sample with 9 events.
+- The top ranked event is 'Advancing voice intelligence with new models in the API' from OpenAI.
+- The report is grounded in 7 distinct source labels from raw inputs.
 
 
 ## Harness Summary
 
-- input_count: 12
-- output_count: 12
+- input_count: 13
+- output_count: 13
 - source_integrity_passed: True
 - grounding_passed: True
 - loop_guard_passed: True

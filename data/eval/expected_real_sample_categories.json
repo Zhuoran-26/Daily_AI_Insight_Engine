@@ -1,0 +1,67 @@
+[
+  {
+    "title": "OpenAI frontier models and Codex are now available on AWS",
+    "expected_category": "model",
+    "reason": "The item centers on frontier model availability and deployment access."
+  },
+  {
+    "title": "Work with Codex from anywhere",
+    "expected_category": "agent",
+    "reason": "The item describes coding agent task management and remote agent workflows."
+  },
+  {
+    "title": "Advancing voice intelligence with new models in the API",
+    "expected_category": "model",
+    "reason": "The item focuses on new voice models and model/API capability updates."
+  },
+  {
+    "title": "A new personal finance experience in ChatGPT",
+    "expected_category": "application",
+    "reason": "The item is primarily a user-facing financial assistance application."
+  },
+  {
+    "title": "Anthropic acquires Stainless",
+    "expected_category": "agent",
+    "reason": "The item concerns agent connectivity, SDKs, CLIs, and MCP server tooling."
+  },
+  {
+    "title": "PwC is deploying Claude to build technology, execute deals, and reinvent enterprise functions for clients",
+    "expected_category": "application",
+    "reason": "The item is about enterprise adoption and domain-specific deployment."
+  },
+  {
+    "title": "The Gemini app becomes more agentic, delivering proactive, 24/7 help",
+    "expected_category": "agent",
+    "reason": "The item emphasizes agentic assistance and personalized task support."
+  },
+  {
+    "title": "I/O 2026 developer highlights: Antigravity, Gemini API, AI Studio",
+    "expected_category": "agent",
+    "reason": "The item covers developer agent tooling and AI-assisted software workflows."
+  },
+  {
+    "title": "Gemini Intelligence brings proactive AI to Android",
+    "expected_category": "application",
+    "reason": "The item focuses on Android user-facing application experiences."
+  },
+  {
+    "title": "Introducing Muse Spark: Meta's Most Powerful Model Yet",
+    "expected_category": "application",
+    "reason": "The item is about a creative advertising and media application workflow."
+  },
+  {
+    "title": "Apple unveils new accessibility features, and updates powered by Apple Intelligence",
+    "expected_category": "application",
+    "reason": "The item focuses on accessibility and user-facing application experiences."
+  },
+  {
+    "title": "Meta partners with AWS on Graviton chips to power agentic AI",
+    "expected_category": "infrastructure",
+    "reason": "The item centers on chips, compute infrastructure, and deployment capacity."
+  },
+  {
+    "title": "AI factories: The new infrastructure of intelligence",
+    "expected_category": "infrastructure",
+    "reason": "The item focuses on AI factory infrastructure, systems, and GPU deployment."
+  }
+]
