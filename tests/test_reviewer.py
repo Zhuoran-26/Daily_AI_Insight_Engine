@@ -93,7 +93,7 @@ def test_reviewer_detects_low_category_accuracy(tmp_path):
     )
 
     titles = {issue.title for issue in summary.issues}
-    assert "Category accuracy is below showcase threshold" in titles
+    assert "分类准确率低于展示阈值" in titles
     assert summary.warning_count >= 1
 
 
@@ -110,7 +110,7 @@ def test_reviewer_compares_rule_vs_llm_accuracy(tmp_path):
         daily_report_path=daily_report_path,
     )
 
-    assert any(issue.title == "Extractor improves over baseline" for issue in summary.issues)
+    assert any(issue.title == "Extractor 相比 baseline 有提升" for issue in summary.issues)
 
 
 def test_reviewer_writes_review_outputs(tmp_path):
@@ -157,7 +157,7 @@ def test_cli_review_generates_outputs(tmp_path, monkeypatch):
     )
 
     assert result.exit_code == 0
-    assert "Review completed." in result.output
+    assert "复审完成。" in result.output
     assert Path("outputs/review_summary.json").exists()
     assert Path("outputs/review_report.md").exists()
 

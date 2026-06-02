@@ -73,7 +73,7 @@ def test_cli_evaluate_generates_outputs(tmp_path, monkeypatch):
     )
 
     assert result.exit_code == 0
-    assert "Evaluation completed." in result.output
+    assert "评估完成。" in result.output
     assert Path("outputs/evaluation_summary.json").exists()
     assert Path("outputs/evaluation_report.md").exists()
 

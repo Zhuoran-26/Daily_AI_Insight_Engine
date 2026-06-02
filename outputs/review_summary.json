@@ -7,51 +7,51 @@
     {
       "severity": "info",
       "area": "schema",
-      "title": "No failed evaluation items",
-      "detail": "All 13 items produced valid evaluation results.",
-      "suggested_action": "Keep the current schema and harness checks in the evaluation path."
+      "title": "\u6ca1\u6709\u5931\u8d25\u8bc4\u4f30\u9879",
+      "detail": "\u5168\u90e8 13 \u6761\u6837\u672c\u90fd\u751f\u6210\u4e86\u6709\u6548\u8bc4\u4f30\u7ed3\u679c\u3002",
+      "suggested_action": "\u7ee7\u7eed\u4fdd\u7559\u5f53\u524d evaluation \u8def\u5f84\u4e2d\u7684 schema \u4e0e harness \u6821\u9a8c\u3002"
     },
     {
       "severity": "warning",
       "area": "category",
-      "title": "Category mismatches detected",
-      "detail": "4 successful items were classified differently from the expected fixture.",
-      "suggested_action": "Review mismatched titles and update extractor rules, prompts, or expected fixture notes if justified."
+      "title": "\u68c0\u6d4b\u5230\u5206\u7c7b\u4e0d\u4e00\u81f4\u9879",
+      "detail": "4 \u6761\u6210\u529f\u6837\u672c\u7684\u9884\u6d4b\u5206\u7c7b\u4e0e expected fixture \u4e0d\u4e00\u81f4\u3002",
+      "suggested_action": "\u590d\u67e5\u4e0d\u4e00\u81f4\u6807\u9898\uff0c\u5e76\u5728\u5408\u7406\u65f6\u66f4\u65b0\u62bd\u53d6\u89c4\u5219\u3001prompt \u6216 expected fixture \u8bf4\u660e\u3002"
     },
     {
       "severity": "info",
       "area": "grounding",
-      "title": "Grounding pass rate is complete",
-      "detail": "Every evaluated item passed source grounding checks.",
-      "suggested_action": "Keep source and URL preservation mandatory for all extractor modes."
+      "title": "\u6765\u6e90\u8ffd\u6eaf\u5168\u90e8\u901a\u8fc7",
+      "detail": "\u6240\u6709\u8bc4\u4f30\u6837\u672c\u90fd\u901a\u8fc7\u4e86 source grounding \u68c0\u67e5\u3002",
+      "suggested_action": "\u7ee7\u7eed\u8981\u6c42\u6240\u6709 extractor \u6a21\u5f0f\u4fdd\u7559 source \u548c URL\u3002"
     },
     {
       "severity": "info",
       "area": "confidence",
-      "title": "Average confidence meets threshold",
-      "detail": "Average confidence is 0.92, meeting the 0.70 threshold.",
-      "suggested_action": "Continue reporting confidence distribution alongside accuracy."
+      "title": "\u5e73\u5747\u7f6e\u4fe1\u5ea6\u8fbe\u5230\u9608\u503c",
+      "detail": "\u5e73\u5747\u7f6e\u4fe1\u5ea6\u4e3a 0.92\uff0c\u8fbe\u5230 0.70 \u9608\u503c\u3002",
+      "suggested_action": "\u7ee7\u7eed\u5728\u51c6\u786e\u7387\u4e4b\u5916\u5c55\u793a\u7f6e\u4fe1\u5ea6\u5206\u5e03\u3002"
     },
     {
       "severity": "info",
       "area": "category",
-      "title": "Extractor improves over baseline",
-      "detail": "openai-compatible accuracy is 0.69; rule baseline accuracy is 0.38; delta is 0.31.",
-      "suggested_action": "Use this comparison in the showcase, while still explaining remaining mismatches."
+      "title": "Extractor \u76f8\u6bd4 baseline \u6709\u63d0\u5347",
+      "detail": "openai-compatible \u51c6\u786e\u7387\u4e3a 0.69\uff1brule baseline \u51c6\u786e\u7387\u4e3a 0.38\uff1b\u63d0\u5347\u5e45\u5ea6\u4e3a 0.31\u3002",
+      "suggested_action": "\u53ef\u4ee5\u5728 showcase \u4e2d\u4f7f\u7528\u8be5\u5bf9\u6bd4\uff0c\u540c\u65f6\u8bf4\u660e\u4ecd\u7136\u5b58\u5728\u7684\u5206\u7c7b\u4e0d\u4e00\u81f4\u9879\u3002"
     },
     {
       "severity": "info",
       "area": "report",
-      "title": "Evaluation report exists",
-      "detail": "Found evaluation report at outputs/llm_evaluation_report.md.",
-      "suggested_action": "Use the report as the human-readable quality artifact."
+      "title": "\u8bc4\u4f30\u62a5\u544a\u5b58\u5728",
+      "detail": "\u5df2\u627e\u5230 evaluation report\uff1aoutputs/llm_evaluation_report.md\u3002",
+      "suggested_action": "\u5c06\u8be5\u62a5\u544a\u4f5c\u4e3a\u4eba\u5de5\u53ef\u8bfb\u7684\u8d28\u91cf\u8bc4\u4f30\u4ea7\u7269\u3002"
     },
     {
       "severity": "info",
       "area": "report",
-      "title": "Daily report exists",
-      "detail": "Found daily report at outputs/daily_report.md.",
-      "suggested_action": "Use the daily report as the final generated artifact after validating evaluation results."
+      "title": "\u5206\u6790\u65e5\u62a5\u5b58\u5728",
+      "detail": "\u5df2\u627e\u5230 daily report\uff1aoutputs/daily_report.md\u3002",
+      "suggested_action": "\u5728\u786e\u8ba4 evaluation \u7ed3\u679c\u540e\uff0c\u5c06\u8be5\u65e5\u62a5\u4f5c\u4e3a\u6700\u7ec8\u751f\u6210\u4ea7\u7269\u5c55\u793a\u3002"
     }
   ],
   "final_verdict": "reviewed_with_warnings"

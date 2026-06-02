@@ -1,18 +1,18 @@
-# Extractor Evaluation Report
+# 抽取器评估报告
 
-## Summary
+## 评估摘要
 
-- Extractor: rule
-- Total items: 13
-- Successful items: 13
-- Failed items: 0
-- Category accuracy: 0.38
-- Grounding pass rate: 1.00
-- Average confidence: 0.70
+- 抽取模式: rule
+- 样本总数: 13
+- 成功项: 13
+- 失败项: 0
+- 分类准确率: 0.38
+- 来源追溯通过率: 1.00
+- 平均置信度: 0.70
 
-## Mismatched Items
+## 分类不一致项
 
-| Title | Expected | Predicted | Confidence |
+| 标题 | 预期分类 | 预测分类 | 置信度 |
 | --- | --- | --- | --- |
 | A new personal finance experience in ChatGPT | application | model | 0.70 |
 | Anthropic acquires Stainless | agent | model | 0.70 |
@@ -24,12 +24,12 @@
 | Meta partners with AWS on Graviton chips to power agentic AI | infrastructure | agent | 0.70 |
 
 
-## Failed Items
+## 失败项
 
-| Title | Expected | Error |
+| 标题 | 预期分类 | 错误 |
 | --- | --- | --- |
 
 
-## Methodology Note
+## 方法说明
 
-Evaluation is not intended to force 100 percent accuracy. It exposes the strengths and limits of each extractor. The rule baseline is a stable fallback, LLM extractors are intended for complex semantics, and the harness blocks hallucinated or ungrounded outputs before they become report inputs.
+Evaluation Harness 的目标不是追求 100% 准确率，而是暴露不同 extractor 的优势与局限。rule baseline 提供稳定可复现的 fallback，LLM extractor 用于处理更复杂的语义分类；无论哪种模式，Harness 都会在输出进入日报前阻止幻觉来源、无追溯事件和低置信度结果。

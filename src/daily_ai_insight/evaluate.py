@@ -19,37 +19,37 @@ from daily_ai_insight.validate import validate_raw_items, validate_structured_ev
 DEFAULT_EVALUATION_SUMMARY_PATH = Path("outputs/evaluation_summary.json")
 DEFAULT_EVALUATION_REPORT_PATH = Path("outputs/evaluation_report.md")
 
-EVALUATION_REPORT_TEMPLATE = """# Extractor Evaluation Report
+EVALUATION_REPORT_TEMPLATE = """# 抽取器评估报告
 
-## Summary
+## 评估摘要
 
-- Extractor: {{ summary.extractor }}
-- Total items: {{ summary.total_items }}
-- Successful items: {{ summary.successful_items }}
-- Failed items: {{ summary.failed_items }}
-- Category accuracy: {{ "%.2f"|format(summary.category_accuracy) }}
-- Grounding pass rate: {{ "%.2f"|format(summary.grounding_pass_rate) }}
-- Average confidence: {{ "%.2f"|format(summary.average_confidence) }}
+- 抽取模式: {{ summary.extractor }}
+- 样本总数: {{ summary.total_items }}
+- 成功项: {{ summary.successful_items }}
+- 失败项: {{ summary.failed_items }}
+- 分类准确率: {{ "%.2f"|format(summary.category_accuracy) }}
+- 来源追溯通过率: {{ "%.2f"|format(summary.grounding_pass_rate) }}
+- 平均置信度: {{ "%.2f"|format(summary.average_confidence) }}
 
-## Mismatched Items
+## 分类不一致项
 
-| Title | Expected | Predicted | Confidence |
+| 标题 | 预期分类 | 预测分类 | 置信度 |
 | --- | --- | --- | --- |
 {% for item in mismatched -%}
 | {{ item.title }} | {{ item.expected_category }} | {{ item.predicted_category or "" }} | {{ "" if item.confidence is none else "%.2f"|format(item.confidence) }} |
 {% endfor %}
 
-## Failed Items
+## 失败项
 
-| Title | Expected | Error |
+| 标题 | 预期分类 | 错误 |
 | --- | --- | --- |
 {% for item in failed -%}
 | {{ item.title }} | {{ item.expected_category }} | {{ item.error or "" }} |
 {% endfor %}
 
-## Methodology Note
+## 方法说明
 
-Evaluation is not intended to force 100 percent accuracy. It exposes the strengths and limits of each extractor. The rule baseline is a stable fallback, LLM extractors are intended for complex semantics, and the harness blocks hallucinated or ungrounded outputs before they become report inputs.
+Evaluation Harness 的目标不是追求 100% 准确率，而是暴露不同 extractor 的优势与局限。rule baseline 提供稳定可复现的 fallback，LLM extractor 用于处理更复杂的语义分类；无论哪种模式，Harness 都会在输出进入日报前阻止幻觉来源、无追溯事件和低置信度结果。
 """
 
 

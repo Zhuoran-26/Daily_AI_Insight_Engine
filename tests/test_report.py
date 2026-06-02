@@ -38,10 +38,10 @@ def test_report_markdown_is_generated(tmp_path):
     path = write_report(report, tmp_path / "daily_report.md")
     text = path.read_text(encoding="utf-8")
 
-    assert "Harness Summary" in text
-    assert "Trend Signals" in text
-    assert "Risks and Opportunities" in text
-    assert "Methodology Note" in text
+    assert "Harness 校验摘要" in text
+    assert "趋势信号" in text
+    assert "风险与机会" in text
+    assert "方法说明" in text
     assert "deterministic baseline" in text
     assert report.trend_signals
     assert report.risks_and_opportunities

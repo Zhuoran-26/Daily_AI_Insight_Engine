@@ -62,9 +62,9 @@ def test_ui_pipeline_chart_helpers_use_report_data():
         harness_summary={"extractor_name": "rule"},
     )
 
-    assert app.category_distribution_chart_data(report) == [{"category": "model", "count": 1}]
+    assert app.category_distribution_chart_data(report) == [{"分类": "model", "数量": 1}]
     assert app.top_events_importance_chart_data(report) == [
-        {"title": "OpenAI launches model update", "importance_score": 7.0}
+        {"标题": "OpenAI launches model update", "重要性评分": 7.0}
     ]
 
 

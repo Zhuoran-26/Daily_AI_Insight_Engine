@@ -242,7 +242,7 @@ def test_cli_default_extractor_is_rule(tmp_path, monkeypatch):
     result = runner.invoke(app, ["run", "--input", str(SAMPLE_PATH)])
 
     assert result.exit_code == 0
-    assert "Extractor: rule" in result.output
+    assert "抽取模式：rule" in result.output
 
 
 def test_cli_supports_mock_llm(tmp_path, monkeypatch):
@@ -255,4 +255,4 @@ def test_cli_supports_mock_llm(tmp_path, monkeypatch):
     )
 
     assert result.exit_code == 0
-    assert "Extractor: mock-llm" in result.output
+    assert "抽取模式：mock-llm" in result.output

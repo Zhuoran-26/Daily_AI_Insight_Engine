@@ -13,6 +13,8 @@
 | 趋势判断 | 日报包含 deterministic `Trend Signals` section。 | `outputs/daily_report.md` / `src/daily_ai_insight/report.py` | 是 |
 | 风险/机会提示 | 日报包含 `Risks and Opportunities` section。 | `outputs/daily_report.md` / `src/daily_ai_insight/report.py` | 是 |
 | 可视化展示 | Streamlit UI 展示 category distribution、top event importance、rule vs LLM accuracy 图表。 | `streamlit run app.py` | 是 |
+| 中文产品体验 | UI、CLI 可见输出、日报、Evaluation report 和 Reviewer report 面向中文用户；技术名可保留英文。 | `app.py` / `src/daily_ai_insight/report.py` / `src/daily_ai_insight/evaluate.py` / `src/daily_ai_insight/reviewer.py` | 是 |
+| 跨语言输入输出 | 支持英文/中文新闻输入；保留原始标题、来源和 URL，同时将结构化摘要、趋势判断、风险机会和最终报告面向中文输出。 | `prompts/extraction_prompt.md` / `outputs/daily_report.md` | 是 |
 | AI 使用说明 | 说明 LLM 不是直接生成最终报告，而是受 schema、harness、evaluation 和 reviewer 约束。 | `README.md` / `docs/ai_coding_showcase.md` | 是 |
 | Prompt 设计 | extraction prompt 明确禁止编造 source/url，要求 JSON schema 输出。 | `prompts/extraction_prompt.md` | 是 |
 | 错误处理与校验 | pipeline 对 schema、source、evidence、confidence、API key 缺失等情况 fail fast。 | `src/daily_ai_insight/harness.py` / `src/daily_ai_insight/llm_client.py` | 是 |
@@ -22,6 +24,12 @@
 | 测试 | 默认测试覆盖 pipeline、extractor、harness、LLM config、evaluation、reviewer、UI import。 | `python3 -m pytest` | 是 |
 | Streamlit 产品 Demo | 提供本地可交互 UI，支持选择数据、extractor、运行 pipeline/evaluation/reviewer。 | `app.py` / `streamlit run app.py` | 是 |
 | DeepSeek 可选真实 LLM 模式 | 支持 OpenAI-compatible DeepSeek API，默认不要求 API key；真实集成测试需显式开启。 | `.env.example` / `tests/test_llm_integration.py` | 是 |
+
+## 跨语言与 Schema 稳定性说明
+
+本项目面向中文产品体验设计，但支持英文/中文新闻输入。英文 source 不等于英文产品体验：产品输出层的 UI、日报、评估报告和复审报告面向中文用户；原始 `title`、`source`、`url` 保持来源原样，便于追溯。
+
+Schema 层保持英文 key、英文 category enum 和固定 extractor name，是为了保证工程稳定、自动化测试和 Evaluation Harness 可复现。
 
 ## 无 API Key 验收命令
 

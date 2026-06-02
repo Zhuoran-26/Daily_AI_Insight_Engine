@@ -8,7 +8,7 @@ from daily_ai_insight.errors import PipelineError
 from daily_ai_insight.pipeline import run_pipeline
 from daily_ai_insight.reviewer import run_review, write_review_outputs
 
-app = typer.Typer(help="Run the Daily AI Insight deterministic MVP pipeline.")
+app = typer.Typer(help="运行 Daily AI Insight Engine 的本地 pipeline。")
 
 
 class ExtractorOption(str, Enum):
@@ -19,7 +19,7 @@ class ExtractorOption(str, Enum):
 
 @app.callback()
 def main() -> None:
-    """Daily AI Insight command group."""
+    """Daily AI Insight 命令组。"""
 
 
 @app.command()
@@ -28,25 +28,25 @@ def run(
         Path("data/raw/sample_ai_news.json"),
         "--input",
         "-i",
-        help="Path to raw AI news JSON.",
+        help="原始 AI 新闻 JSON 路径。",
     ),
     extractor_name: ExtractorOption = typer.Option(
         ExtractorOption.rule,
         "--extractor",
-        help="Extractor mode: rule, mock-llm, or openai-compatible.",
+        help="抽取模式：rule、mock-llm 或 openai-compatible。",
     ),
 ) -> None:
     try:
         report = run_pipeline(input_path, extractor_name=extractor_name.value)
     except PipelineError as exc:
-        typer.echo(f"Pipeline failed: {exc}", err=True)
+        typer.echo(f"日报生成失败：{exc}", err=True)
         raise typer.Exit(code=1) from exc
 
-    typer.echo("Pipeline completed.")
-    typer.echo(f"Extractor: {extractor_name.value}")
-    typer.echo(f"Validated events: {report.total_events}")
-    typer.echo("Generated data/processed/structured_events.json")
-    typer.echo("Generated outputs/daily_report.md")
+    typer.echo("日报生成完成。")
+    typer.echo(f"抽取模式：{extractor_name.value}")
+    typer.echo(f"已校验事件数：{report.total_events}")
+    typer.echo("已生成：data/processed/structured_events.json")
+    typer.echo("已生成：outputs/daily_report.md")
 
 
 @app.command()
@@ -55,23 +55,23 @@ def evaluate(
         Path("data/raw/real_ai_news_sample.json"),
         "--input",
         "-i",
-        help="Path to raw AI news JSON.",
+        help="原始 AI 新闻 JSON 路径。",
     ),
     expected_path: Path = typer.Option(
         Path("data/eval/expected_real_sample_categories.json"),
         "--expected",
         "-e",
-        help="Path to expected category fixture.",
+        help="预期分类 fixture 路径。",
     ),
     extractor_name: ExtractorOption = typer.Option(
         ExtractorOption.rule,
         "--extractor",
-        help="Extractor mode: rule, mock-llm, or openai-compatible.",
+        help="抽取模式：rule、mock-llm 或 openai-compatible。",
     ),
     output_prefix: str | None = typer.Option(
         None,
         "--output-prefix",
-        help="Optional output prefix, for example rule or llm.",
+        help="可选输出前缀，例如 rule 或 llm。",
     ),
 ) -> None:
     try:
@@ -87,19 +87,19 @@ def evaluate(
             report_path=report_output_path,
         )
     except PipelineError as exc:
-        typer.echo(f"Evaluation failed: {exc}", err=True)
+        typer.echo(f"评估失败：{exc}", err=True)
         raise typer.Exit(code=1) from exc
 
-    typer.echo("Evaluation completed.")
-    typer.echo(f"Extractor: {summary.extractor}")
-    typer.echo(f"Total items: {summary.total_items}")
-    typer.echo(f"Successful items: {summary.successful_items}")
-    typer.echo(f"Failed items: {summary.failed_items}")
-    typer.echo(f"Category accuracy: {summary.category_accuracy:.2f}")
-    typer.echo(f"Grounding pass rate: {summary.grounding_pass_rate:.2f}")
-    typer.echo(f"Average confidence: {summary.average_confidence:.2f}")
-    typer.echo(f"Generated {summary_path}")
-    typer.echo(f"Generated {report_path}")
+    typer.echo("评估完成。")
+    typer.echo(f"抽取模式：{summary.extractor}")
+    typer.echo(f"样本总数：{summary.total_items}")
+    typer.echo(f"成功项：{summary.successful_items}")
+    typer.echo(f"失败项：{summary.failed_items}")
+    typer.echo(f"分类准确率：{summary.category_accuracy:.2f}")
+    typer.echo(f"来源追溯通过率：{summary.grounding_pass_rate:.2f}")
+    typer.echo(f"平均置信度：{summary.average_confidence:.2f}")
+    typer.echo(f"已生成：{summary_path}")
+    typer.echo(f"已生成：{report_path}")
 
 
 @app.command()
@@ -108,13 +108,13 @@ def review(
         Path("outputs/evaluation_summary.json"),
         "--evaluation",
         "-e",
-        help="Path to an evaluation summary JSON file.",
+        help="评估 summary JSON 路径。",
     ),
     baseline_path: Path | None = typer.Option(
         None,
         "--baseline",
         "-b",
-        help="Optional baseline evaluation summary JSON file.",
+        help="可选 baseline 评估 summary JSON 路径。",
     ),
 ) -> None:
     try:
@@ -124,17 +124,17 @@ def review(
         )
         summary_path, report_path = write_review_outputs(summary)
     except (OSError, ValueError, PipelineError) as exc:
-        typer.echo(f"Review failed: {exc}", err=True)
+        typer.echo(f"复审失败：{exc}", err=True)
         raise typer.Exit(code=1) from exc
 
-    typer.echo("Review completed.")
-    typer.echo(f"Final verdict: {summary.final_verdict}")
-    typer.echo(f"Total issues: {summary.total_issues}")
-    typer.echo(f"Errors: {summary.error_count}")
-    typer.echo(f"Warnings: {summary.warning_count}")
-    typer.echo(f"Info: {summary.info_count}")
-    typer.echo(f"Generated {summary_path}")
-    typer.echo(f"Generated {report_path}")
+    typer.echo("复审完成。")
+    typer.echo(f"最终结论：{summary.final_verdict}")
+    typer.echo(f"问题总数：{summary.total_issues}")
+    typer.echo(f"错误数：{summary.error_count}")
+    typer.echo(f"警告数：{summary.warning_count}")
+    typer.echo(f"信息数：{summary.info_count}")
+    typer.echo(f"已生成：{summary_path}")
+    typer.echo(f"已生成：{report_path}")
 
 
 if __name__ == "__main__":

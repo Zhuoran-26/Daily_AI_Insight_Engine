@@ -20,6 +20,12 @@ This project does not ask an LLM to directly write a plausible report. It builds
 
 The point is not only that AI can generate text. The point is that AI-assisted work can be constrained, measured, reviewed, and explained.
 
+## Chinese Product Experience
+
+The product layer is designed for Chinese users while preserving source traceability. English input news keeps its original `title`, `source`, and `url`, but user-facing analysis, trend signals, risks, opportunities, evaluation reports, reviewer reports, and the Streamlit UI are localized for Chinese reading.
+
+Schema keys, category enum values, and extractor names remain English on purpose. That keeps validation, tests, and Evaluation Harness behavior stable while avoiding a mixed-language product experience.
+
 ## System Architecture
 
 RawNewsItem -> Extractor Strategy -> Item-level LLM Extraction -> Schema Validation -> Harness Verification -> Evaluation Harness -> AI Reviewer -> Report Generation

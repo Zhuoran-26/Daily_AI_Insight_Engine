@@ -17,39 +17,39 @@ DEFAULT_REVIEW_SUMMARY_PATH = Path("outputs/review_summary.json")
 DEFAULT_REVIEW_REPORT_PATH = Path("outputs/review_report.md")
 DEFAULT_DAILY_REPORT_PATH = Path("outputs/daily_report.md")
 
-REVIEW_REPORT_TEMPLATE = """# AI Reviewer Report
+REVIEW_REPORT_TEMPLATE = """# AI Reviewer 复审报告
 
-## Summary
+## 复审摘要
 
-- Final verdict: {{ summary.final_verdict }}
-- Total issues: {{ summary.total_issues }}
-- Errors: {{ summary.error_count }}
-- Warnings: {{ summary.warning_count }}
-- Info: {{ summary.info_count }}
+- 最终结论: {{ summary.final_verdict }}
+- 问题总数: {{ summary.total_issues }}
+- 错误数: {{ summary.error_count }}
+- 警告数: {{ summary.warning_count }}
+- 信息数: {{ summary.info_count }}
 
-## Issues
+## 问题列表
 
-| Severity | Area | Title | Suggested Action |
+| 严重程度 | 区域 | 标题 | 建议动作 |
 | --- | --- | --- | --- |
 {% for issue in summary.issues -%}
 | {{ issue.severity }} | {{ issue.area }} | {{ issue.title }} | {{ issue.suggested_action }} |
 {% endfor %}
 
-## Details
+## 问题详情
 
 {% for issue in summary.issues -%}
 ### {{ issue.title }}
 
-- Severity: {{ issue.severity }}
-- Area: {{ issue.area }}
-- Detail: {{ issue.detail }}
-- Suggested action: {{ issue.suggested_action }}
+- 严重程度: {{ issue.severity }}
+- 区域: {{ issue.area }}
+- 详情: {{ issue.detail }}
+- 建议动作: {{ issue.suggested_action }}
 
 {% endfor -%}
 
-## Methodology Note
+## 方法说明
 
-This deterministic reviewer is a critique layer over evaluation artifacts. It does not replace harness validation, and it does not call an LLM. Its purpose is to surface mismatch patterns, failed items, confidence risks, missing artifacts, and baseline comparison signals so the next revise step can be deliberate.
+这个 deterministic reviewer 是覆盖在 evaluation artifact 之上的复审层。它不替代 Harness 校验，也不调用 LLM。它的作用是暴露分类不一致、失败项、置信度风险、缺失产物和 baseline 对比信号，让后续 revise 有明确依据。
 """
 
 
@@ -119,9 +119,9 @@ class RuleBasedReviewer:
                 ReviewIssue(
                     severity="info",
                     area="schema",
-                    title="No failed evaluation items",
-                    detail=f"All {evaluation.total_items} items produced valid evaluation results.",
-                    suggested_action="Keep the current schema and harness checks in the evaluation path.",
+                    title="没有失败评估项",
+                    detail=f"全部 {evaluation.total_items} 条样本都生成了有效评估结果。",
+                    suggested_action="继续保留当前 evaluation 路径中的 schema 与 harness 校验。",
                 )
             ]
 
@@ -130,9 +130,9 @@ class RuleBasedReviewer:
             ReviewIssue(
                 severity="error",
                 area="schema",
-                title="Failed evaluation items detected",
-                detail=f"{evaluation.failed_items} items failed evaluation: {failed_titles}",
-                suggested_action="Inspect failed item errors before using this extractor result in a showcase comparison.",
+                title="检测到失败评估项",
+                detail=f"{evaluation.failed_items} 条样本评估失败：{failed_titles}",
+                suggested_action="在用于 showcase 对比前，先检查失败项错误原因。",
             )
         ]
 
@@ -145,9 +145,9 @@ class RuleBasedReviewer:
                 ReviewIssue(
                     severity="warning",
                     area="category",
-                    title="Category mismatches detected",
-                    detail=f"{len(mismatches)} successful items were classified differently from the expected fixture.",
-                    suggested_action="Review mismatched titles and update extractor rules, prompts, or expected fixture notes if justified.",
+                    title="检测到分类不一致项",
+                    detail=f"{len(mismatches)} 条成功样本的预测分类与 expected fixture 不一致。",
+                    suggested_action="复查不一致标题，并在合理时更新抽取规则、prompt 或 expected fixture 说明。",
                 )
             )
 
@@ -156,12 +156,12 @@ class RuleBasedReviewer:
                 ReviewIssue(
                     severity="warning",
                     area="category",
-                    title="Category accuracy is below showcase threshold",
+                    title="分类准确率低于展示阈值",
                     detail=(
-                        f"{evaluation.extractor} accuracy is {evaluation.category_accuracy:.2f}, "
-                        f"below the {LOW_ACCURACY_THRESHOLD:.2f} reviewer threshold."
+                        f"{evaluation.extractor} 的分类准确率为 {evaluation.category_accuracy:.2f}，"
+                        f"低于 reviewer 阈值 {LOW_ACCURACY_THRESHOLD:.2f}。"
                     ),
-                    suggested_action="Use this result to explain baseline limitations or revise extraction logic before claiming quality gains.",
+                    suggested_action="将该结果用于解释 baseline 局限，或在声称质量提升前修订抽取逻辑。",
                 )
             )
 
@@ -173,9 +173,9 @@ class RuleBasedReviewer:
                 ReviewIssue(
                     severity="info",
                     area="grounding",
-                    title="Grounding pass rate is complete",
-                    detail="Every evaluated item passed source grounding checks.",
-                    suggested_action="Keep source and URL preservation mandatory for all extractor modes.",
+                    title="来源追溯全部通过",
+                    detail="所有评估样本都通过了 source grounding 检查。",
+                    suggested_action="继续要求所有 extractor 模式保留 source 和 URL。",
                 )
             ]
 
@@ -183,9 +183,9 @@ class RuleBasedReviewer:
             ReviewIssue(
                 severity="error",
                 area="grounding",
-                title="Grounding pass rate below 1.0",
-                detail=f"Grounding pass rate is {evaluation.grounding_pass_rate:.2f}; at least one item is not grounded.",
-                suggested_action="Block this extractor result from final reporting until source grounding failures are fixed.",
+                title="来源追溯通过率低于 1.0",
+                detail=f"来源追溯通过率为 {evaluation.grounding_pass_rate:.2f}；至少一条样本未通过 grounding。",
+                suggested_action="修复 source grounding 失败前，不要将该 extractor 结果用于最终报告。",
             )
         ]
 
@@ -195,12 +195,12 @@ class RuleBasedReviewer:
                 ReviewIssue(
                     severity="info",
                     area="confidence",
-                    title="Average confidence meets threshold",
+                    title="平均置信度达到阈值",
                     detail=(
-                        f"Average confidence is {evaluation.average_confidence:.2f}, "
-                        f"meeting the {MIN_CONFIDENCE_FOR_SHOWCASE:.2f} threshold."
+                        f"平均置信度为 {evaluation.average_confidence:.2f}，"
+                        f"达到 {MIN_CONFIDENCE_FOR_SHOWCASE:.2f} 阈值。"
                     ),
-                    suggested_action="Continue reporting confidence distribution alongside accuracy.",
+                    suggested_action="继续在准确率之外展示置信度分布。",
                 )
             ]
 
@@ -208,12 +208,12 @@ class RuleBasedReviewer:
             ReviewIssue(
                 severity="warning",
                 area="confidence",
-                title="Average confidence below threshold",
+                title="平均置信度低于阈值",
                 detail=(
-                    f"Average confidence is {evaluation.average_confidence:.2f}, "
-                    f"below the {MIN_CONFIDENCE_FOR_SHOWCASE:.2f} reviewer threshold."
+                    f"平均置信度为 {evaluation.average_confidence:.2f}，"
+                    f"低于 reviewer 阈值 {MIN_CONFIDENCE_FOR_SHOWCASE:.2f}。"
                 ),
-                suggested_action="Send low-confidence results to review or fail fast before using them in the final report.",
+                suggested_action="低置信度结果应进入复审或 fail fast，不应直接进入最终报告。",
             )
         ]
 
@@ -227,9 +227,9 @@ class RuleBasedReviewer:
                 ReviewIssue(
                     severity="info",
                     area="category",
-                    title="No baseline comparison provided",
-                    detail="Reviewer received only one evaluation summary.",
-                    suggested_action="Provide a rule baseline summary when making extractor quality claims.",
+                    title="未提供 baseline 对比",
+                    detail="Reviewer 只收到一个 evaluation summary。",
+                    suggested_action="在声称 extractor 质量提升时，应提供 rule baseline summary 作为对比。",
                 )
             ]
 
@@ -239,13 +239,13 @@ class RuleBasedReviewer:
                 ReviewIssue(
                     severity="warning",
                     area="category",
-                    title="Extractor accuracy is not clearly above baseline",
+                    title="Extractor 准确率未明显高于 baseline",
                     detail=(
-                        f"{evaluation.extractor} accuracy is {evaluation.category_accuracy:.2f}; "
-                        f"{baseline.extractor} baseline accuracy is {baseline.category_accuracy:.2f}; "
-                        f"delta is {delta:.2f}."
+                        f"{evaluation.extractor} 准确率为 {evaluation.category_accuracy:.2f}；"
+                        f"{baseline.extractor} baseline 准确率为 {baseline.category_accuracy:.2f}；"
+                        f"提升幅度为 {delta:.2f}。"
                     ),
-                    suggested_action="Avoid claiming LLM quality improvement until evaluation shows a meaningful gain.",
+                    suggested_action="在 evaluation 显示显著提升前，避免声称 LLM 质量提升。",
                 )
             ]
 
@@ -253,13 +253,13 @@ class RuleBasedReviewer:
             ReviewIssue(
                 severity="info",
                 area="category",
-                title="Extractor improves over baseline",
+                title="Extractor 相比 baseline 有提升",
                 detail=(
-                    f"{evaluation.extractor} accuracy is {evaluation.category_accuracy:.2f}; "
-                    f"{baseline.extractor} baseline accuracy is {baseline.category_accuracy:.2f}; "
-                    f"delta is {delta:.2f}."
+                    f"{evaluation.extractor} 准确率为 {evaluation.category_accuracy:.2f}；"
+                    f"{baseline.extractor} baseline 准确率为 {baseline.category_accuracy:.2f}；"
+                    f"提升幅度为 {delta:.2f}。"
                 ),
-                suggested_action="Use this comparison in the showcase, while still explaining remaining mismatches.",
+                suggested_action="可以在 showcase 中使用该对比，同时说明仍然存在的分类不一致项。",
             )
         ]
 
@@ -275,9 +275,9 @@ class RuleBasedReviewer:
                 ReviewIssue(
                     severity="warning",
                     area="report",
-                    title="Evaluation report path not provided",
-                    detail="Reviewer could not verify whether a Markdown evaluation report exists.",
-                    suggested_action="Pass the evaluation report path or use the CLI default inference.",
+                    title="未提供评估报告路径",
+                    detail="Reviewer 无法确认 Markdown evaluation report 是否存在。",
+                    suggested_action="传入 evaluation report 路径，或使用 CLI 默认推断路径。",
                 )
             )
         elif evaluation_report_path.exists():
@@ -285,9 +285,9 @@ class RuleBasedReviewer:
                 ReviewIssue(
                     severity="info",
                     area="report",
-                    title="Evaluation report exists",
-                    detail=f"Found evaluation report at {evaluation_report_path}.",
-                    suggested_action="Use the report as the human-readable quality artifact.",
+                    title="评估报告存在",
+                    detail=f"已找到 evaluation report：{evaluation_report_path}。",
+                    suggested_action="将该报告作为人工可读的质量评估产物。",
                 )
             )
         else:
@@ -295,9 +295,9 @@ class RuleBasedReviewer:
                 ReviewIssue(
                     severity="warning",
                     area="report",
-                    title="Evaluation report is missing",
-                    detail=f"Expected evaluation report at {evaluation_report_path}.",
-                    suggested_action="Run the evaluation CLI again so reviewers can inspect the Markdown report.",
+                    title="评估报告缺失",
+                    detail=f"预期 evaluation report 位于 {evaluation_report_path}。",
+                    suggested_action="重新运行 evaluation CLI，确保 reviewer 可查看 Markdown 报告。",
                 )
             )
 
@@ -306,9 +306,9 @@ class RuleBasedReviewer:
                 ReviewIssue(
                     severity="info",
                     area="report",
-                    title="Daily report exists",
-                    detail=f"Found daily report at {daily_report_path}.",
-                    suggested_action="Use the daily report as the final generated artifact after validating evaluation results.",
+                    title="分析日报存在",
+                    detail=f"已找到 daily report：{daily_report_path}。",
+                    suggested_action="在确认 evaluation 结果后，将该日报作为最终生成产物展示。",
                 )
             )
         else:
@@ -316,9 +316,9 @@ class RuleBasedReviewer:
                 ReviewIssue(
                     severity="warning",
                     area="report",
-                    title="Daily report is missing",
-                    detail=f"Expected daily report at {daily_report_path}.",
-                    suggested_action="Run the pipeline before final demo so the report artifact is available.",
+                    title="分析日报缺失",
+                    detail=f"预期 daily report 位于 {daily_report_path}。",
+                    suggested_action="最终演示前请先运行 pipeline，确保日报产物存在。",
                 )
             )
 

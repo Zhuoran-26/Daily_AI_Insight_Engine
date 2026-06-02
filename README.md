@@ -168,6 +168,14 @@ python3 -m daily_ai_insight.cli review --evaluation outputs/llm_evaluation_summa
 
 所有真实样例都必须保留 `source` 和 `url`。Harness 会阻止缺失来源、虚构 URL、低置信度或无法追溯的结构化事件进入最终报告。
 
+## 跨语言产品体验
+
+本项目面向中文产品体验设计，但支持英文/中文新闻输入。
+
+当输入数据为英文新闻时，系统会保留原始 `title`、`source` 和 `url`，同时将结构化摘要、趋势判断、风险机会和最终报告输出为中文，方便中文业务团队阅读。
+
+英文 source 不等于英文产品体验。产品输出层面向中文用户；Schema 层保持英文 key、英文 category enum 和固定 extractor name，是为了保证工程稳定、自动化测试和 Evaluation Harness 可复现。
+
 ## Extractor 模式
 
 项目支持三种 extractor：
