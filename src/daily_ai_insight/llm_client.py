@@ -120,6 +120,10 @@ class OpenAICompatibleClient:
             "url": item.url,
             "published_at": item.published_at,
             "language": item.language,
+            "source_channel": item.source_channel,
+            "source_language": item.source_language,
+            "selection_reason": item.selection_reason,
+            "collected_at": item.collected_at,
         }
         feedback_block = ""
         if feedback:

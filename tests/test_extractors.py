@@ -11,6 +11,8 @@ from daily_ai_insight.pipeline import run_pipeline
 
 SAMPLE_PATH = Path("data/raw/sample_ai_news.json").resolve()
 REAL_SAMPLE_PATH = Path("data/raw/real_ai_news_sample.json").resolve()
+MIXED_SAMPLE_PATH = Path("data/raw/mixed_channel_ai_news_sample.json").resolve()
+FORBIDDEN_SYSTEM_RISK_TERMS = ("LLM", "幻觉", "人工复核", "可信度", "Harness", "Schema")
 
 
 class FakeOpenAIClient:
@@ -37,27 +39,42 @@ class FakeOpenAIClient:
         return response
 
 
-def llm_json_for_item(raw_item, *, title=None, source=None, url=None, confidence=0.82):
+def llm_json_for_item(
+    raw_item,
+    *,
+    title=None,
+    source=None,
+    url=None,
+    confidence=0.82,
+    include_requires_human_review=True,
+):
     import json
 
-    return json.dumps(
-        {
-            "id": "llm-suggested-id",
-            "title": title or raw_item.title,
-            "source": source or raw_item.source,
-            "url": url or raw_item.url,
-            "published_at": raw_item.published_at,
-            "language": raw_item.language,
-            "category": "application",
-            "event_type": "application_update",
-            "entities": [raw_item.source],
-            "impact_areas": ["productivity"],
-            "importance_score": 5.0,
-            "confidence": confidence,
-            "summary": raw_item.summary,
-            "evidence": f"{raw_item.source}: {raw_item.summary}",
-        }
-    )
+    payload = {
+        "id": "llm-suggested-id",
+        "title": title or raw_item.title,
+        "source": source or raw_item.source,
+        "url": url or raw_item.url,
+        "published_at": raw_item.published_at,
+        "language": raw_item.language,
+        "category": "application",
+        "event_type": "application_update",
+        "entities": [raw_item.source],
+        "impact_areas": ["productivity"],
+        "importance_score": 5.0,
+        "confidence": confidence,
+        "summary": raw_item.summary,
+        "evidence": f"{raw_item.source}: {raw_item.summary}",
+        "background": "该事件基于原始新闻标题和摘要生成背景说明。",
+        "industry_impact": "应用层产品更新反映 AI 能力正在进入具体业务场景。",
+        "trend_signal": "应用落地正在成为 AI 商业化的重要观察窗口。",
+        "industry_risk": "同质化竞争、用户体验波动和合规要求可能限制落地。",
+        "industry_opportunity": "垂直行业 Copilot、知识助手和办公自动化存在增长空间。",
+        "decision_hint": "建议关注目标用户、付费意愿、合规要求和真实使用留存。",
+    }
+    if include_requires_human_review:
+        payload["requires_human_review"] = False
+    return json.dumps(payload)
 
 
 def test_rule_based_extractor_generates_one_event_per_input():
@@ -68,6 +85,18 @@ def test_rule_based_extractor_generates_one_event_per_input():
     assert all(event.confidence == 0.7 for event in events)
     assert all(event.source for event in events)
     assert all(event.url for event in events)
+    assert all(event.background for event in events)
+    assert all(event.industry_impact for event in events)
+    assert all(event.industry_opportunity for event in events)
+    assert all(event.industry_risk for event in events)
+    assert all(event.decision_hint for event in events)
+    assert all(event.llm_generated is False for event in events)
+    assert all(event.requires_human_review is False for event in events)
+    assert not any(
+        term in event.industry_risk
+        for event in events
+        for term in FORBIDDEN_SYSTEM_RISK_TERMS
+    )
 
 
 def test_mock_llm_valid_mode_runs_through_pipeline(tmp_path):
@@ -196,6 +225,33 @@ def test_openai_compatible_overrides_hallucinated_immutable_fields(tmp_path):
     assert all(event.source in {item.source for item in raw_items} for event in report.top_events)
     assert all(event.url in {item.url for item in raw_items} for event in report.top_events)
     assert all(event.title in {item.title for item in raw_items} for event in report.top_events)
+
+
+def test_openai_compatible_parses_business_fields_and_preserves_raw_provenance():
+    raw_item = load_raw_news(MIXED_SAMPLE_PATH)[0]
+    client = FakeOpenAIClient(
+        default_response=lambda item: llm_json_for_item(
+            item,
+            source="Invented AI Wire",
+            url="hallucinated://invented",
+            confidence=0.7,
+            include_requires_human_review=False,
+        )
+    )
+
+    event = OpenAICompatibleExtractor(client=client, max_retries=0).extract([raw_item])[0]
+
+    assert event.llm_generated is True
+    assert event.requires_human_review is True
+    assert event.background
+    assert event.industry_impact
+    assert event.industry_risk
+    assert event.source == raw_item.source
+    assert event.url == raw_item.url
+    assert event.published_at == raw_item.published_at
+    assert event.source_channel == raw_item.source_channel
+    assert event.source_language == raw_item.source_language
+    assert event.selection_reason == raw_item.selection_reason
 
 
 def test_openai_compatible_low_confidence_is_blocked(tmp_path):

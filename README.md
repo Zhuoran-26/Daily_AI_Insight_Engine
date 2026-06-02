@@ -99,7 +99,7 @@ CLI 和 Streamlit 两种入口都可以本地运行：
 ```bash
 python3 -m pip install -e .
 python3 -m pytest
-python3 -m daily_ai_insight.cli run --input data/raw/real_ai_news_sample.json --extractor rule
+python3 -m daily_ai_insight.cli run --input data/raw/mixed_channel_ai_news_sample.json --extractor rule
 streamlit run app.py
 ```
 
@@ -133,6 +133,8 @@ Streamlit UI 支持：
 
 如果选择 `openai-compatible` 但缺少 `OPENAI_API_KEY`，UI 会明确提示并阻止运行，不会静默 fallback 到 `rule`。
 
+最终展示推荐使用 `data/raw/mixed_channel_ai_news_sample.json`。该样例更贴合题目中的 AI 行业趋势分析、舆情监测与风险预警、信息快速理解与决策辅助场景；CLI 默认行为暂不强制修改。
+
 手动演示步骤见 [`docs/manual_demo_checklist.md`](docs/manual_demo_checklist.md)。
 
 ## 端到端实际验收
@@ -146,7 +148,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 python3 -m pip install --upgrade pip
 python3 -m pip install -e .
-python3 -m daily_ai_insight.cli run --input data/raw/real_ai_news_sample.json --extractor rule
+python3 -m daily_ai_insight.cli run --input data/raw/mixed_channel_ai_news_sample.json --extractor rule
 python3 -m daily_ai_insight.cli evaluate --input data/raw/real_ai_news_sample.json --expected data/eval/expected_real_sample_categories.json --extractor rule --output-prefix rule
 python3 -m daily_ai_insight.cli review --evaluation outputs/llm_evaluation_summary.json --baseline outputs/rule_evaluation_summary.json
 ```
@@ -181,6 +183,25 @@ mixed sample 是最终展示用的静态样例数据，目标是贴合 AI 行业
 
 Harness 会阻止缺失来源、虚构 URL、低置信度或无法追溯的结构化事件进入最终报告。
 
+## 业务化分析字段与日报
+
+`StructuredAIEvent` 除保留原始 title/source/url/published_at/language/provenance 外，还支持业务化中文分析字段：
+
+- `background`
+- `industry_impact`
+- `trend_signal`
+- `industry_risk`
+- `industry_opportunity`
+- `decision_hint`
+- `llm_generated`
+- `requires_human_review`
+
+`rule` extractor 会用 deterministic 中文模板生成这些字段，不调用真实 LLM。`openai-compatible` extractor 可以让 LLM 输出这些分析字段，但系统仍会强制从 raw input 覆盖 title/source/url/published_at/language/provenance 字段，并继续经过 Schema validation、Source Grounding、Evidence Grounding、confidence gate 和 retry budget。
+
+风险/机会只描述行业风险和行业机会，例如平台锁定、算力集中、合规压力、生态竞争、用户体验波动、企业 Agent workflow、AI coding、模型 API、云基础设施和垂直场景应用。不要把系统可信度、LLM 幻觉、Schema/Harness 校验或人工复核需求写成行业风险。
+
+日报新增中文业务 section：`数据来源概览`、`今日主要热点 Top 3–5`、`重点事件深度解读`、`趋势判断`、`舆情监测与风险预警`、`机会提示`、`可视化结果说明`、`Harness 校验摘要` 和 `方法说明`。如果某段事件分析来自 LLM，报告会显示“本段分析由 LLM 生成，已通过 Schema、Source Grounding 和 Harness 校验，但仍建议人工复核。”
+
 ## 跨语言产品体验
 
 本项目面向中文产品体验设计，但支持英文/中文新闻输入。
@@ -201,6 +222,7 @@ Harness 会阻止缺失来源、虚构 URL、低置信度或无法追溯的结�
 
 ```bash
 python3 -m daily_ai_insight.cli run --input data/raw/real_ai_news_sample.json --extractor rule
+python3 -m daily_ai_insight.cli run --input data/raw/mixed_channel_ai_news_sample.json --extractor rule
 python3 -m daily_ai_insight.cli run --input data/raw/real_ai_news_sample.json --extractor mock-llm
 python3 -m daily_ai_insight.cli run --input data/raw/real_ai_news_sample.json --extractor openai-compatible
 ```
@@ -345,7 +367,7 @@ Harness 的目标不是增强功能，而是防止不可信 AI 输出进入下�
 3. 运行 rule pipeline：
 
    ```bash
-   python3 -m daily_ai_insight.cli run --input data/raw/real_ai_news_sample.json --extractor rule
+   python3 -m daily_ai_insight.cli run --input data/raw/mixed_channel_ai_news_sample.json --extractor rule
    ```
 
 4. 展示 rule vs LLM evaluation：

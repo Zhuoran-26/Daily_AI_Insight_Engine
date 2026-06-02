@@ -99,6 +99,24 @@ def test_mixed_sample_pipeline_runs_with_rule_extractor(tmp_path):
     assert events_path.exists()
     assert report_path.exists()
 
+    report_text = report_path.read_text(encoding="utf-8")
+    for phrase in (
+        "数据来源概览",
+        "重点事件深度解读",
+        "行业影响",
+        "行业机会",
+        "行业风险",
+        "决策提示",
+        "舆情监测与风险预警",
+    ):
+        assert phrase in report_text
+
+    first_item = raw_items[0]
+    assert first_item.source in report_text
+    assert first_item.url in report_text
+    assert first_item.published_at in report_text
+    assert first_item.selection_reason in report_text
+
 
 def test_cli_evaluate_runs_for_mixed_sample_with_rule(tmp_path, monkeypatch):
     runner = CliRunner()

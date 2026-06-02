@@ -10,6 +10,7 @@ The important engineering choices are:
 - extracted events use a defined `StructuredAIEvent` schema
 - invalid or low-confidence records are blocked before analysis
 - report claims must reference supporting event IDs or source evidence
+- business analysis fields are generated as structured event fields before report rendering
 - AI-generated outputs are reviewed as data, not accepted as final truth
 - agent loops must have budgets, stop conditions, and deterministic fallback behavior
 - completed implementation tasks must be backed by automated tests, not only manual review
@@ -94,6 +95,10 @@ The OpenAI-compatible extractor uses item-level extraction instead of sending th
 
 This lowers token and JSON failure risk, keeps retry scope small, makes failed news items easy to identify by index and title, and prevents one malformed model response from corrupting an entire batch. It also makes harness verification stricter because `title`, `source`, `url`, `published_at`, and `language` are forced from the raw item rather than trusted from the LLM.
 
+Phase 8.2 extends this pattern to business analysis fields. The LLM may suggest Chinese `background`, `industry_impact`, `trend_signal`, `industry_risk`, `industry_opportunity`, and `decision_hint`, but immutable title/source/url/published_at/language/provenance fields still come from raw input. The prompt explicitly requires industry risks and opportunities, not system reliability risks.
+
+If LLM-generated analysis is used, the daily report displays a human-review note. Human review is positioned as business judgment over trend, risk, and opportunity interpretation, not as a replacement for schema validation or source grounding.
+
 ## Evaluation Harness
 
 The project does not rely on subjective impressions to judge AI output quality. The evaluation harness compares extractor predictions against an expected category fixture and reports category accuracy, valid output rate, grounding pass rate, failed item count, and confidence statistics.
@@ -130,6 +135,8 @@ The MVP should keep human review possible at multiple points:
 - final documentation can explain which parts were AI-assisted
 
 The intended human role is not to manually redo the whole pipeline. The human reviewer should focus on judgment: source quality, extraction accuracy, trend reasonableness, and final communication quality.
+
+For Phase 8.2, human review is especially important for LLM-generated business interpretation. The system can verify schema shape, source grounding, evidence grounding, and confidence thresholds, but it cannot fully decide whether an industry-risk conclusion is strategically complete. The report therefore separates industry risk, industry opportunity, decision hint, and the LLM-generated review flag.
 
 ## Future Evolution
 

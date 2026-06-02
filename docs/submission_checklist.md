@@ -9,12 +9,13 @@
 | 数据事件选择理由 | mixed sample 每条记录都有 `selection_reason`，说明其对趋势分析、舆情监测、风险预警或决策辅助的价值。 | `data/raw/mixed_channel_ai_news_sample.json` | 是 |
 | 发布日期追溯 | mixed sample 每条记录都有 `published_at`，结构化事件也保留发布日期用于追溯。 | `data/raw/mixed_channel_ai_news_sample.json` / `src/daily_ai_insight/models.py` | 是 |
 | 数据来源说明 | 说明 synthetic fixture 与 real-world sample 的用途、来源类型和防幻觉策略。 | `docs/data_source_notes.md` | 是 |
-| Schema 设计 | 定义 `RawNewsItem`、`StructuredAIEvent`、`DailyInsightReport`、evaluation/reviewer schema。 | `src/daily_ai_insight/models.py` / `docs/project_spec_v1.md` | 是 |
-| 结构化抽取 | 支持 rule、mock-llm、openai-compatible 三种 extractor。 | `src/daily_ai_insight/extractors.py` | 是 |
-| 分析日报 | 从 validated structured events 生成 Markdown 日报。 | `python3 -m daily_ai_insight.cli run --input data/raw/real_ai_news_sample.json --extractor rule` | 是 |
-| Top 事件 | 日报展示按 importance score 排序的 Top Events。 | `outputs/daily_report.md` | 是 |
-| 趋势判断 | 日报包含 deterministic `Trend Signals` section。 | `outputs/daily_report.md` / `src/daily_ai_insight/report.py` | 是 |
-| 风险/机会提示 | 日报包含 `Risks and Opportunities` section。 | `outputs/daily_report.md` / `src/daily_ai_insight/report.py` | 是 |
+| Schema 设计 | 定义 `RawNewsItem`、`StructuredAIEvent`、`DailyInsightReport`、evaluation/reviewer schema；`StructuredAIEvent` 已增加业务化分析字段。 | `src/daily_ai_insight/models.py` / `docs/project_spec_v1.md` | 是 |
+| 结构化抽取 | 支持 rule、mock-llm、openai-compatible 三种 extractor；rule 会 deterministic 生成中文业务分析字段。 | `src/daily_ai_insight/extractors.py` | 是 |
+| 分析日报 | 从 validated structured events 生成中文 Markdown 日报，推荐最终展示输入为 mixed sample。 | `python3 -m daily_ai_insight.cli run --input data/raw/mixed_channel_ai_news_sample.json --extractor rule` | 是 |
+| Top 事件 | 日报展示按 importance score 排序的 `今日主要热点 Top 3–5`。 | `outputs/daily_report.md` | 是 |
+| 深度解读 | 日报包含 `重点事件深度解读`，逐条展示背景、行业影响、趋势信号、行业机会、行业风险、决策提示、证据和来源。 | `outputs/daily_report.md` / `src/daily_ai_insight/report.py` | 是 |
+| 趋势判断 | 日报包含业务化 `趋势判断` section，覆盖模型能力升级、Agent/workflow、云与基础设施、应用落地和社区反馈。 | `outputs/daily_report.md` / `src/daily_ai_insight/report.py` | 是 |
+| 风险/机会提示 | 日报包含 `舆情监测与风险预警` 和 `机会提示`，只描述行业风险/行业机会。 | `outputs/daily_report.md` / `src/daily_ai_insight/report.py` | 是 |
 | 可视化展示 | Streamlit UI 展示 category distribution、top event importance、rule vs LLM accuracy 图表。 | `streamlit run app.py` | 是 |
 | 中文产品体验 | UI、CLI 可见输出、日报、Evaluation report 和 Reviewer report 面向中文用户；技术名可保留英文。 | `app.py` / `src/daily_ai_insight/report.py` / `src/daily_ai_insight/evaluate.py` / `src/daily_ai_insight/reviewer.py` | 是 |
 | 跨语言输入输出 | 支持英文/中文新闻输入；保留原始标题、来源和 URL，同时将结构化摘要、趋势判断、风险机会和最终报告面向中文输出。 | `prompts/extraction_prompt.md` / `outputs/daily_report.md` | 是 |
@@ -38,12 +39,14 @@ mixed sample 中的 provenance 字段来自 raw input，不允许 LLM 编造或�
 
 mixed sample 的来源设计与题目数据获取参考方向保持一致：官方渠道用于确认技术发布信息，科技媒体用于行业动态报道，聚合平台用于综合信息流和跨来源热度观察，社交媒体/社区用于舆论讨论热点。样本采用中英混合来源，例如 OpenAI、Anthropic、Tencent、ERNIE Blog、TechCrunch、IT之家、Hacker News、AIbase、Reddit 和 V2EX。
 
+Phase 8.2 增加了 `background`、`industry_impact`、`trend_signal`、`industry_risk`、`industry_opportunity`、`decision_hint`、`llm_generated`、`requires_human_review`。这些字段用于把结构化事件转化为可读的中文业务解读。LLM 生成内容会显示人工复核提示；行业风险/机会必须围绕 AI 行业和业务决策，不得把系统可信度、LLM 幻觉、Schema/Harness 校验或人工复核需求写成行业风险。
+
 ## 无 API Key 验收命令
 
 ```bash
 python3 -m pip install -e .
 python3 -m pytest
-python3 -m daily_ai_insight.cli run --input data/raw/real_ai_news_sample.json --extractor rule
+python3 -m daily_ai_insight.cli run --input data/raw/mixed_channel_ai_news_sample.json --extractor rule
 python3 -m daily_ai_insight.cli evaluate --input data/raw/real_ai_news_sample.json --expected data/eval/expected_real_sample_categories.json --extractor rule --output-prefix rule
 python3 -m daily_ai_insight.cli evaluate --input data/raw/mixed_channel_ai_news_sample.json --expected data/eval/expected_mixed_sample_categories.json --extractor rule --output-prefix mixed_rule
 python3 -m daily_ai_insight.cli review --evaluation outputs/llm_evaluation_summary.json --baseline outputs/rule_evaluation_summary.json

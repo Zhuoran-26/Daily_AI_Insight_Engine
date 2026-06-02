@@ -10,67 +10,111 @@ from jinja2 import Template
 
 from daily_ai_insight.models import DailyInsightReport, StructuredAIEvent
 
+FORBIDDEN_SYSTEM_RISK_TERMS = ("LLM", "幻觉", "人工复核", "可信度", "Harness", "Schema")
+
 REPORT_TEMPLATE = """# AI 行业洞察日报
 
-## 日期
+## 数据来源概览
 
-{{ report.date }}
+- 报告日期：{{ report.date }}
+- 样本数量：{{ report.total_events }}
 
-## 事件总数
+### 渠道分布
 
-{{ report.total_events }}
+{% for channel, count in report.source_channel_counts.items() -%}
+- {{ channel_label(channel) }}{% if channel != "unknown" %} (`{{ channel }}`){% endif %}: {{ count }}
+{% endfor %}
 
-## 今日主要热点
+### 中英文来源分布
+
+{% for language, count in report.source_language_counts.items() -%}
+- {{ language_label(language) }}{% if language != "unknown" %} (`{{ language }}`){% endif %}: {{ count }}
+{% endfor %}
+
+### 来源追溯清单
+
+{% for event in report.events -%}
+{{ loop.index }}. **{{ event.title }}**
+   - 来源：{{ event.source }}
+   - URL：{{ event.url }}
+   - 发布日期：{{ event.published_at }}
+   - 来源渠道：{{ channel_label(event.source_channel) }}{% if event.source_channel %} (`{{ event.source_channel }}`){% endif %}
+   - 来源语言：{{ language_label(event.source_language or event.language) }}{% if event.source_language or event.language %} (`{{ event.source_language or event.language }}`){% endif %}
+   - 选择理由：{{ optional_text(event.selection_reason) }}
+{% endfor %}
+
+## 今日主要热点 Top 3–5
 
 {% for event in report.top_events -%}
 {{ loop.index }}. **{{ event.title }}**
-   - 来源: {{ event.source }}
-   - URL: {{ event.url }}
-   - 分类: {{ event.category }}
-   - 事件类型: {{ event.event_type }}
-   - 重要性: {{ "%.1f"|format(event.importance_score) }}
-   - 置信度: {{ "%.2f"|format(event.confidence) }}
-   - 摘要: {{ event.summary }}
-   - 证据: {{ event.evidence }}
+   - 来源：{{ event.source }}｜发布日期：{{ event.published_at }}
+   - 分类：{{ event.category }}｜事件类型：{{ event.event_type }}
+   - 重要性：{{ "%.1f"|format(event.importance_score) }}｜置信度：{{ "%.2f"|format(event.confidence) }}
+   - 中文摘要：{{ event.summary }}
+   - URL：{{ event.url }}
 {% endfor %}
 
-## 分类分布
+## 重点事件深度解读
 
-{% for category, count in report.category_counts.items() -%}
-- {{ category }}: {{ count }}
+{% for event in report.top_events -%}
+### {{ loop.index }}. {{ event.title }}
+
+- 背景：{{ optional_text(event.background) }}
+- 行业影响：{{ optional_text(event.industry_impact) }}
+- 趋势信号：{{ optional_text(event.trend_signal) }}
+- 行业机会：{{ optional_text(event.industry_opportunity) }}
+- 行业风险：{{ optional_text(event.industry_risk) }}
+- 决策提示：{{ optional_text(event.decision_hint) }}
+- 原文证据：{{ event.evidence }}
+- 发布日期与来源：{{ event.published_at }}｜{{ event.source }}｜{{ event.url }}
+{% if event.llm_generated %}
+<small>本段分析由 LLM 生成，已通过 Schema、Source Grounding 和 Harness 校验，但仍建议人工复核。</small>
+{% endif %}
+
 {% endfor %}
 
-## 关键结论
-
-{% for takeaway in report.key_takeaways -%}
-- {{ takeaway }}
-{% endfor %}
-
-## 趋势信号
+## 趋势判断
 
 {% for signal in report.trend_signals -%}
 - {{ signal }}
 {% endfor %}
 
-## 风险与机会
+## 舆情监测与风险预警
 
 {% for item in report.risks_and_opportunities -%}
 - {{ item }}
 {% endfor %}
 
+## 机会提示
+
+{% for item in report.opportunity_signals -%}
+- {{ item }}
+{% endfor %}
+
+## 可视化结果说明
+
+{% for item in report.visualization_notes -%}
+- {{ item }}
+{% endfor %}
+
 ## Harness 校验摘要
 
-{% for key, value in report.harness_summary.items() -%}
-- {{ key }}: {{ value }}
-{% endfor %}
+- [{{ checked(report.harness_summary.get("source_integrity_passed")) }}] 来源完整性：{{ pass_label(report.harness_summary.get("source_integrity_passed")) }}
+- [{{ checked(report.harness_summary.get("schema_compliance_passed")) }}] Schema 校验：{{ pass_label(report.harness_summary.get("schema_compliance_passed")) }}
+- [{{ checked(report.harness_summary.get("grounding_passed")) }}] Source Grounding：{{ pass_label(report.harness_summary.get("grounding_passed")) }}
+- [{{ checked(report.harness_summary.get("evidence_grounding_passed")) }}] Evidence Grounding：{{ pass_label(report.harness_summary.get("evidence_grounding_passed")) }}
+- [{{ checked(report.harness_summary.get("loop_guard_passed")) }}] Step Budget：{{ pass_label(report.harness_summary.get("loop_guard_passed")) }}
+- [x] 置信度阈值：最低要求 {{ report.harness_summary.get("min_confidence") }}
+- [x] 抽取模式：{{ report.harness_summary.get("extractor_name") }}
+- [x] 输入/输出数量：{{ report.harness_summary.get("input_count") }} / {{ report.harness_summary.get("output_count") }}
 
 ## 方法说明
 
-当前日报由 deterministic baseline 生成，不依赖真实 LLM API 或爬虫。
+`rule` 是 deterministic baseline，不调用真实 LLM API，也不依赖爬虫。它用固定规则完成分类、重要性评分和业务化中文分析，便于本地复现与对照评估。
 
-Harness Engineering 用于阻止幻觉来源、无来源追溯事件、不可控 agent loop，以及低置信度结果直接进入最终报告。
+`openai-compatible` 路径可用于真实 LLM 抽取，但 LLM 输出必须经过 JSON 解析、Pydantic Schema validation、Source Grounding、Evidence Grounding、confidence gate 和 item-level retry budget。系统会强制从 raw input 覆盖 title/source/url/published_at/language/provenance 字段。
 
-后续可以继续接入 LLM extractor、更严格的 Schema 校验、AI Reviewer 和人工复审队列，但这些能力必须继续受 source grounding、confidence threshold、loop budget、deterministic fallback 和自动化测试约束。
+报告中的行业风险和行业机会面向 AI 行业趋势分析、舆情监测与风险预警、信息快速理解与决策辅助。涉及 LLM 生成内容时，即使通过 Schema、Source Grounding 和 Harness 校验，仍建议人工复核。
 """
 
 
@@ -80,24 +124,39 @@ def build_daily_report(
     report_date: str | None = None,
 ) -> DailyInsightReport:
     category_counts = dict(Counter(event.category for event in events))
+    source_channel_counts = _build_source_channel_counts(events)
+    source_language_counts = _build_source_language_counts(events)
     top_events = sorted(events, key=lambda event: event.importance_score, reverse=True)[:5]
     key_takeaways = _build_key_takeaways(events, category_counts)
-    trend_signals = _build_trend_signals(events, category_counts)
-    risks_and_opportunities = _build_risks_and_opportunities(events, category_counts)
+    trend_signals = _build_trend_signals(events, category_counts, source_channel_counts)
+    risks_and_opportunities = _build_risks_and_opportunities(events)
+    opportunity_signals = _build_opportunity_signals(events)
     return DailyInsightReport(
         date=report_date or date.today().isoformat(),
         total_events=len(events),
+        events=events,
         top_events=top_events,
         category_counts=category_counts,
+        source_channel_counts=source_channel_counts,
+        source_language_counts=source_language_counts,
         key_takeaways=key_takeaways,
         trend_signals=trend_signals,
         risks_and_opportunities=risks_and_opportunities,
+        opportunity_signals=opportunity_signals,
+        visualization_notes=_build_visualization_notes(),
         harness_summary=harness_summary,
     )
 
 
 def render_report(report: DailyInsightReport) -> str:
-    return Template(REPORT_TEMPLATE).render(report=report)
+    return Template(REPORT_TEMPLATE).render(
+        report=report,
+        channel_label=channel_label,
+        language_label=language_label,
+        optional_text=optional_text,
+        checked=checked,
+        pass_label=pass_label,
+    )
 
 
 def write_report(report: DailyInsightReport, output_path: str | Path) -> Path:
@@ -119,54 +178,128 @@ def _build_key_takeaways(
     source_count = len({event.source for event in events})
     return [
         f"{leading_category} 是本次已校验样本中的最大类别，共 {category_counts[leading_category]} 条事件。",
-        f"最高优先级事件是来自 {top_event.source} 的 “{top_event.title}”。",
-        f"本报告基于 {source_count} 个不同来源标签生成，所有事件均保留 source/url 追溯信息。",
+        f"最高优先级事件是来自 {top_event.source} 的“{top_event.title}”。",
+        f"本报告基于 {source_count} 个不同来源标签生成，所有事件均保留 source/url/published_at 追溯信息。",
     ]
 
 
 def _build_trend_signals(
     events: list[StructuredAIEvent],
     category_counts: dict[str, int],
+    source_channel_counts: dict[str, int],
 ) -> list[str]:
     if not events:
-        return ["没有可用的已校验事件，因此不生成趋势信号。"]
+        return ["没有可用的已校验事件，因此不生成趋势判断。"]
 
-    leading_category, leading_count = max(category_counts.items(), key=lambda item: item[1])
-    high_importance_count = sum(1 for event in events if event.importance_score >= 6.0)
-    agent_count = category_counts.get("agent", 0)
-    application_count = category_counts.get("application", 0)
-    infrastructure_count = category_counts.get("infrastructure", 0)
+    signals: list[str] = []
+    if category_counts.get("model"):
+        signals.append("模型能力升级仍是本次样本的核心线索，需要关注能力、成本、可靠性和 API 生态变化。")
+    if category_counts.get("agent"):
+        signals.append("Agent 化和 workflow 化正在把 AI 从单次问答推向多步骤任务执行，企业流程场景值得跟进。")
+    if category_counts.get("infrastructure"):
+        signals.append("云与基础设施分发正在影响模型可获得性、部署成本和企业采购路径。")
+    if category_counts.get("application"):
+        signals.append("应用场景落地显示 AI 能力正在进入更具体的办公、研发、内容和行业流程。")
+    if source_channel_counts.get("social_media"):
+        signals.append("开发者社区反馈可以补充官方与媒体信息，用于观察体验波动、成本敏感度和舆论热点。")
 
-    signals = [
-        f"{leading_category} 以 {leading_count} 条已校验事件领先，说明这是本次样本中的主要关注方向。",
-        f"{high_importance_count} 条事件的重要性评分不低于 6.0，说明本次日报中有多条值得重点跟进的信息。",
+    top_event_signals = [
+        event.trend_signal
+        for event in sorted(events, key=lambda event: event.importance_score, reverse=True)
+        if event.trend_signal
     ]
-    if agent_count or application_count:
-        productization_count = agent_count + application_count
-        signals.append(
-            f"Agent 与 application 相关事件共 {productization_count} 条，显示 AI 能力正在从模型发布继续走向产品化和工作流落地。"
-        )
-    if infrastructure_count:
-        signals.append(
-            f"infrastructure 相关事件共 {infrastructure_count} 条，说明部署、算力和平台基础设施仍是 AI 生态的重要支撑。"
-        )
-    return signals
+    return _unique_preserve_order([*signals, *top_event_signals])[:8]
 
 
-def _build_risks_and_opportunities(
-    events: list[StructuredAIEvent],
-    category_counts: dict[str, int],
-) -> list[str]:
+def _build_risks_and_opportunities(events: list[StructuredAIEvent]) -> list[str]:
     if not events:
-        return ["风险：没有可用的已校验事件，因此不应生成机会或风险判断。"]
+        return ["没有可用的已校验事件，因此不生成行业风险判断。"]
 
-    average_confidence = sum(event.confidence for event in events) / len(events)
-    top_event = max(events, key=lambda event: event.importance_score)
-    leading_category = max(category_counts.items(), key=lambda item: item[1])[0]
+    risks = []
+    for event in sorted(events, key=lambda item: item.importance_score, reverse=True):
+        if event.industry_risk and not _contains_system_risk_term(event.industry_risk):
+            risks.append(f"{event.title}：{event.industry_risk}")
 
+    if risks:
+        return _unique_preserve_order(risks)[:6]
+    return ["当前样本未形成明确行业风险信号，建议继续结合更多来源观察竞争、合规、成本和用户体验变化。"]
+
+
+def _build_opportunity_signals(events: list[StructuredAIEvent]) -> list[str]:
+    if not events:
+        return ["没有可用的已校验事件，因此不生成行业机会提示。"]
+
+    opportunities = [
+        f"{event.title}：{event.industry_opportunity}"
+        for event in sorted(events, key=lambda item: item.importance_score, reverse=True)
+        if event.industry_opportunity
+    ]
+    return _unique_preserve_order(opportunities)[:6] or [
+        "当前样本未形成明确行业机会提示，建议继续观察模型 API、企业 Agent workflow、AI coding、云基础设施和垂直应用。"
+    ]
+
+
+def _build_visualization_notes() -> list[str]:
     return [
-        f"机会：{leading_category} 作为本次主导主题，可作为后续深度分析和业务演示的重点方向。",
-        f"机会：Top 事件 “{top_event.title}” 可作为日报解读的具体锚点。",
-        f"风险：当前平均抽取置信度为 {average_confidence:.2f}，低置信度或语义模糊的信息仍应进入复审。",
-        "风险：deterministic rule 可能误判复杂产品或 Agent 类新闻，因此 LLM 抽取也必须继续受 Harness 校验约束。",
+        "分类分布图回答：今日 AI 信息主要集中在模型能力、智能体与工作流、基础设施还是应用产品。",
+        "Top 事件重要性图回答：哪些事件最值得业务用户优先阅读和跟进。",
+        "结构化事件表回答：每条事件的来源、发布日期、分类、置信度和证据是否可追溯。",
+        "Rule vs LLM 评估对比回答：不同 extractor 在分类准确率、来源追溯和失败项上的差异。",
+        "后续 Phase 8.3 可继续补充渠道×语言覆盖矩阵、发布时间线和重要性×置信度散点图。",
     ]
+
+
+def _build_source_channel_counts(events: list[StructuredAIEvent]) -> dict[str, int]:
+    counts = Counter(event.source_channel or "unknown" for event in events)
+    return dict(counts)
+
+
+def _build_source_language_counts(events: list[StructuredAIEvent]) -> dict[str, int]:
+    counts = Counter(event.source_language or event.language or "unknown" for event in events)
+    return dict(counts)
+
+
+def _unique_preserve_order(values: list[str]) -> list[str]:
+    seen: set[str] = set()
+    unique_values: list[str] = []
+    for value in values:
+        cleaned = value.strip()
+        if cleaned and cleaned not in seen:
+            unique_values.append(cleaned)
+            seen.add(cleaned)
+    return unique_values
+
+
+def _contains_system_risk_term(text: str) -> bool:
+    normalized = text.lower()
+    return any(term.lower() in normalized for term in FORBIDDEN_SYSTEM_RISK_TERMS)
+
+
+def channel_label(source_channel: str | None) -> str:
+    return {
+        "official": "官方渠道",
+        "tech_media": "科技媒体",
+        "aggregator": "聚合平台",
+        "social_media": "社交/社区渠道",
+        "unknown": "未标注渠道",
+    }.get(source_channel or "unknown", source_channel or "未标注渠道")
+
+
+def language_label(source_language: str | None) -> str:
+    return {
+        "en": "英文来源",
+        "zh": "中文来源",
+        "unknown": "未标注语言",
+    }.get(source_language or "unknown", source_language or "未标注语言")
+
+
+def optional_text(value: str | None) -> str:
+    return value if value else "未提供"
+
+
+def checked(value: object) -> str:
+    return "x" if value is True else " "
+
+
+def pass_label(value: object) -> str:
+    return "通过" if value is True else "未通过"

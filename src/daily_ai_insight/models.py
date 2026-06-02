@@ -63,6 +63,18 @@ class StructuredAIEvent(BaseModel):
     confidence: float = Field(ge=0, le=1)
     summary: str
     evidence: str
+    source_channel: str | None = None
+    source_language: str | None = None
+    selection_reason: str | None = None
+    collected_at: str | None = None
+    background: str | None = None
+    industry_impact: str | None = None
+    trend_signal: str | None = None
+    industry_risk: str | None = None
+    industry_opportunity: str | None = None
+    decision_hint: str | None = None
+    llm_generated: bool = False
+    requires_human_review: bool = False
 
     @field_validator(
         "id",
@@ -82,17 +94,42 @@ class StructuredAIEvent(BaseModel):
             raise ValueError(f"{info.field_name} must not be empty")
         return value.strip()
 
+    @field_validator(
+        "source_channel",
+        "source_language",
+        "selection_reason",
+        "collected_at",
+        "background",
+        "industry_impact",
+        "trend_signal",
+        "industry_risk",
+        "industry_opportunity",
+        "decision_hint",
+        mode="before",
+    )
+    @classmethod
+    def empty_optional_text_to_none(cls, value: object) -> str | None:
+        if value is None:
+            return None
+        cleaned = str(value).strip()
+        return cleaned or None
+
 
 class DailyInsightReport(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True)
 
     date: str
     total_events: int = Field(ge=0)
+    events: list[StructuredAIEvent] = Field(default_factory=list)
     top_events: list[StructuredAIEvent]
     category_counts: dict[str, int]
+    source_channel_counts: dict[str, int] = Field(default_factory=dict)
+    source_language_counts: dict[str, int] = Field(default_factory=dict)
     key_takeaways: list[str]
     trend_signals: list[str]
     risks_and_opportunities: list[str]
+    opportunity_signals: list[str] = Field(default_factory=list)
+    visualization_notes: list[str] = Field(default_factory=list)
     harness_summary: dict[str, str | int | float | bool]
 
     @field_validator("date")
