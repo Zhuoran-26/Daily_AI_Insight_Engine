@@ -43,7 +43,7 @@ streamlit run app.py
 
 ## 3. 选择输入数据
 
-最终展示推荐的 CLI 输入是：
+Streamlit 默认输入应为：
 
 ```text
 mixed_channel_ai_news_sample.json
@@ -51,7 +51,7 @@ mixed_channel_ai_news_sample.json
 
 最终展示推荐使用 `data/raw/mixed_channel_ai_news_sample.json`，因为它覆盖中英混合、官方渠道、科技媒体、聚合平台和社交媒体/社区平台，更贴合 AI 行业趋势分析、舆情监测与风险预警、信息快速理解与决策辅助。
 
-当前 UI 版本尚未把 mixed sample 作为内置单选项；本阶段不改 UI。演示 UI 时可以继续选择 `real_ai_news_sample.json`，或通过上传自定义 JSON 上传 `mixed_channel_ai_news_sample.json`。确认 UI 显示有效的原始新闻数量。
+确认 UI 显示有效的原始新闻数量，并展示 `数据来源追溯` 表格。该表应包含标题、来源、URL、发布日期、来源渠道、来源语言和选择理由。
 
 通过 CLI 验证 mixed sample：
 
@@ -90,11 +90,16 @@ rule
 检查 UI 是否展示：
 
 - 事件总数
-- 分类分布
-- 重点事件表格
-- 结构化事件表格
-- Harness 校验摘要
+- 数据来源追溯表格
+- 多样化可视化图表
+- 今日主要热点表格
+- 业务化结构化事件表格
+- 中文 Harness checklist
 - 分析日报 Markdown
+
+结构化事件表默认应使用中文友好列：标题、来源、发布日期、来源渠道、分类、事件类型、重要性、置信度、中文摘要、行业影响、行业机会、行业风险、URL。完整结构化 JSON 应放在 `查看完整结构化 JSON` expander 中。
+
+Harness Summary 默认应是中文 checklist；原始 JSON 应放在 `查看原始 Harness JSON` expander 中。
 
 ## 6. 检查分析日报
 
@@ -116,6 +121,17 @@ outputs/daily_report.md
 - `Harness 校验摘要`
 - `方法说明`
 
+## 6.1 检查可视化
+
+确认 UI 中每个图表旁边都有“这个图回答什么问题”的说明，并至少包含：
+
+- 来源渠道 × 来源语言覆盖矩阵：验证中英混合与多渠道来源覆盖。
+- 事件发布时间线：观察样本在时间上的分布和近期热点。
+- 分类分布：观察当前 AI 热点集中方向。
+- 重要性 × 置信度散点图：辅助判断优先关注事件和需要人工复核的事件。
+- 影响领域分布：观察事件主要影响的业务或技术方向。
+- Rule vs LLM 评估对比：说明 rule baseline 的局限、DeepSeek V4 Flash 的语义优势，以及 Harness 对来源追溯的约束。
+
 ## 7. 运行评估
 
 点击：
@@ -132,13 +148,13 @@ Run Evaluation
 - 失败项
 - 分类不一致项表格
 
-当前 evaluation 使用：
+当前 evaluation 默认对 mixed sample 使用：
 
 ```text
-data/eval/expected_real_sample_categories.json
+data/eval/expected_mixed_sample_categories.json
 ```
 
-除非新增匹配的 expected fixture，否则不要对自定义上传数据强行评估。
+如果切换到 `real_ai_news_sample.json`，应自动使用 `data/eval/expected_real_sample_categories.json`。自定义上传数据可以生成日报，但需要匹配的 expected fixture 才能进行定量评估。
 
 ## 8. 运行 AI Reviewer 复审
 
@@ -158,6 +174,8 @@ data/eval/expected_real_sample_categories.json
 - 复审报告 Markdown
 
 Reviewer 可以使用当前 evaluation 结果，也可以使用已保存的 showcase outputs。
+
+确认 Reviewer 区域提示：Reviewer 复审的是抽取与评估质量，不替代人工行业判断；涉及 LLM 生成内容时，需要人工审核。
 
 ## 9. 中文体验检查
 

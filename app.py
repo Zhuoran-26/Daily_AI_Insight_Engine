@@ -12,6 +12,7 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
+import altair as alt
 from dotenv import load_dotenv
 
 from daily_ai_insight.errors import PipelineError
@@ -29,12 +30,32 @@ from daily_ai_insight.reviewer import (
 )
 
 REAL_SAMPLE_PATH = Path("data/raw/real_ai_news_sample.json")
+MIXED_SAMPLE_PATH = Path("data/raw/mixed_channel_ai_news_sample.json")
 SYNTHETIC_SAMPLE_PATH = Path("data/raw/sample_ai_news.json")
 EXPECTED_REAL_SAMPLE_PATH = Path("data/eval/expected_real_sample_categories.json")
+EXPECTED_MIXED_SAMPLE_PATH = Path("data/eval/expected_mixed_sample_categories.json")
 UI_EVALUATION_SUMMARY_PATH = Path("outputs/ui_evaluation_summary.json")
 UI_EVALUATION_REPORT_PATH = Path("outputs/ui_evaluation_report.md")
 SAVED_LLM_EVALUATION_PATH = Path("outputs/llm_evaluation_summary.json")
 SAVED_RULE_EVALUATION_PATH = Path("outputs/rule_evaluation_summary.json")
+LLM_REVIEW_NOTE = "本段分析由 LLM 生成，已通过 Schema、Source Grounding 和 Harness 校验，但仍建议人工复核。"
+
+SOURCE_CHANNEL_LABELS = {
+    "official": "官方渠道",
+    "tech_media": "科技媒体",
+    "aggregator": "聚合平台",
+    "social_media": "社交/社区",
+}
+SOURCE_LANGUAGE_LABELS = {
+    "en": "英文",
+    "zh": "中文",
+}
+CATEGORY_LABELS = {
+    "model": "模型能力",
+    "agent": "智能体与工作流",
+    "infrastructure": "算力与基础设施",
+    "application": "应用与产品",
+}
 
 EXTRACTOR_DESCRIPTIONS = {
     "rule": "无需 API key 的稳定规则 baseline。",
@@ -50,6 +71,18 @@ def is_openai_key_configured() -> bool:
 
 def is_bundled_real_sample(input_path: Path) -> bool:
     return input_path.resolve() == REAL_SAMPLE_PATH.resolve()
+
+
+def is_bundled_mixed_sample(input_path: Path) -> bool:
+    return input_path.resolve() == MIXED_SAMPLE_PATH.resolve()
+
+
+def expected_fixture_for_input(input_path: Path) -> Path | None:
+    if is_bundled_mixed_sample(input_path):
+        return EXPECTED_MIXED_SAMPLE_PATH
+    if is_bundled_real_sample(input_path):
+        return EXPECTED_REAL_SAMPLE_PATH
+    return None
 
 
 def save_uploaded_json(uploaded_file: Any) -> Path:
@@ -71,11 +104,38 @@ def load_structured_events(events_path: Path = Path("data/processed/structured_e
     return json.loads(events_path.read_text(encoding="utf-8"))
 
 
+def source_channel_label(value: str | None) -> str:
+    return SOURCE_CHANNEL_LABELS.get(value or "", value or "未标注")
+
+
+def source_language_label(value: str | None) -> str:
+    return SOURCE_LANGUAGE_LABELS.get(value or "", value or "未标注")
+
+
+def category_label(value: str | None) -> str:
+    return CATEGORY_LABELS.get(value or "", value or "未分类")
+
+
+def source_provenance_table(input_path: Path) -> list[dict[str, Any]]:
+    return [
+        {
+            "标题": item.title,
+            "来源": item.source,
+            "URL": item.url,
+            "发布日期": item.published_at,
+            "来源渠道": source_channel_label(item.source_channel),
+            "来源语言": source_language_label(item.source_language or item.language),
+            "选择理由": item.selection_reason or "未提供",
+        }
+        for item in load_raw_news(input_path)
+    ]
+
+
 def top_events_table(report: DailyInsightReport) -> list[dict[str, Any]]:
     return [
         {
             "标题": event.title,
-            "分类": event.category,
+            "分类": category_label(event.category),
             "来源": event.source,
             "置信度": event.confidence,
             "重要性评分": event.importance_score,
@@ -85,15 +145,80 @@ def top_events_table(report: DailyInsightReport) -> list[dict[str, Any]]:
     ]
 
 
+def structured_events_business_table(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [
+        {
+            "标题": event.get("title", ""),
+            "来源": event.get("source", ""),
+            "发布日期": event.get("published_at", ""),
+            "来源渠道": source_channel_label(event.get("source_channel")),
+            "分类": category_label(event.get("category")),
+            "事件类型": event.get("event_type", ""),
+            "重要性": event.get("importance_score"),
+            "置信度": event.get("confidence"),
+            "中文摘要": event.get("summary", ""),
+            "行业影响": event.get("industry_impact", ""),
+            "行业机会": event.get("industry_opportunity", ""),
+            "行业风险": event.get("industry_risk", ""),
+            "URL": event.get("url", ""),
+        }
+        for event in events
+    ]
+
+
 def category_counts_table(report: DailyInsightReport) -> list[dict[str, Any]]:
     return [
-        {"分类": category, "数量": count}
+        {"分类": category_label(category), "数量": count}
         for category, count in sorted(report.category_counts.items())
     ]
 
 
 def category_distribution_chart_data(report: DailyInsightReport) -> list[dict[str, Any]]:
     return category_counts_table(report)
+
+
+def source_coverage_matrix_data(report: DailyInsightReport) -> list[dict[str, Any]]:
+    counts: dict[tuple[str, str], int] = {}
+    for event in report.events or report.top_events:
+        channel = source_channel_label(event.source_channel)
+        language = source_language_label(event.source_language or event.language)
+        counts[(channel, language)] = counts.get((channel, language), 0) + 1
+
+    channels = _with_observed_labels(
+        [source_channel_label(channel) for channel in SOURCE_CHANNEL_LABELS],
+        [channel for channel, _ in counts],
+    )
+    languages = _with_observed_labels(
+        [source_language_label(language) for language in SOURCE_LANGUAGE_LABELS],
+        [language for _, language in counts],
+    )
+    return [
+        {
+            "来源渠道": channel,
+            "来源语言": language,
+            "数量": counts.get((channel, language), 0),
+        }
+        for channel in channels
+        for language in languages
+    ]
+
+
+def event_timeline_chart_data(report: DailyInsightReport) -> list[dict[str, Any]]:
+    counts: dict[str, int] = {}
+    for event in report.events or report.top_events:
+        counts[event.published_at] = counts.get(event.published_at, 0) + 1
+    return [
+        {"发布日期": published_at, "事件数": count}
+        for published_at, count in sorted(counts.items())
+    ]
+
+
+def _with_observed_labels(defaults: list[str], observed: list[str]) -> list[str]:
+    labels = [*defaults]
+    for value in sorted(set(observed)):
+        if value not in labels:
+            labels.append(value)
+    return labels
 
 
 def top_events_importance_chart_data(report: DailyInsightReport) -> list[dict[str, Any]]:
@@ -103,6 +228,31 @@ def top_events_importance_chart_data(report: DailyInsightReport) -> list[dict[st
             "重要性评分": event.importance_score,
         }
         for event in report.top_events
+    ]
+
+
+def importance_confidence_scatter_data(report: DailyInsightReport) -> list[dict[str, Any]]:
+    return [
+        {
+            "标题": event.title,
+            "来源": event.source,
+            "发布日期": event.published_at,
+            "分类": category_label(event.category),
+            "置信度": event.confidence,
+            "重要性": event.importance_score,
+        }
+        for event in report.events or report.top_events
+    ]
+
+
+def impact_area_distribution_chart_data(report: DailyInsightReport) -> list[dict[str, Any]]:
+    counts: dict[str, int] = {}
+    for event in report.events or report.top_events:
+        for area in event.impact_areas:
+            counts[area] = counts.get(area, 0) + 1
+    return [
+        {"影响领域": area, "事件数": count}
+        for area, count in sorted(counts.items())
     ]
 
 
@@ -125,6 +275,32 @@ def extractor_accuracy_comparison_chart_data(
             "分类准确率": llm_summary.category_accuracy,
         },
     ]
+
+
+def harness_checklist_table(report: DailyInsightReport) -> list[dict[str, Any]]:
+    summary = report.harness_summary
+    return [
+        {"检查项": "输入数量检查", "结果": pass_label(bool(summary.get("input_count")))},
+        {"检查项": "输出数量检查", "结果": pass_label(bool(summary.get("output_count")))},
+        {"检查项": "来源完整性", "结果": pass_label(summary.get("source_integrity_passed"))},
+        {"检查项": "Schema 校验", "结果": pass_label(summary.get("schema_compliance_passed"))},
+        {"检查项": "来源追溯", "结果": pass_label(summary.get("grounding_passed"))},
+        {"检查项": "证据追溯", "结果": pass_label(summary.get("evidence_grounding_passed"))},
+        {"检查项": "Loop Guard", "结果": pass_label(summary.get("loop_guard_passed"))},
+        {"检查项": "最低置信度阈值", "结果": str(summary.get("min_confidence", "未提供"))},
+        {"检查项": "当前抽取模式", "结果": str(summary.get("extractor_name", "unknown"))},
+    ]
+
+
+def pass_label(value: object) -> str:
+    return "通过" if value is True else "未通过"
+
+
+def report_has_llm_generated_content(report: DailyInsightReport) -> bool:
+    extractor_name = str(report.harness_summary.get("extractor_name", ""))
+    return extractor_name == "openai-compatible" or any(
+        event.llm_generated for event in report.events or report.top_events
+    )
 
 
 def mismatched_items_table(summary: EvaluationSummary) -> list[dict[str, Any]]:
@@ -173,6 +349,15 @@ def main() -> None:
     st.caption(
         "一个带 Harness Engineering、Evaluation Harness 和 AI Reviewer 的 AI 行业信息结构化分析 Demo。"
     )
+    st.info(
+        "本系统用于从每日 AI 新闻、官方公告、科技媒体与社区讨论中提取结构化洞察，"
+        "生成可读的中文分析报告与可视化结果，支持 AI 行业趋势分析、舆情监测与风险预警、"
+        "信息快速理解与决策辅助。"
+    )
+    st.markdown(
+        "**工作流**：新闻输入 → 结构化抽取 → 来源追溯 → Harness 校验 → "
+        "趋势/风险/机会分析 → 可视化日报 → Evaluation → AI Reviewer"
+    )
 
     input_path = _render_input_data_section(st)
     extractor_name = _render_extractor_section(st)
@@ -186,12 +371,19 @@ def _render_input_data_section(st: Any) -> Path | None:
     st.header("1. 输入数据")
     data_source = st.radio(
         "选择新闻输入",
-        ["real_ai_news_sample.json", "sample_ai_news.json", "上传自定义 JSON"],
+        [
+            "mixed_channel_ai_news_sample.json",
+            "real_ai_news_sample.json",
+            "sample_ai_news.json",
+            "上传自定义 JSON",
+        ],
         index=0,
         horizontal=True,
     )
 
-    if data_source == "real_ai_news_sample.json":
+    if data_source == "mixed_channel_ai_news_sample.json":
+        input_path = MIXED_SAMPLE_PATH
+    elif data_source == "real_ai_news_sample.json":
         input_path = REAL_SAMPLE_PATH
     elif data_source == "sample_ai_news.json":
         input_path = SYNTHETIC_SAMPLE_PATH
@@ -209,7 +401,14 @@ def _render_input_data_section(st: Any) -> Path | None:
         return None
 
     st.success(f"已从 {input_path} 读取 {item_count} 条原始新闻。")
+    _render_source_provenance_section(st, input_path)
     return input_path
+
+
+def _render_source_provenance_section(st: Any, input_path: Path) -> None:
+    st.subheader("数据来源追溯")
+    st.caption("这一区域用于证明数据来源可追溯、发布时间明确、事件选择有理由。")
+    st.dataframe(source_provenance_table(input_path), use_container_width=True)
 
 
 def _render_extractor_section(st: Any) -> str:
@@ -228,6 +427,99 @@ def _render_extractor_section(st: Any) -> str:
         )
 
     return extractor_name
+
+
+def _render_visualization_section(st: Any, report: DailyInsightReport) -> None:
+    st.subheader("可视化日报")
+
+    col_matrix, col_timeline = st.columns(2)
+    with col_matrix:
+        st.markdown("**来源渠道 × 来源语言覆盖矩阵**")
+        st.caption("这个图回答什么问题：这个图用于验证样本是否覆盖中英混合与多渠道来源。")
+        matrix_data = source_coverage_matrix_data(report)
+        matrix_chart = (
+            alt.Chart(alt.Data(values=matrix_data))
+            .mark_rect()
+            .encode(
+                x=alt.X("来源语言:N", title="来源语言"),
+                y=alt.Y("来源渠道:N", title="来源渠道"),
+                color=alt.Color("数量:Q", title="数量"),
+                tooltip=["来源渠道", "来源语言", "数量"],
+            )
+            .properties(height=220)
+        )
+        st.altair_chart(matrix_chart, use_container_width=True)
+
+    with col_timeline:
+        st.markdown("**事件发布时间线**")
+        st.caption("这个图回答什么问题：这个图用于观察样本在时间上的分布，体现每日信息流和近期热点。")
+        timeline_data = event_timeline_chart_data(report)
+        timeline_chart = (
+            alt.Chart(alt.Data(values=timeline_data))
+            .mark_area(opacity=0.55, line=True)
+            .encode(
+                x=alt.X("发布日期:T", title="发布日期"),
+                y=alt.Y("事件数:Q", title="事件数", scale=alt.Scale(domainMin=0)),
+                tooltip=["发布日期:T", "事件数:Q"],
+            )
+            .properties(height=220)
+        )
+        st.altair_chart(timeline_chart, use_container_width=True)
+
+    col_category, col_scatter = st.columns(2)
+    with col_category:
+        st.markdown("**分类分布**")
+        st.caption("这个图回答什么问题：这个图用于观察当前 AI 热点集中在哪些方向。")
+        category_data = category_distribution_chart_data(report)
+        category_chart = (
+            alt.Chart(alt.Data(values=category_data))
+            .mark_arc(innerRadius=45)
+            .encode(
+                theta=alt.Theta("数量:Q"),
+                color=alt.Color("分类:N", title="分类"),
+                tooltip=["分类", "数量"],
+            )
+            .properties(height=240)
+        )
+        st.altair_chart(category_chart, use_container_width=True)
+
+    with col_scatter:
+        st.markdown("**重要性 × 置信度散点图**")
+        st.caption("这个图回答什么问题：这个图用于辅助判断哪些事件值得优先关注，哪些高重要性但低置信度的事件需要人工复核。")
+        scatter_data = importance_confidence_scatter_data(report)
+        scatter_chart = (
+            alt.Chart(alt.Data(values=scatter_data))
+            .mark_circle(size=90, opacity=0.8)
+            .encode(
+                x=alt.X("置信度:Q", title="置信度", scale=alt.Scale(domain=[0, 1])),
+                y=alt.Y("重要性:Q", title="重要性", scale=alt.Scale(domain=[0, 10])),
+                color=alt.Color("分类:N", title="分类"),
+                tooltip=["标题", "来源", "发布日期", "分类", "重要性", "置信度"],
+            )
+            .properties(height=240)
+        )
+        st.altair_chart(scatter_chart, use_container_width=True)
+
+    st.markdown("**影响领域分布**")
+    st.caption("这个图回答什么问题：这个图用于观察事件主要影响哪些业务或技术方向。")
+    impact_data = impact_area_distribution_chart_data(report)
+    impact_chart = (
+        alt.Chart(alt.Data(values=impact_data))
+        .mark_bar()
+        .encode(
+            x=alt.X("事件数:Q", title="事件数"),
+            y=alt.Y("影响领域:N", title="影响领域", sort="-x"),
+            color=alt.Color("影响领域:N", legend=None),
+            tooltip=["影响领域", "事件数"],
+        )
+        .properties(height=220)
+    )
+    st.altair_chart(impact_chart, use_container_width=True)
+
+
+def _render_llm_review_note(st: Any, report: DailyInsightReport) -> None:
+    if report_has_llm_generated_content(report):
+        st.caption(LLM_REVIEW_NOTE)
 
 
 def _render_pipeline_section(st: Any, input_path: Path | None, extractor_name: str) -> None:
@@ -259,37 +551,45 @@ def _render_pipeline_section(st: Any, input_path: Path | None, extractor_name: s
     col_categories.metric("分类数", len(report.category_counts))
     col_extractor.metric("抽取模式", report.harness_summary.get("extractor_name", "unknown"))
 
-    st.subheader("分类分布")
-    st.bar_chart(category_distribution_chart_data(report), x="分类", y="数量")
-    st.dataframe(category_counts_table(report), use_container_width=True)
+    _render_visualization_section(st, report)
 
-    st.subheader("重点事件重要性")
-    st.bar_chart(top_events_importance_chart_data(report), x="标题", y="重要性评分")
+    st.subheader("今日主要热点")
     st.dataframe(top_events_table(report), use_container_width=True)
 
     st.subheader("结构化事件")
-    st.dataframe(load_structured_events(), use_container_width=True)
+    raw_events = load_structured_events()
+    st.dataframe(structured_events_business_table(raw_events), use_container_width=True)
+    _render_llm_review_note(st, report)
+    with st.expander("查看完整结构化 JSON"):
+        st.json(raw_events)
 
     st.subheader("Harness 校验摘要")
-    st.json(report.harness_summary)
+    st.dataframe(harness_checklist_table(report), use_container_width=True)
+    with st.expander("查看原始 Harness JSON"):
+        st.json(report.harness_summary)
 
     st.subheader("分析日报")
+    _render_llm_review_note(st, report)
     st.markdown(render_report(report))
 
 
 def _render_evaluation_section(st: Any, input_path: Path | None, extractor_name: str) -> None:
     st.header("4. 评估与对比")
-    st.caption(f"Expected fixture：{EXPECTED_REAL_SAMPLE_PATH}")
+    expected_path = expected_fixture_for_input(input_path) if input_path else None
+    st.caption(f"Expected fixture：{expected_path or '未匹配'}")
 
-    can_evaluate = input_path is not None and is_bundled_real_sample(input_path)
+    can_evaluate = input_path is not None and expected_path is not None
     if not can_evaluate:
         st.warning(
-            "当前 evaluation 仅支持内置 real-world sample。自定义数据需要提供匹配的 expected fixture 后再评估。"
+            "自定义数据可以生成日报，但需要匹配的 expected fixture 才能进行定量评估。"
         )
 
     if st.button("运行评估", disabled=not can_evaluate):
         if input_path is None:
             st.error("请先选择有效的输入 JSON。")
+            return
+        if expected_path is None:
+            st.error("当前输入缺少匹配的 expected fixture，无法进行定量评估。")
             return
         if extractor_name == "openai-compatible" and not is_openai_key_configured():
             st.error("缺少 OPENAI_API_KEY。运行 LLM evaluation 前请先配置 .env。")
@@ -299,7 +599,7 @@ def _render_evaluation_section(st: Any, input_path: Path | None, extractor_name:
             with st.spinner("正在运行 Evaluation Harness..."):
                 summary = run_evaluation(
                     input_path=input_path,
-                    expected_path=EXPECTED_REAL_SAMPLE_PATH,
+                    expected_path=expected_path,
                     extractor_name=extractor_name,
                 )
                 summary_path, report_path = write_evaluation_outputs(
@@ -329,6 +629,10 @@ def _render_evaluation_section(st: Any, input_path: Path | None, extractor_name:
     comparison_data = extractor_accuracy_comparison_chart_data()
     if comparison_data:
         st.subheader("Rule baseline 与 DeepSeek V4 准确率对比")
+        st.caption(
+            "这个图回答什么问题：Rule baseline 暴露规则局限，DeepSeek V4 Flash 对复杂语义更强，"
+            "Harness 保证两种模式都保持来源追溯。"
+        )
         st.bar_chart(comparison_data, x="抽取模式", y="分类准确率")
 
     st.subheader("分类不一致项")
@@ -343,6 +647,7 @@ def _render_evaluation_section(st: Any, input_path: Path | None, extractor_name:
 
 def _render_reviewer_section(st: Any) -> None:
     st.header("5. AI Reviewer 复审")
+    st.info("Reviewer 复审的是抽取与评估质量，不替代人工行业判断。涉及 LLM 生成内容时，需要人工审核。")
     review_source = st.radio(
         "复审来源",
         ["使用当前评估结果", "使用已保存的 showcase 输出"],

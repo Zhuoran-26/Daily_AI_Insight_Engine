@@ -16,7 +16,7 @@
 | 深度解读 | 日报包含 `重点事件深度解读`，逐条展示背景、行业影响、趋势信号、行业机会、行业风险、决策提示、证据和来源。 | `outputs/daily_report.md` / `src/daily_ai_insight/report.py` | 是 |
 | 趋势判断 | 日报包含业务化 `趋势判断` section，覆盖模型能力升级、Agent/workflow、云与基础设施、应用落地和社区反馈。 | `outputs/daily_report.md` / `src/daily_ai_insight/report.py` | 是 |
 | 风险/机会提示 | 日报包含 `舆情监测与风险预警` 和 `机会提示`，只描述行业风险/行业机会。 | `outputs/daily_report.md` / `src/daily_ai_insight/report.py` | 是 |
-| 可视化展示 | Streamlit UI 展示 category distribution、top event importance、rule vs LLM accuracy 图表。 | `streamlit run app.py` | 是 |
+| 可视化展示 | Streamlit UI 展示来源渠道 × 来源语言覆盖矩阵、事件发布时间线、分类分布、重要性 × 置信度散点图、影响领域分布、Rule vs LLM 评估对比，并说明每个图回答的问题。 | `streamlit run app.py` | 是 |
 | 中文产品体验 | UI、CLI 可见输出、日报、Evaluation report 和 Reviewer report 面向中文用户；技术名可保留英文。 | `app.py` / `src/daily_ai_insight/report.py` / `src/daily_ai_insight/evaluate.py` / `src/daily_ai_insight/reviewer.py` | 是 |
 | 跨语言输入输出 | 支持英文/中文新闻输入；保留原始标题、来源和 URL，同时将结构化摘要、趋势判断、风险机会和最终报告面向中文输出。 | `prompts/extraction_prompt.md` / `outputs/daily_report.md` | 是 |
 | AI 使用说明 | 说明 LLM 不是直接生成最终报告，而是受 schema、harness、evaluation 和 reviewer 约束。 | `README.md` / `docs/ai_coding_showcase.md` | 是 |
@@ -26,7 +26,7 @@
 | Evaluation Harness | 支持 category accuracy、grounding pass rate、average confidence、failed items 评估。 | `src/daily_ai_insight/evaluate.py` / `outputs/llm_evaluation_report.md` | 是 |
 | Reviewer | deterministic reviewer 检查 mismatch、failed items、confidence、grounding、baseline comparison。 | `src/daily_ai_insight/reviewer.py` / `outputs/review_report.md` | 是 |
 | 测试 | 默认测试覆盖 pipeline、extractor、harness、LLM config、evaluation、reviewer、UI import。 | `python3 -m pytest` | 是 |
-| Streamlit 产品 Demo | 提供本地可交互 UI，支持选择数据、extractor、运行 pipeline/evaluation/reviewer。 | `app.py` / `streamlit run app.py` | 是 |
+| Streamlit 产品 Demo | 提供本地可交互 UI，默认使用 mixed sample，支持数据来源追溯、业务化结构化事件表、中文 Harness checklist、多样化可视化、pipeline/evaluation/reviewer。 | `app.py` / `streamlit run app.py` | 是 |
 | DeepSeek 可选真实 LLM 模式 | 支持 OpenAI-compatible DeepSeek API，默认不要求 API key；真实集成测试需显式开启。 | `.env.example` / `tests/test_llm_integration.py` | 是 |
 
 ## 跨语言与 Schema 稳定性说明
@@ -40,6 +40,8 @@ mixed sample 中的 provenance 字段来自 raw input，不允许 LLM 编造或�
 mixed sample 的来源设计与题目数据获取参考方向保持一致：官方渠道用于确认技术发布信息，科技媒体用于行业动态报道，聚合平台用于综合信息流和跨来源热度观察，社交媒体/社区用于舆论讨论热点。样本采用中英混合来源，例如 OpenAI、Anthropic、Tencent、ERNIE Blog、TechCrunch、IT之家、Hacker News、AIbase、Reddit 和 V2EX。
 
 Phase 8.2 增加了 `background`、`industry_impact`、`trend_signal`、`industry_risk`、`industry_opportunity`、`decision_hint`、`llm_generated`、`requires_human_review`。这些字段用于把结构化事件转化为可读的中文业务解读。LLM 生成内容会显示人工复核提示；行业风险/机会必须围绕 AI 行业和业务决策，不得把系统可信度、LLM 幻觉、Schema/Harness 校验或人工复核需求写成行业风险。
+
+Phase 8.3 将 Streamlit 默认输入切换为 mixed sample，并把 provenance、业务分析字段、Harness checklist 和多样化可视化放到产品展示层。UI 不修改底层 schema key、category enum 或 extractor 参数名；Evaluation 对 mixed sample 默认使用 `expected_mixed_sample_categories.json`，Reviewer 复审抽取与评估质量，不替代人工行业判断。
 
 ## 无 API Key 验收命令
 

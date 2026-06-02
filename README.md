@@ -123,17 +123,18 @@ streamlit run app.py
 
 Streamlit UI 支持：
 
-- 选择 `sample_ai_news.json` 或 `real_ai_news_sample.json`
+- 默认选择 `mixed_channel_ai_news_sample.json`，也可切换到 `real_ai_news_sample.json`、`sample_ai_news.json`
 - 上传自定义新闻 JSON，不覆盖原始数据文件
 - 选择 `rule`、`mock-llm` 或 `openai-compatible` extractor
 - 一键运行 insight pipeline
-- 查看 structured events、harness summary 和 daily report
-- 运行 Evaluation Harness 并查看 metrics、mismatch 和 failed items
-- 运行 AI Reviewer 并查看 final verdict 与 issue table
+- 查看数据来源追溯、业务化 structured events、中文 Harness checklist 和 daily report
+- 查看来源渠道 × 来源语言覆盖矩阵、事件发布时间线、分类分布、重要性 × 置信度散点图、影响领域分布、Rule vs LLM 评估对比
+- 运行 Evaluation Harness；mixed sample 默认使用 `expected_mixed_sample_categories.json`，real sample 自动使用 `expected_real_sample_categories.json`
+- 运行 AI Reviewer 并查看 final verdict 与 issue table；Reviewer 复审抽取与评估质量，不替代人工行业判断
 
 如果选择 `openai-compatible` 但缺少 `OPENAI_API_KEY`，UI 会明确提示并阻止运行，不会静默 fallback 到 `rule`。
 
-最终展示推荐使用 `data/raw/mixed_channel_ai_news_sample.json`。该样例更贴合题目中的 AI 行业趋势分析、舆情监测与风险预警、信息快速理解与决策辅助场景；CLI 默认行为暂不强制修改。
+最终展示推荐使用 `data/raw/mixed_channel_ai_news_sample.json`。Streamlit 默认使用该样例；CLI 默认行为暂不强制修改。
 
 手动演示步骤见 [`docs/manual_demo_checklist.md`](docs/manual_demo_checklist.md)。
 

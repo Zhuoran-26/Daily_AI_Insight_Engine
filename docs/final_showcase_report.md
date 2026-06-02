@@ -85,11 +85,26 @@ It contains:
 - Harness 校验摘要 as a Chinese checklist
 - 方法说明 that documents deterministic rule baseline and LLM validation constraints
 
+## Streamlit Product Demo
+
+The Streamlit demo now defaults to `mixed_channel_ai_news_sample.json`, so the first screen starts from the final showcase dataset rather than the older real-world fixture. The UI keeps the same pipeline and harness calls; it does not bypass source grounding or confidence checks.
+
+The product view includes:
+
+- 数据来源追溯: title, source, URL, publication date, source channel, source language, and selection reason
+- 业务化结构化事件表: Chinese-friendly columns for category, source channel, summary, industry impact, opportunity, risk, and URL, with raw JSON kept in an expander
+- 中文 Harness checklist: source integrity, schema validation, source grounding, evidence grounding, loop guard, confidence threshold, and extractor name, with raw JSON kept in an expander
+- 多样化可视化: source channel × language heatmap, event timeline, category distribution, importance × confidence scatter, impact-area distribution, and Rule vs LLM comparison
+- LLM 人工复核提示: LLM-generated analysis is marked for human review without being treated as an industry risk
+
+These charts answer practical questions for trend analysis, public-opinion monitoring, risk warning, and decision support: whether the sample is balanced across sources, when events cluster, which AI themes dominate, which events deserve priority, which business/technical areas are affected, and how rule and LLM extractors compare under the same harness.
+
 ## Evaluation Harness
 
 The evaluation harness measures extractor quality instead of relying on a reviewer saying the output "looks right."
 
-It compares predictions against `data/eval/expected_real_sample_categories.json` and reports:
+It compares predictions against an expected category fixture. The Streamlit demo defaults to the mixed sample and `data/eval/expected_mixed_sample_categories.json`; the older real sample still uses `data/eval/expected_real_sample_categories.json`.
+It reports:
 
 - category accuracy
 - successful and failed item counts
@@ -145,5 +160,5 @@ The project demonstrates test-backed AI engineering rather than one-shot generat
 - Add RSS or API-based collector with source allowlists.
 - Add reviewer-driven prompt refinement for repeatable critique-revise loops.
 - Track multi-day trends and deltas across reports.
-- Add a Streamlit or static dashboard for visualization.
+- Add richer multi-day visualization and dashboard states.
 - Add CI workflow for default tests, fixture validation, and artifact checks.
