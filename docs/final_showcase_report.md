@@ -43,14 +43,21 @@ The evaluation pipeline is intentionally more diagnostic. It records item-level 
 
 ## Rule Baseline vs DeepSeek V4
 
-Observed local evaluation result on the 13-item real-world sample:
+Observed local evaluation result on the 16-item mixed-channel showcase sample:
+
+| Extractor | Accuracy | Grounding | Avg Confidence | Failed Items |
+|---|---:|---:|---:|---:|
+| Rule baseline | 0.50 | 1.00 | 0.70 | 0 |
+| DeepSeek V4 Flash | 0.88 | 1.00 | 0.89 | 0 |
+
+Historical comparison on the 13-item real-world sample:
 
 | Extractor | Accuracy | Grounding | Avg Confidence | Failed Items |
 |---|---:|---:|---:|---:|
 | Rule baseline | 0.38 | 1.00 | 0.70 | 0 |
 | DeepSeek V4 Flash | 0.69 | 1.00 | 0.92 | 0 |
 
-The rule baseline is stable and reproducible, but it over-classifies complex items that mention model names. The DeepSeek V4 Flash run improves category accuracy while preserving grounding, which is the kind of measurable gain the project is designed to expose.
+The rule baseline is stable and reproducible, but it over-classifies complex items that mention model names. The DeepSeek V4 Flash runs improve category accuracy while preserving grounding, which is the kind of measurable gain the project is designed to expose.
 
 ## Harness Engineering
 
@@ -139,6 +146,8 @@ It generates:
 
 - `outputs/review_summary.json`
 - `outputs/review_report.md`
+
+For the final mixed showcase, the intended reviewer comparison is `outputs/mixed_llm_evaluation_summary.json` against `outputs/mixed_rule_evaluation_summary.json`.
 
 This creates a critique-revise workflow: run evaluation, review the result, revise extractor rules or prompts, then rerun evaluation. The current reviewer is deterministic so it can be tested and demonstrated reliably.
 

@@ -10,7 +10,7 @@ python3 -m pytest
 python3 -m daily_ai_insight.cli run --input data/raw/mixed_channel_ai_news_sample.json --extractor rule
 python3 -m daily_ai_insight.cli evaluate --input data/raw/real_ai_news_sample.json --expected data/eval/expected_real_sample_categories.json --extractor rule --output-prefix rule
 python3 -m daily_ai_insight.cli evaluate --input data/raw/mixed_channel_ai_news_sample.json --expected data/eval/expected_mixed_sample_categories.json --extractor rule --output-prefix mixed_rule
-python3 -m daily_ai_insight.cli review --evaluation outputs/llm_evaluation_summary.json --baseline outputs/rule_evaluation_summary.json
+python3 -m daily_ai_insight.cli review --evaluation outputs/mixed_llm_evaluation_summary.json --baseline outputs/mixed_rule_evaluation_summary.json
 streamlit run app.py
 ```
 
@@ -69,9 +69,9 @@ python3 -m daily_ai_insight.cli evaluate \
 
 该样例用于展示官方渠道、科技媒体、聚合平台、社交媒体/社区平台的中英混合覆盖。每条记录都保留来源、URL、发布日期、来源渠道、来源语言、选择理由、采集时间、热点聚类和来源角色；它是产品演示静态样例，不代表完整实时舆情采集系统。
 
-## 4. 选择抽取模式
+## 4. 选择结构化洞察生成方式
 
-在 **抽取模式** 中选择：
+在 **结构化洞察生成方式** 中选择：
 
 ```text
 rule
@@ -141,7 +141,7 @@ outputs/daily_report.md
 点击：
 
 ```text
-Run Evaluation
+运行评估
 ```
 
 检查 UI 是否展示：

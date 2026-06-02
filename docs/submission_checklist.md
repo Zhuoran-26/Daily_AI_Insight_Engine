@@ -26,7 +26,7 @@
 | Prompt 设计 | extraction prompt 明确禁止编造 source/url，要求 JSON schema 输出。 | `prompts/extraction_prompt.md` | 是 |
 | 错误处理与校验 | pipeline 对 schema、source、evidence、confidence、API key 缺失等情况 fail fast。 | `src/daily_ai_insight/harness.py` / `src/daily_ai_insight/llm_client.py` | 是 |
 | Harness 防幻觉 | Harness 阻止 hallucinated source/url、ungrounded event、低置信度输出和不可控 loop。 | `src/daily_ai_insight/harness.py` | 是 |
-| Evaluation Harness | 支持 category accuracy、grounding pass rate、average confidence、failed items 评估。 | `src/daily_ai_insight/evaluate.py` / `outputs/llm_evaluation_report.md` | 是 |
+| Evaluation Harness | 支持 category accuracy、grounding pass rate、average confidence、failed items 评估；mixed showcase 已保留 rule 与 LLM 两套评估产物。 | `src/daily_ai_insight/evaluate.py` / `outputs/mixed_llm_evaluation_report.md` | 是 |
 | Reviewer | deterministic reviewer 检查 mismatch、failed items、confidence、grounding、baseline comparison。 | `src/daily_ai_insight/reviewer.py` / `outputs/review_report.md` | 是 |
 | 测试 | 默认测试覆盖 pipeline、extractor、harness、LLM config、evaluation、reviewer、UI import。 | `python3 -m pytest` | 是 |
 | Streamlit 产品 Demo | 提供本地可交互 UI，默认使用 mixed sample，支持数据来源追溯、业务化结构化事件表、中文 Harness checklist、多样化可视化、pipeline/evaluation/reviewer。 | `app.py` / `streamlit run app.py` | 是 |
@@ -56,7 +56,7 @@ python3 -m pytest
 python3 -m daily_ai_insight.cli run --input data/raw/mixed_channel_ai_news_sample.json --extractor rule
 python3 -m daily_ai_insight.cli evaluate --input data/raw/real_ai_news_sample.json --expected data/eval/expected_real_sample_categories.json --extractor rule --output-prefix rule
 python3 -m daily_ai_insight.cli evaluate --input data/raw/mixed_channel_ai_news_sample.json --expected data/eval/expected_mixed_sample_categories.json --extractor rule --output-prefix mixed_rule
-python3 -m daily_ai_insight.cli review --evaluation outputs/llm_evaluation_summary.json --baseline outputs/rule_evaluation_summary.json
+python3 -m daily_ai_insight.cli review --evaluation outputs/mixed_llm_evaluation_summary.json --baseline outputs/mixed_rule_evaluation_summary.json
 streamlit run app.py
 ```
 

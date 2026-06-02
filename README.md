@@ -25,8 +25,8 @@ AI 行业信息结构化分析与日报生成系统。
    对照题目要求逐项验收项目实现。
 3. [`docs/ai_coding_showcase.md`](docs/ai_coding_showcase.md)
    展示 Context Engineering、Harness Engineering、Structured Output、Self Verification 等 AI Coding 方法论。
-4. [`outputs/llm_evaluation_report.md`](outputs/llm_evaluation_report.md)
-   展示 DeepSeek V4 Flash 与 rule baseline 的结构化抽取评估结果。
+4. [`outputs/mixed_llm_evaluation_report.md`](outputs/mixed_llm_evaluation_report.md)
+   展示 DeepSeek V4 Flash 与 rule baseline 在 mixed showcase 样例上的结构化抽取评估结果。
 5. [`outputs/review_report.md`](outputs/review_report.md)
    展示 AI Reviewer 对评估结果的复审、问题识别和 critique-revise 建议。
 6. [`outputs/daily_report.md`](outputs/daily_report.md)
@@ -88,6 +88,10 @@ outputs/rule_evaluation_summary.json
 outputs/rule_evaluation_report.md
 outputs/llm_evaluation_summary.json
 outputs/llm_evaluation_report.md
+outputs/mixed_rule_evaluation_summary.json
+outputs/mixed_rule_evaluation_report.md
+outputs/mixed_llm_evaluation_summary.json
+outputs/mixed_llm_evaluation_report.md
 outputs/review_summary.json
 outputs/review_report.md
 ```
@@ -151,8 +155,8 @@ source .venv/bin/activate
 python3 -m pip install --upgrade pip
 python3 -m pip install -e .
 python3 -m daily_ai_insight.cli run --input data/raw/mixed_channel_ai_news_sample.json --extractor rule
-python3 -m daily_ai_insight.cli evaluate --input data/raw/real_ai_news_sample.json --expected data/eval/expected_real_sample_categories.json --extractor rule --output-prefix rule
-python3 -m daily_ai_insight.cli review --evaluation outputs/llm_evaluation_summary.json --baseline outputs/rule_evaluation_summary.json
+python3 -m daily_ai_insight.cli evaluate --input data/raw/mixed_channel_ai_news_sample.json --expected data/eval/expected_mixed_sample_categories.json --extractor rule --output-prefix mixed_rule
+python3 -m daily_ai_insight.cli review --evaluation outputs/mixed_llm_evaluation_summary.json --baseline outputs/mixed_rule_evaluation_summary.json
 ```
 
 这组命令可以验证：
@@ -160,8 +164,8 @@ python3 -m daily_ai_insight.cli review --evaluation outputs/llm_evaluation_summa
 - 项目依赖可以安装
 - pipeline 可以真实跑通
 - rule baseline 可以重新生成日报
-- evaluation harness 可以重新生成 rule 评估
-- reviewer 可以基于已提交的 LLM evaluation 与新生成的 rule baseline 做复审
+- evaluation harness 可以重新生成 mixed sample 的 rule baseline 评估
+- reviewer 可以基于已提交的 mixed LLM evaluation 与新生成的 mixed rule baseline 做复审
 
 ## 数据策略
 
@@ -291,14 +295,14 @@ python3 -m daily_ai_insight.cli evaluate \
   --output-prefix mixed_rule
 ```
 
-运行 LLM 评估：
+运行 mixed showcase LLM 评估：
 
 ```bash
 python3 -m daily_ai_insight.cli evaluate \
-  --input data/raw/real_ai_news_sample.json \
-  --expected data/eval/expected_real_sample_categories.json \
+  --input data/raw/mixed_channel_ai_news_sample.json \
+  --expected data/eval/expected_mixed_sample_categories.json \
   --extractor openai-compatible \
-  --output-prefix llm
+  --output-prefix mixed_llm
 ```
 
 评估输出：
@@ -308,9 +312,20 @@ outputs/rule_evaluation_summary.json
 outputs/rule_evaluation_report.md
 outputs/llm_evaluation_summary.json
 outputs/llm_evaluation_report.md
+outputs/mixed_rule_evaluation_summary.json
+outputs/mixed_rule_evaluation_report.md
+outputs/mixed_llm_evaluation_summary.json
+outputs/mixed_llm_evaluation_report.md
 ```
 
-当前已验证结果：
+当前 mixed showcase 已验证结果：
+
+| Extractor | Category Accuracy | Grounding Pass Rate | Avg Confidence | Failed Items |
+|---|---:|---:|---:|---:|
+| Rule baseline | 0.50 | 1.00 | 0.70 | 0 |
+| DeepSeek V4 Flash | 0.88 | 1.00 | 0.89 | 0 |
+
+13 条 real-world sample 的历史对照结果：
 
 | Extractor | Category Accuracy | Grounding Pass Rate | Avg Confidence | Failed Items |
 |---|---:|---:|---:|---:|
@@ -329,8 +344,8 @@ outputs/llm_evaluation_report.md
 
 ```bash
 python3 -m daily_ai_insight.cli review \
-  --evaluation outputs/llm_evaluation_summary.json \
-  --baseline outputs/rule_evaluation_summary.json
+  --evaluation outputs/mixed_llm_evaluation_summary.json \
+  --baseline outputs/mixed_rule_evaluation_summary.json
 ```
 
 生成：
@@ -349,7 +364,7 @@ Reviewer 会检查：
 - LLM accuracy 是否明显高于 rule baseline
 - evaluation report 和 daily report 是否存在
 
-当前 reviewer 结论是 `reviewed_with_warnings`，原因是 DeepSeek V4 Flash 虽然显著高于 rule baseline，但仍存在少量 category mismatch。这是项目刻意保留的 critique-revise 展示面，而不是把 LLM 输出包装成完美结果。
+当前 reviewer 结论是 `reviewed_with_warnings`，原因是 DeepSeek V4 Flash 在 mixed sample 上显著高于 rule baseline，但仍存在少量 category mismatch。这是项目刻意保留的 critique-revise 展示面，而不是把 LLM 输出包装成完美结果。
 
 ## Harness Engineering 约束
 
@@ -377,8 +392,8 @@ Harness 的目标不是增强功能，而是防止不可信 AI 输出进入下�
 4. 展示 rule vs LLM evaluation：
 
    ```text
-   outputs/rule_evaluation_report.md
-   outputs/llm_evaluation_report.md
+   outputs/mixed_rule_evaluation_report.md
+   outputs/mixed_llm_evaluation_report.md
    ```
 
 5. 展示 reviewer report：
