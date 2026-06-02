@@ -1,180 +1,258 @@
-# Daily AI Insight Engine - Final Showcase
+# Daily AI Insight Engine - 最终展示报告
 
-## What This Project Does
+## 项目做了什么
 
-Daily AI Insight Engine turns AI-related news into structured, validated, and reviewable daily insight artifacts.
+Daily AI Insight Engine 是一个面向 AI 行业信息分析的工程化 Demo。它把每日 AI 新闻、官方公告、科技媒体报道、聚合平台信息和社区讨论转化为可追溯、可校验、可评估的结构化洞察，并生成中文分析日报。
 
-The current system can load curated raw news, normalize each item into `RawNewsItem`, extract `StructuredAIEvent` records with a selected extractor, enforce schema and harness checks, generate a business-oriented daily report, evaluate extraction quality, and run a deterministic reviewer over the evaluation output.
-
-For the final showcase, the recommended input is `data/raw/mixed_channel_ai_news_sample.json`. It is a Chinese/English multi-channel sample aligned with the assignment's data acquisition guidance: official channels, tech media, aggregators, and social/community sources.
-
-The mixed sample also includes topic-level provenance with `canonical_topic` and `topic_role`. This lets the system show when one hotspot is covered by multiple source types instead of treating repeated appearances as accidental duplicates.
-
-## Why This Is More Than Vibe Coding
-
-This project does not ask an LLM to directly write a plausible report. It builds an inspectable workflow around model output:
-
-- source records keep `source` and `url`
-- extractor output must conform to schema
-- source and evidence grounding are checked before reports
-- confidence gates block low-confidence records
-- business analysis fields are structured as data instead of free-form report prose
-- item-level LLM extraction has retry budgets
-- evaluation uses an expected fixture instead of subjective impressions
-- reviewer output is structured and actionable
-
-The point is not only that AI can generate text. The point is that AI-assisted work can be constrained, measured, reviewed, and explained.
-
-## Chinese Product Experience
-
-The product layer is designed for Chinese users while preserving source traceability. English input news keeps its original `title`, `source`, and `url`, but user-facing analysis, trend signals, risks, opportunities, evaluation reports, reviewer reports, and the Streamlit UI are localized for Chinese reading.
-
-Schema keys, category enum values, and extractor names remain English on purpose. That keeps validation, tests, and Evaluation Harness behavior stable while avoiding a mixed-language product experience.
-
-Phase 8.2 adds business-facing analysis fields to `StructuredAIEvent`: `background`, `industry_impact`, `trend_signal`, `industry_risk`, `industry_opportunity`, `decision_hint`, `llm_generated`, and `requires_human_review`. The rule extractor fills these fields with deterministic Chinese templates; the OpenAI-compatible extractor can receive them from the LLM but still forces immutable source and provenance fields from raw input.
-
-## System Architecture
-
-RawNewsItem -> Extractor Strategy -> Item-level LLM Extraction -> Schema Validation -> Harness Verification -> Evaluation Harness -> AI Reviewer -> Report Generation
-
-The production pipeline stays fail-fast. If schema validation, source grounding, evidence grounding, or confidence checks fail, the pipeline does not produce a misleading final report.
-
-The evaluation pipeline is intentionally more diagnostic. It records item-level failures so extractor quality can be measured without weakening production safety.
-
-## Rule Baseline vs DeepSeek V4
-
-Observed local evaluation result on the 16-item mixed-channel showcase sample:
-
-| Extractor | Accuracy | Grounding | Avg Confidence | Failed Items |
-|---|---:|---:|---:|---:|
-| Rule baseline | 0.50 | 1.00 | 0.70 | 0 |
-| DeepSeek V4 Flash | 0.88 | 1.00 | 0.89 | 0 |
-
-Historical comparison on the 13-item real-world sample:
-
-| Extractor | Accuracy | Grounding | Avg Confidence | Failed Items |
-|---|---:|---:|---:|---:|
-| Rule baseline | 0.38 | 1.00 | 0.70 | 0 |
-| DeepSeek V4 Flash | 0.69 | 1.00 | 0.92 | 0 |
-
-The rule baseline is stable and reproducible, but it over-classifies complex items that mention model names. The DeepSeek V4 Flash runs improve category accuracy while preserving grounding, which is the kind of measurable gain the project is designed to expose.
-
-## Harness Engineering
-
-Harness Engineering is the control layer around the AI pipeline:
-
-- source grounding blocks hallucinated source names and URLs
-- evidence grounding requires extracted evidence to be traceable to raw title or summary text
-- confidence gates prevent low-confidence records from entering final reports
-- item-level retry limits prevent uncontrolled LLM repair loops
-- fail-fast behavior avoids silently producing unsupported reports
-- no structured event can invent a raw source outside the input data
-- raw `canonical_topic` and `topic_role` are copied through extraction and are not inferred by the LLM
-
-These guardrails make LLM extraction optional but verification mandatory.
-
-LLM-generated analysis is never treated as final industry judgment. The daily report displays a human-review note for LLM-generated sections, and the reviewer is documented as checking extraction and evaluation quality rather than replacing human business judgment.
-
-## Business Daily Report
-
-The generated daily report is oriented to:
+项目面向三类核心场景：
 
 - AI 行业趋势分析
 - 舆情监测与风险预警
 - 信息快速理解与决策辅助
 
-It contains:
+当前系统可以完成以下端到端流程：读取 curated raw news，将每条记录规范化为 `RawNewsItem`，通过所选 extractor 生成 `StructuredAIEvent`，经过 Schema validation、source grounding、evidence grounding 和 confidence gate，再生成日报、运行 Evaluation Harness，并交给 AI Reviewer 做复审。
 
-- 数据来源概览 with sample count, channel/language distribution, URL, publication date, source channel, source language, and selection reason
-- 热点聚类与多源覆盖, showing official announcements, media framing, aggregator visibility, and community feedback around the same canonical topic
-- 今日主要热点 Top 3–5
-- 重点事件深度解读 with background, industry impact, trend signal, industry opportunity, industry risk, decision hint, evidence, and source traceability
-- 趋势判断 based on model capability, Agent/workflow, cloud infrastructure, application landing, and community feedback
-- 舆情监测与风险预警 using only industry risks, not system confidence or harness risks
-- 机会提示 for AI coding, enterprise Agent workflow, model API, cloud infrastructure, and vertical applications
-- 可视化结果说明 that explains what each current chart answers
-- Harness 校验摘要 as a Chinese checklist
-- 方法说明 that documents deterministic rule baseline and LLM validation constraints
+最终展示推荐输入为：
 
-`published_at` is treated as the source publication date, while `collected_at` is the local fixture collection or review date. This is especially important for community sources such as Reddit or V2EX: they are useful for public-opinion monitoring and feedback signals, but they do not replace official sources for factual release claims.
+```text
+data/raw/mixed_channel_ai_news_sample.json
+```
 
-## Streamlit Product Demo
+该样例包含 16 条中英混合、多渠道 AI 信息，覆盖官方渠道、科技媒体、聚合平台和社交/社区来源。
 
-The Streamlit demo now defaults to `mixed_channel_ai_news_sample.json`, so the first screen starts from the final showcase dataset rather than the older real-world fixture. The UI keeps the same pipeline and harness calls; it does not bypass source grounding or confidence checks.
+## 为什么这不是普通 Vibe Coding
 
-The product view includes:
+普通 Vibe Coding 往往是把新闻交给 LLM，然后让模型直接写一篇看起来合理的总结。这个项目的重点不是“让 AI 写得像”，而是把 AI 输出放进一条可检查的工程链路里。
 
-- 数据来源追溯: title, source, URL, publication date, source channel, source language, and selection reason
-- 业务化结构化事件表: Chinese-friendly columns for category, source channel, summary, industry impact, opportunity, risk, and URL, with raw JSON kept in an expander
-- 中文 Harness checklist: source integrity, schema validation, source grounding, evidence grounding, loop guard, confidence threshold, and extractor name, with raw JSON kept in an expander
-- 多样化可视化: source channel × language heatmap, event timeline, category distribution, importance × confidence scatter, impact-area distribution, and Rule vs LLM comparison
-- 热点聚类与多源覆盖: canonical topic, source count, covered channels/languages, representative title, official-source flag, and community-feedback flag
-- LLM 人工复核提示: LLM-generated analysis is marked for human review without being treated as an industry risk
+项目做了这些约束：
 
-These charts answer practical questions for trend analysis, public-opinion monitoring, risk warning, and decision support: whether the sample is balanced across sources, when events cluster, which AI themes dominate, which events deserve priority, which business/technical areas are affected, and how rule and LLM extractors compare under the same harness.
+- 原始数据必须保留 `source`、`url`、`published_at` 等来源信息。
+- 抽取结果必须符合 `StructuredAIEvent` Schema。
+- 任何进入日报的事件都必须通过 Source Grounding 和 Evidence Grounding。
+- 低置信度结果会被 Harness 拦截。
+- LLM 输出不能修改原始 `title`、`source`、`url`、`published_at` 和 provenance 字段。
+- Evaluation Harness 用 expected fixture 衡量 extractor 质量。
+- AI Reviewer 复审的是抽取与评估质量，不替代人工行业判断。
+
+因此，这个项目展示的是 Context Engineering、Harness Engineering、Structured Output、Evaluation Harness 和 AI Reviewer 如何共同约束一个 AI 辅助分析系统。
+
+## 系统架构
+
+整体流程如下：
+
+```text
+RawNewsItem
+-> Extractor Strategy
+-> Item-level LLM Extraction
+-> Schema Validation
+-> Harness Verification
+-> Daily Report Generation
+-> Evaluation Harness
+-> AI Reviewer
+```
+
+其中：
+
+- `rule` 是 deterministic Rule baseline，不需要 API key，适合离线演示和稳定回归。
+- `mock-llm` 用来模拟 LLM 异常、低置信度和幻觉 source/url，验证 Harness 能否拦截。
+- `openai-compatible` 支持 DeepSeek / OpenAI-compatible API，用于真实 LLM 抽取与对比评估。
+
+生产 pipeline 保持 fail-fast。如果 Schema 校验、来源追溯、证据追溯或置信度检查失败，系统不会继续生成误导性的最终报告。
+
+## 数据策略：中英混合、多渠道来源
+
+最终展示数据是 `data/raw/mixed_channel_ai_news_sample.json`，共 16 条，采用中英混合、多渠道来源设计，直接对应笔试题中“数据获取”的参考方向。
+
+四类 `source_channel`：
+
+| source_channel | 中文说明 | 用途 |
+|---|---|---|
+| `official` | 官方渠道 | 确认技术发布事实、发布时间和产品范围。 |
+| `tech_media` | 科技媒体 | 观察行业动态报道、竞争解读和外部叙事。 |
+| `aggregator` | 聚合平台 | 发现跨来源热度和综合信息流，辅助快速理解。 |
+| `social_media` | 社交/社区来源 | 捕捉用户反馈、开发者体验、成本敏感度和舆情风险。 |
+
+mixed sample 每条记录都保留：
+
+- `title`
+- `summary`
+- `source`
+- `url`
+- `published_at`
+- `language`
+- `source_channel`
+- `source_language`
+- `selection_reason`
+- `collected_at`
+- `canonical_topic`
+- `topic_role`
+
+其中，`published_at` 表示来源内容本身的发布时间，`collected_at` 表示样本采集或整理时间。二者不能混用，尤其是 Reddit、V2EX 等社区来源。社区/社交来源适合观察反馈和舆情，不作为事实主来源；事实确认仍优先依赖官方渠道和可追溯媒体报道。
+
+## 热点聚类与多源覆盖
+
+项目新增 `canonical_topic` 和 `topic_role` 来展示热点的多源覆盖关系。
+
+这不是简单去重逻辑。相同热点出现在多个渠道，往往代表信息扩散链路：
+
+- 官方渠道确认发布事实。
+- 科技媒体给出行业报道和竞争视角。
+- 聚合平台体现跨来源可见度。
+- 社区/社交来源暴露用户反馈和舆论风险。
+
+例如同一模型发布事件，可以同时有官方公告、TechCrunch 报道、中文聚合摘要和 Reddit 讨论。系统通过 `canonical_topic` 把它们归为同一热点，并通过 `topic_role` 标注每条记录在热点中的角色。这样既避免把重复热点误判为数据噪声，也能展示事件从发布到讨论的传播路径。
+
+LLM 不允许生成或改写 `canonical_topic` 和 `topic_role`。这些字段来自 raw input，并在 extractor 中被复制到结构化事件。
+
+## Rule Baseline vs DeepSeek V4 Flash
+
+最终 mixed showcase 的本地评估结果如下：
+
+| Extractor | Accuracy | Source Grounding | Avg Confidence | Failed Items |
+|---|---:|---:|---:|---:|
+| Rule baseline | 0.50 | 1.00 | 0.70 | 0 |
+| DeepSeek V4 Flash | 0.88 | 1.00 | 0.89 | 0 |
+
+这组结果说明：
+
+- Rule baseline 稳定、可复现、无需 API key，但对复杂语义分类会偏粗糙。
+- DeepSeek V4 Flash 在 mixed sample 上显著提升分类准确率。
+- 两种模式的 Source Grounding pass rate 都是 `1.00`，说明质量提升没有以牺牲来源追溯为代价。
+- 仍然存在少量 category mismatch，因此 LLM 输出应进入人工复核，而不是被包装成完全正确。
+
+历史 real-world sample 的对照结果保留如下，作为早期 13 条真实样例的参考：
+
+| Extractor | Accuracy | Source Grounding | Avg Confidence | Failed Items |
+|---|---:|---:|---:|---:|
+| Rule baseline | 0.38 | 1.00 | 0.70 | 0 |
+| DeepSeek V4 Flash | 0.69 | 1.00 | 0.92 | 0 |
+
+## Harness Engineering
+
+Harness Engineering 是本项目的核心控制层。它的目标不是增加花哨功能，而是阻止不可信 AI 输出进入下游。
+
+当前 Harness 覆盖：
+
+- Schema validation：结构化事件必须符合 Pydantic Schema。
+- Source Grounding：结构化事件的 `title`、`source`、`url` 等必须来自 raw input。
+- Evidence Grounding：`evidence` 必须能追溯到原始 title 或 summary。
+- Confidence gate：低于阈值的结果不能进入最终报告。
+- Retry budget：Item-level LLM Extraction 有明确重试预算，避免不可控循环。
+- Immutable provenance：LLM 不能修改来源、发布时间和 provenance 字段。
+
+LLM 生成的背景、行业影响、趋势信号、行业风险、行业机会和决策提示，必须经过这些校验后才能进入报告。即使通过校验，报告仍提示建议人工复核。
 
 ## Evaluation Harness
 
-The evaluation harness measures extractor quality instead of relying on a reviewer saying the output "looks right."
+Evaluation Harness 用 expected fixture 衡量 extractor 的质量，而不是只看报告“读起来是否顺”。
 
-It compares predictions against an expected category fixture. The Streamlit demo defaults to the mixed sample and `data/eval/expected_mixed_sample_categories.json`; the older real sample still uses `data/eval/expected_real_sample_categories.json`.
-It reports:
+它会输出：
 
 - category accuracy
-- successful and failed item counts
-- grounding pass rate
-- confidence distribution
-- mismatched items
+- successful items
 - failed items
+- grounding pass rate
+- average confidence
+- mismatched items
 
-This separates hallucination prevention from quality measurement. Harness checks answer "is this safe enough to use?" Evaluation answers "how good was this extractor on the fixture?"
+对于最终 mixed sample，Evaluation Harness 使用：
+
+```text
+data/eval/expected_mixed_sample_categories.json
+```
+
+已保留的最终展示产物包括：
+
+```text
+outputs/mixed_rule_evaluation_summary.json
+outputs/mixed_rule_evaluation_report.md
+outputs/mixed_llm_evaluation_summary.json
+outputs/mixed_llm_evaluation_report.md
+```
+
+Evaluation Harness 和 Harness Engineering 的职责不同：Harness 判断“这个输出是否安全到可以进入下游”，Evaluation 判断“这个 extractor 在样例上的质量如何”。
 
 ## AI Reviewer Workflow
 
-The AI Reviewer layer is implemented as a deterministic `RuleBasedReviewer` for this phase.
+AI Reviewer 当前采用 deterministic `RuleBasedReviewer`，用于复审 evaluation artifact。
 
-It reviews evaluation output and detects:
+它检查：
 
-- category mismatches
-- failed items
-- grounding pass rate below 1.0
-- average confidence below threshold
-- LLM accuracy that is not clearly above rule baseline
-- missing evaluation or daily report artifacts
+- category mismatch
+- failed item
+- grounding pass rate 是否低于 1.00
+- average confidence 是否低于阈值
+- LLM accuracy 是否明显高于 Rule baseline
+- evaluation report 和 daily report 是否存在
 
-It generates:
+最终 mixed showcase 的 reviewer 对比路径是：
 
-- `outputs/review_summary.json`
-- `outputs/review_report.md`
+```text
+outputs/mixed_llm_evaluation_summary.json
+outputs/mixed_rule_evaluation_summary.json
+```
 
-For the final mixed showcase, the intended reviewer comparison is `outputs/mixed_llm_evaluation_summary.json` against `outputs/mixed_rule_evaluation_summary.json`.
+Reviewer 的作用是形成 critique-revise 工作流：先运行 evaluation，再复审结果，然后决定是否需要修订规则、prompt 或 expected fixture。Reviewer 不替代人工行业判断，尤其是涉及 LLM 生成的行业分析时，仍建议人工复核。
 
-This creates a critique-revise workflow: run evaluation, review the result, revise extractor rules or prompts, then rerun evaluation. The current reviewer is deterministic so it can be tested and demonstrated reliably.
+## Streamlit Product Demo
 
-## Engineering Quality
+Streamlit Product Demo 是面试展示入口，启动方式：
 
-The project demonstrates test-backed AI engineering rather than one-shot generation:
+```bash
+streamlit run app.py
+```
 
-- default tests run locally with real LLM integration gated by environment variables
-- deterministic rule baseline remains the default extractor
-- mock LLM tests simulate hallucinated source URLs, malformed output, and low confidence
-- OpenAI-compatible integration is optional and requires local `.env` configuration
-- no API key is committed
-- prompts, docs, schemas, business analysis fields, and harness constraints are versioned
-- final artifacts are generated from traceable intermediate outputs
+Demo 默认使用：
 
-## Known Limitations
+```text
+mixed_channel_ai_news_sample.json
+```
 
-- The expected category fixtures cover the 13-item real-world sample and the 16-item mixed-channel showcase sample.
-- Evidence grounding uses a conservative heuristic based on raw title and summary text.
-- Real news collection is manually curated in this phase.
-- The reviewer does not yet perform multi-round automatic prompt repair.
-- Category labels are useful for demonstration but not yet a full ontology of AI market events.
+产品界面展示：
 
-## Future Work
+- 数据来源追溯：标题、来源、URL、发布日期、采集日期、来源渠道、来源语言、选择理由。
+- 结构化洞察生成方式：`rule`、`mock-llm`、`openai-compatible`。
+- 可视化日报：来源渠道 × 来源语言覆盖矩阵、事件发布时间线、分类分布、重要性 × 置信度散点图、影响领域分布。
+- 热点聚类与多源覆盖：展示 `canonical_topic`、覆盖来源数量、渠道/语言覆盖、是否包含官方来源、是否包含社区反馈。
+- 业务化结构化事件表：中文友好列，同时保留 raw JSON expander。
+- Harness 校验摘要：默认展示中文 checklist，原始 JSON 放入 expander。
+- Evaluation Harness：运行 mixed sample 的评估。
+- AI Reviewer：复审抽取与评估质量。
 
-- Add RSS or API-based collector with source allowlists.
-- Add reviewer-driven prompt refinement for repeatable critique-revise loops.
-- Track multi-day trends and deltas across reports.
-- Add richer multi-day visualization and dashboard states.
-- Add CI workflow for default tests, fixture validation, and artifact checks.
+这个 Demo 的价值在于，它不是单页摘要，而是把来源、结构化事件、校验、评估、复审和最终日报都放到同一条可解释链路中。
+
+## 工程质量
+
+项目体现了 test-backed AI engineering：
+
+- 默认测试不调用真实 API。
+- 真实 LLM integration test 必须显式设置环境变量。
+- `.env` 和真实 API key 不提交。
+- Rule baseline 保持 deterministic。
+- mock LLM 覆盖幻觉 source/url、低置信度和 malformed output。
+- OpenAI-compatible extractor 采用 Item-level LLM Extraction，降低 batch JSON 失败风险。
+- Prompt、Schema、Harness、Evaluation 和 Reviewer 都有版本化文件。
+- 最终报告来自可追溯的结构化中间产物。
+
+当前默认测试结果：
+
+```text
+81 passed, 1 skipped
+```
+
+## 已知限制
+
+- 当前 mixed sample 是手动整理的静态展示样例，不是实时舆情采集系统。
+- Evidence Grounding 使用保守启发式，主要依赖 raw title 和 summary。
+- `expected_mixed_sample_categories.json` 适合本次 16 条样例，不是完整 AI 事件分类本体。
+- AI Reviewer 当前是 deterministic reviewer，还没有实现多轮自动 prompt repair。
+- 社区/社交来源只能作为舆情和反馈信号，不能替代官方发布事实。
+
+## 后续优化方向
+
+- 接入 RSS、官方 API 或搜索 API，并保持 source allowlist。
+- 增加 raw snapshot 存储，提升数据采集可复现性。
+- 引入多日趋势追踪，展示热点随时间变化。
+- 扩展可视化 dashboard，支持多日对比和风险趋势。
+- 增加 reviewer-driven prompt refinement，形成更完整的 critique-revise 循环。
+- 增加 CI workflow，自动运行默认测试、fixture 校验和文档产物检查。
